@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -14,9 +14,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
-public class Drivetrain {
+public class SwerveDrive extends SubsystemBase {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
@@ -52,7 +53,7 @@ public class Drivetrain {
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
-  public Drivetrain() {
+  public SwerveDrive() {
     m_gyro.reset();
   }
 
