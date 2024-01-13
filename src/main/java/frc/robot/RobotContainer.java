@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    private final XboxController m_controller = new XboxController(0);
-    private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final XboxController m_controller = new XboxController(0);
+  private final SwerveDrive m_swerveDrive = new SwerveDrive();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
