@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 import frc.robot.Constants;
 
 public class SwerveModule {
@@ -59,7 +60,8 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-        m_driveMotor.getEncoder().getVelocity(), new Rotation2d(m_turningMotor.getEncoder().getPosition()));
+        m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
+        new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
   }
 
   /**
@@ -69,7 +71,8 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        m_driveMotor.getEncoder().getPosition(), new Rotation2d(m_turningMotor.getEncoder().getPosition()));
+        m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
+        new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
   }
 
   /**
@@ -78,7 +81,7 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    var encoderRotation = new Rotation2d(m_turningMotor.getEncoder().getPosition());
+    var encoderRotation = new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState state = SwerveModuleState.optimize(desiredState, encoderRotation);
@@ -89,13 +92,15 @@ public class SwerveModule {
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput = m_drivePIDController.calculate(m_driveMotor.getEncoder().getVelocity(),
+    final double driveOutput = m_drivePIDController.calculate(
+        m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
         state.speedMetersPerSecond);
 
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput = m_turningPIDController.calculate(m_turningMotor.getEncoder().getPosition(),
+    final double turnOutput = m_turningPIDController.calculate(
+        m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
         state.angle.getRadians());
 
     final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
