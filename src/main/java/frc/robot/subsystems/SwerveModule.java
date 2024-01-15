@@ -13,28 +13,31 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Constants;
 
 public class SwerveModule {
-  private static final double kModuleMaxAngularVelocity = SwerveDrive.kMaxAngularSpeed;
-  private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
-
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(
+      Constants.DriveTrain.driveControllerKp,
+      Constants.DriveTrain.driveControllerKi,
+      Constants.DriveTrain.driveControllerKd);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-      1,
-      0,
-      0,
+      Constants.DriveTrain.turnControllerKp,
+      Constants.DriveTrain.turnControllerKi,
+      Constants.DriveTrain.turnControllerKd,
       new TrapezoidProfile.Constraints(
-          kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+          Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
+      Constants.DriveTrain.driveFeedforwardStatic, Constants.DriveTrain.driveFeedforwardVelocity);
+  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(
+      Constants.DriveTrain.turnFeedforwardStatic, Constants.DriveTrain.turnFeedforwardVelocity);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
