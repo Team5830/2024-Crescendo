@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.commands.Autos;
+import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
 import frc.robot.subsystems.SwerveDrive;
 
@@ -80,8 +80,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  /*public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_swerveDrive);
-  }
+  }*/
 }
