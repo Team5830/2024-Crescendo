@@ -4,20 +4,28 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogGyro;
+
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase {
+  private AHRS ahrs;
+  private DifferentialDriveOdometry odometry;
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
@@ -31,8 +39,6 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveModule m_backLeft = new SwerveModule(5, 6);
   private final SwerveModule m_backRight = new SwerveModule(7, 8);
 
-  private final AnalogGyro m_gyro = new AnalogGyro(0);
-
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -42,7 +48,7 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDrivePoseEstimator m_poseEstimator =
       new SwerveDrivePoseEstimator(
           m_kinematics,
-          m_gyro.getRotation2d(),
+         ahrs.getRotation2d(),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -54,7 +60,14 @@ public class SwerveDrive extends SubsystemBase {
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
   public SwerveDrive() {
-    m_gyro.reset();
+    try{
+      AHRS ahrs = new AHRS(SerialPort.Port.kUSB1);
+      //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
+    } catch(RuntimeException ex){
+        DriverStation.reportError("Error Configuring Drivetrain" + ex.getMessage(), true);
+    }
+    //ahrs.reset();
+    
   }
 
   /**
@@ -85,7 +98,7 @@ public class SwerveDrive extends SubsystemBase {
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_poseEstimator.update(
-        m_gyro.getRotation2d(),
+        ahrs.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
