@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -40,7 +41,15 @@ public class RobotContainer {
   public RobotContainer(DoubleSupplier getPeriod) {
     this.getPeriod = getPeriod;
 
-    // Configure the trigger bindings
+    /*SmartDashboard.putData("Position1" new Positioning(m_armangle, Position1.armangle))
+      SmartDashboard.putData("Position2" new Positioning(m_armangle, Position2.armangle))
+      SmartDashboard.putData("Pickup" new Pickup(m_intake))
+      SmartDashboard.putData("Shoot" new Shoot(m_flywheel))
+      SmartDashboard.putData("AutonomousCommandC" new AutonomousCommandC(m_flywheel, m_drivetrain, m_intake, m_arm))
+      SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
+      SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
+      SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
+    //Configure the trigger bindings
     configureBindings();
 
     m_swerveDrive.setDefaultCommand(new DriveTeleop(
