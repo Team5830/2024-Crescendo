@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+/*  Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -21,29 +21,29 @@ public class SwerveModule {
   private final CANSparkMax m_turningMotor;
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(
+  /*private final PIDController m_drivePIDController = new PIDController(
       Constants.DriveTrain.driveControllerKp,
       Constants.DriveTrain.driveControllerKi,
       Constants.DriveTrain.driveControllerKd);
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
+  /*private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
       Constants.DriveTrain.turnControllerKp,
       Constants.DriveTrain.turnControllerKi,
       Constants.DriveTrain.turnControllerKd,
-      new TrapezoidProfile.Constraints(
-          Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
+      //new TrapezoidProfile.Constraints(
+          //Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
-      Constants.DriveTrain.driveFeedforwardStatic, Constants.DriveTrain.driveFeedforwardVelocity);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(
-      Constants.DriveTrain.turnFeedforwardStatic, Constants.DriveTrain.turnFeedforwardVelocity);
+  //private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
+      //Constants.DriveTrain.driveFeedforwardStatic, Constants.DriveTrain.driveFeedforwardVelocity);
+  //private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(
+      //Constants.DriveTrain.turnFeedforwardStatic, Constants.DriveTrain.turnFeedforwardVelocity);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
    * and turning encoder.
-   */
+   
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel) {
@@ -57,7 +57,7 @@ public class SwerveModule {
    * Returns the current state of the module.
    *
    * @return The current state of the module.
-   */
+   
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
@@ -69,7 +69,7 @@ public class SwerveModule {
    *
    * @return The current position of the module.
    */
-  public SwerveModulePosition getPosition() {
+ /*  public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
         new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
@@ -80,7 +80,7 @@ public class SwerveModule {
    *
    * @param desiredState Desired state with speed and angle.
    */
-  public void setDesiredState(SwerveModuleState desiredState) {
+  /*public void setDesiredState(SwerveModuleState desiredState) {
     var encoderRotation = new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
 
     // Optimize the reference state to avoid spinning further than 90 degrees
@@ -92,7 +92,7 @@ public class SwerveModule {
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput = m_drivePIDController.calculate(
+   /*  final double driveOutput = m_drivePIDController.calculate(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
         state.speedMetersPerSecond);
 
@@ -108,4 +108,4 @@ public class SwerveModule {
     m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_turningMotor.setVoltage(turnOutput + turnFeedforward);
   }
-}
+}*/

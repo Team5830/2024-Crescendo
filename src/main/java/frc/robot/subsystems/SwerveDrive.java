@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+/*  Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-/** Represents a swerve drive style drivetrain. */
+/** Represents a swerve drive style drivetrain. 
 public class SwerveDrive extends SubsystemBase {
   private AHRS ahrs;
   public static final double kMaxSpeed = 3.0; // 3 meters per second
@@ -52,7 +52,7 @@ public class SwerveDrive extends SubsystemBase {
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
   /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
-  below are robot specific, and should be tuned. */
+  below are robot specific, and should be tuned. 
   private final SwerveDrivePoseEstimator m_poseEstimator =
       new SwerveDrivePoseEstimator(
           m_kinematics,
@@ -86,7 +86,7 @@ public class SwerveDrive extends SubsystemBase {
    * @param rot           Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
-   */
+   
   public void drive(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, double periodSeconds) {
     var swerveModuleStates = m_kinematics.toSwerveModuleStates(
@@ -103,7 +103,7 @@ public class SwerveDrive extends SubsystemBase {
     m_backRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  /** Updates the field relative position of the robot. */
+  /** Updates the field relative position of the robot. 
   public void updateOdometry() {
     m_poseEstimator.update(
         ahrs.getRotation2d(),
@@ -123,3 +123,4 @@ public class SwerveDrive extends SubsystemBase {
         Timer.getFPGATimestamp() - 0.3);
   }
 }
+*/
