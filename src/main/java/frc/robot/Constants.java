@@ -50,4 +50,33 @@ public final class Constants {
     public static final double rotRateLimit = 3;
 
   }
+
+  public static final class Arm {
+    // CAN bus Channel
+    public static final int channel = 9;
+    public static final float ReverseLimit = 0;
+    public static final float ForwardLimit = 0;
+    // PIDs
+    public static final double controllerKp = 1;
+    public static final double controllerKi = 0;
+    public static final double controllerKd = 0;
+    public static final double controllerKf = 0;
+    public static final double MinOutput = -1.0;
+    public static final double MaxOutput = 1.0;
+    public static final double Tolerance = 5.0;
+  }
+
+  public static final class Flywheel{
+    public static final int channel = 10;
+    // PIDs
+    public static final double controllerKp = 1;
+    public static final double controllerKi = 0;
+    public static final double controllerKd = 0;
+    public static final double controllerKf = 0;
+    public static final double controllerkIz = 0;
+    public static final double MinOutput = -1.0;
+    public static final double MaxOutput = 1.0;
+    public static final double Tolerance = 5.0;
+    public static final double shootermotorspeed = 500;
+  }
 }

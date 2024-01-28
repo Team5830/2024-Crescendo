@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-
+  public final Flywheel m_flywheel = new Flywheel();
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.Joystick.yRateLimit);

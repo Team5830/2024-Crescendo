@@ -11,7 +11,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
@@ -51,26 +50,25 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-  /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
-  below are robot specific, and should be tuned. */
-  private final SwerveDrivePoseEstimator m_poseEstimator =
-      new SwerveDrivePoseEstimator(
-          m_kinematics,
-          ahrs.getRotation2d(),
-          new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
-          },
-          new Pose2d(),
-          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+  private SwerveDrivePoseEstimator m_poseEstimator;
 
   public SwerveDrive() {
     try{
-      AHRS ahrs = new AHRS(SerialPort.Port.kUSB1);
-      //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
+        AHRS ahrs = new AHRS(SerialPort.Port.kUSB1);
+        /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
+        below are robot specific, and should be tuned. */
+        m_poseEstimator = new SwerveDrivePoseEstimator(
+            m_kinematics,
+            ahrs.getRotation2d(),
+            new SwerveModulePosition[] {
+                m_frontLeft.getPosition(),
+                m_frontRight.getPosition(),
+                m_backLeft.getPosition(),
+                m_backRight.getPosition()
+            },
+            new Pose2d(),
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
     } catch(RuntimeException ex){
         DriverStation.reportError("Error Configuring Drivetrain" + ex.getMessage(), true);
     }
