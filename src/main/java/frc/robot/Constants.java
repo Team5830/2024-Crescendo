@@ -48,6 +48,20 @@ public final class Constants {
     public static final double xRateLimit = 3;
     public static final double yRateLimit = 3;
     public static final double rotRateLimit = 3;
+  }
 
+  public static final class Flywheel {
+    public static final int waitforshootersecs = 10;
+    public static final double feedmotorspeed = 0.5;
+    public static final double shootermotorspeed = 1600;
+    public static final double kP = 0.0012;
+    public static final double kI = 0.000000;
+    public static final double kD = 0.04;
+    public static final double kIz = 0;
+    public static final double kFF = 0;
+    public static final double kMaxOutput = 0.7;
+    public static final double kMinOutput = -0.7;
+    public static final double speedTolerance = 50.0;
+    public static final int motorChanel = 6;
   }
 }
