@@ -8,6 +8,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,7 +23,12 @@ public class Intake extends SubsystemBase {
     RelativeEncoder m_encoder;
 
     public Intake() {
-        m_motor = new CANSparkMax(Constants.Intake.motorChanel, MotorType.kBrushless);
+        try {
+            m_motor = new CANSparkMax(Constants.Intake.motorChanel, MotorType.kBrushless);
+        } catch (RuntimeException ex) {
+            DriverStation.reportError("Error instantiating intake: " + ex.getMessage(), true);
+        }
+
         m_motor.restoreFactoryDefaults();
         m_pidController = m_motor.getPIDController();
         m_encoder = m_motor.getEncoder();

@@ -10,6 +10,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,7 +24,12 @@ public class Flywheel extends SubsystemBase {
     public double motorSpeed;
 
     public Flywheel() {
-        m_motor = new CANSparkMax(Constants.Flywheel.motorChanel, MotorType.kBrushless);
+        try {
+            m_motor = new CANSparkMax(Constants.Flywheel.motorChanel, MotorType.kBrushless);
+        } catch (RuntimeException ex) {
+            DriverStation.reportError("Error instantiating flywheel: " + ex.getMessage(), true);
+        }
+
         m_motor.restoreFactoryDefaults();
 
         m_motorPID = m_motor.getPIDController();
