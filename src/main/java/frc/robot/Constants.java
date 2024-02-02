@@ -76,4 +76,21 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final int motorChanel = 6;
   }
+
+  public static final class Arm {
+    public static final double kP = 0.0012;
+    public static final double kI = 0.000000;
+    public static final double kD = 0.04;
+    public static final double kIz = 0;
+    public static final double kFF = 0;
+    public static final double kMaxOutput = 0.7;
+    public static final double kMinOutput = -0.7;
+    public static final double speedTolerance = 50.0;
+    public static final double maxOutput = .4;
+    public static final double minOutput = -.4;
+    public static final float forwardLimit = 300;
+    public static final float reverseLimit = 0;
+    public static final double tolerance = 5.0;
+    public static final int motorChanel = 60;
+  }
 }
