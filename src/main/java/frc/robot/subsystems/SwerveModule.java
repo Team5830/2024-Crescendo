@@ -56,6 +56,9 @@ public class SwerveModule {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
 
+    m_driveMotor.restoreFactoryDefaults();
+    m_turningMotor.restoreFactoryDefaults();
+
     m_driveMotor.getEncoder().setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
