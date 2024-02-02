@@ -31,7 +31,6 @@ public class Flywheel extends SubsystemBase {
         }
 
         m_motor.restoreFactoryDefaults();
-
         m_motorPID = m_motor.getPIDController();
         m_encoder = m_motor.getEncoder();
     }
