@@ -13,12 +13,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import frc.robot.Constants;
 
 public class SwerveModule {
-  private final CANSparkMax m_driveMotor;
-  private final CANSparkMax m_turningMotor;
+  private CANSparkMax m_driveMotor;
+  private CANSparkMax m_turningMotor;
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(
@@ -47,9 +49,17 @@ public class SwerveModule {
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel) {
-    m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
-    m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
+    try {
+      m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
+      m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
+    }
 
+    m_driveMotor.restoreFactoryDefaults();
+    m_turningMotor.restoreFactoryDefaults();
+
+    m_driveMotor.getEncoder().setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
