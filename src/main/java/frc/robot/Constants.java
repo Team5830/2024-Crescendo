@@ -92,5 +92,21 @@ public final class Constants {
     public static final float reverseLimit = 0;
     public static final double tolerance = 5.0;
     public static final int motorChanel = 60;
+
+    public static final class Position1 { // POSITION 1 NAME HERE
+      public static final double armAngle = 0.0;
+    }
+
+    public static final class Position2 { // POSITION 2 NAME HERE
+      public static final double armAngle = 49.1;
+    }
+
+    public static final class Position3 { // POSITION 3 NAME HERE
+      public static final double armAngle = 236.0;
+    }
+
+    public static final class Position4 { // POSITION 4 NAME HERE
+      public static final double armAngle = 278.0;
+    }
   }
 }

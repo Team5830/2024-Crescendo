@@ -6,14 +6,12 @@ package frc.robot;
 
 import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -25,8 +23,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final XboxController m_controller = new XboxController(Constants.Joystick.port);
+  private final CommandXboxController m_controller = new CommandXboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final Arm m_arm = new Arm();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -49,7 +48,7 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
-    //Configure the trigger bindings
+    // Configure the trigger bindings
     configureBindings();
 
     m_swerveDrive.setDefaultCommand(new DriveTeleop(
@@ -82,6 +81,11 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
+    m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
+    m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
+    m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
   }
 
   /**
