@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -16,12 +17,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import com.revrobotics.SparkAbsoluteEncoder.Type;
+import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants;
 
 public class SwerveModule {
   private CANSparkMax m_driveMotor;
   private CANSparkMax m_turningMotor;
-
+  private SparkAbsoluteEncoder m_angleEncoder;
+  private RelativeEncoder m_positionEncoder;
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(
       Constants.DriveTrain.driveControllerKp,
@@ -52,15 +56,18 @@ public class SwerveModule {
     try {
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
+      m_positionEncoder = m_driveMotor.getEncoder();
+      m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
 
     m_driveMotor.restoreFactoryDefaults();
     m_turningMotor.restoreFactoryDefaults();
-
-    m_driveMotor.getEncoder().setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
-    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
+    m_angleEncoder.setPositionConversionFactor(2*Math.PI);
+    m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
+    
   }
 
   /**
@@ -71,7 +78,7 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
-        new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
+        new Rotation2d(m_angleEncoder.getPosition()));
   }
 
   /**
@@ -82,7 +89,15 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
-        new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
+        new Rotation2d(m_angleEncoder.getPosition()));
+  }
+
+  public double Angle(){
+    return m_angleEncoder.getPosition();
+  }
+
+  public double Offset(){
+    return m_positionEncoder.getPosition();
   }
 
   /**

@@ -122,5 +122,13 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("TurnP", Constants.DriveTrain.turnControllerKp);
     SmartDashboard.putNumber("TurnI", Constants.DriveTrain.turnControllerKi);
     SmartDashboard.putNumber("DriveD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("FrontLeft Angle", m_frontLeft.Angle());
+    SmartDashboard.putNumber("FrontLeft Position", m_frontLeft.Offset());
+    SmartDashboard.putNumber("FrontRight Angle", m_frontRight.Angle());
+    SmartDashboard.putNumber("FrontRight Position", m_frontRight.Offset());
+    SmartDashboard.putNumber("BackLeft Angle", m_backLeft.Angle());
+    SmartDashboard.putNumber("BackLeft Position", m_backLeft.Offset());
+    SmartDashboard.putNumber("BackRight Angle", m_backRight.Angle());
+    SmartDashboard.putNumber("BackRight Position", m_backRight.Offset());
   }
 }
