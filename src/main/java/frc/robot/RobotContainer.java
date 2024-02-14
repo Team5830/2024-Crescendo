@@ -63,7 +63,7 @@ public class RobotContainer {
         true,
         this.getPeriod));
   }
-
+    
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the {@link Trigger#Trigger(java.util.function.BooleanSupplier)}

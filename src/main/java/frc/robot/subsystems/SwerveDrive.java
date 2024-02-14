@@ -18,14 +18,14 @@ import edu.wpi.first.math.util.Units;
 
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase {
-  private AHRS ahrs;
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
@@ -33,7 +33,10 @@ public class SwerveDrive extends SubsystemBase {
   private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
   private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
   private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
-
+  private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
+      //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
+    
+    //ahrs.reset();
   private final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel);
@@ -66,17 +69,6 @@ public class SwerveDrive extends SubsystemBase {
           new Pose2d(),
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
-  public SwerveDrive() {
-    try{
-      AHRS ahrs = new AHRS(SerialPort.Port.kUSB1);
-      //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
-    } catch(RuntimeException ex){
-        DriverStation.reportError("Error Configuring Drivetrain" + ex.getMessage(), true);
-    }
-    //ahrs.reset();
-    
-  }
 
   /**
    * Method to drive the robot using joystick info.
@@ -121,5 +113,14 @@ public class SwerveDrive extends SubsystemBase {
         ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
             m_poseEstimator.getEstimatedPosition()),
         Timer.getFPGATimestamp() - 0.3);
+  }
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
+    SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
+    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
+    SmartDashboard.putNumber("TurnP", Constants.DriveTrain.turnControllerKp);
+    SmartDashboard.putNumber("TurnI", Constants.DriveTrain.turnControllerKi);
+    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.turnControllerKd);
   }
 }

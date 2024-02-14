@@ -34,12 +34,12 @@ public final class Constants {
     public static final int gyroChannel = 0;
     public static final int frontLeftDriveChannel = 1;
     public static final int frontLeftTurnChannel = 2;
-    public static final int frontRightDriveChannel = 3;
-    public static final int frontRightTurnChannel = 4;
-    public static final int backLeftDriveChannel = 5;
-    public static final int backLeftTurnChannel = 6;
-    public static final int backRightDriveChannel = 7;
-    public static final int backRightTurnChannel = 8;
+    public static final int frontRightDriveChannel = 4;
+    public static final int frontRightTurnChannel = 3;
+    public static final int backLeftDriveChannel = 7;
+    public static final int backLeftTurnChannel = 8;
+    public static final int backRightDriveChannel = 5;
+    public static final int backRightTurnChannel = 6;
   }
 
   public static final class Joystick {
