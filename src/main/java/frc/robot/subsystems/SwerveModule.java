@@ -30,15 +30,15 @@ public class SwerveModule {
   private boolean invertencoder;
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(
-      Constants.DriveTrain.driveControllerKp,
-      Constants.DriveTrain.driveControllerKi,
-      Constants.DriveTrain.driveControllerKd);
+      PIDs.driveControllerKp,
+      PIDs.driveControllerKi,
+      PIDs.driveControllerKd);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-      Constants.DriveTrain.turnControllerKp,
-      Constants.DriveTrain.turnControllerKi,
-      Constants.DriveTrain.turnControllerKd,
+      PIDs.turnControllerKp,
+      PIDs.turnControllerKi,
+      PIDs.turnControllerKd,
       new TrapezoidProfile.Constraints(
           Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
 

@@ -16,7 +16,7 @@ public final class Constants {
     public static final double maxAngularVelocity = Math.PI; // 1/2 rotation per second
     public static final double maxAngularAcceleration = 2 * Math.PI; // radians per second squared
 
-    // PIDs
+    /*  PIDs
     public static final double driveControllerKp = 1;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
@@ -24,7 +24,7 @@ public final class Constants {
     public static final double turnControllerKi = 0;
     public static final double turnControllerKd = 0;
 
-    // Feedforward gains
+    */// Feedforward gains
     public static final double driveFeedforwardStatic = 0.1;
     public static final double driveFeedforwardVelocity = 0;
     public static final double turnFeedforwardStatic = 0;

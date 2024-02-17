@@ -119,12 +119,12 @@ public class SwerveDrive extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
-    SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
-    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
-    SmartDashboard.putNumber("TurnP", Constants.DriveTrain.turnControllerKp);
-    SmartDashboard.putNumber("TurnI", Constants.DriveTrain.turnControllerKi);
-    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("DriveP", PIDs.driveControllerKp);
+    SmartDashboard.putNumber("DriveI", PIDs.driveControllerKi);
+    SmartDashboard.putNumber("DriveD", PIDs.driveControllerKd);
+    SmartDashboard.putNumber("TurnP", PIDs.turnControllerKp);
+    SmartDashboard.putNumber("TurnI", PIDs.turnControllerKi);
+    SmartDashboard.putNumber("DriveD", PIDs.turnControllerKd);
     SmartDashboard.putNumber("FrontLeft Angle", m_frontLeft.Angle());
     SmartDashboard.putNumber("FrontLeft Position", m_frontLeft.Offset());
     SmartDashboard.putNumber("FrontRight Angle", m_frontRight.Angle());
