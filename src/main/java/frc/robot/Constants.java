@@ -31,7 +31,6 @@ public final class Constants {
     public static final double turnFeedforwardVelocity = 0.0;
 
     // Channels
-    public static final int gyroChannel = 0;
     public static final int frontLeftDriveChannel = 1;
     public static final int frontLeftTurnChannel = 2;
     public static final int frontRightDriveChannel = 4;
@@ -40,6 +39,8 @@ public final class Constants {
     public static final int backLeftTurnChannel = 8;
     public static final int backRightDriveChannel = 5;
     public static final int backRightTurnChannel = 6;
+    // 
+    public static final boolean invertNavX = true;
   }
 
   public static final class Joystick {
