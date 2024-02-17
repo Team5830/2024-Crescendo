@@ -42,6 +42,7 @@ public class SwerveModule {
       new TrapezoidProfile.Constraints(
           Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
 
+  
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
       Constants.DriveTrain.driveFeedforwardStatic, Constants.DriveTrain.driveFeedforwardVelocity);
@@ -77,6 +78,15 @@ public class SwerveModule {
 
     m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
     
+  }
+  
+  public void setTurnTarget(double setpoint){
+    m_turningPIDController.setGoal(setpoint);
+  }
+  
+  public void updatePIDValues(double P, double I, double D){
+   m_turningPIDController.setPID(P,I,D); 
+
   }
 
   /**

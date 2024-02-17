@@ -37,19 +37,19 @@ public class SwerveDrive extends SubsystemBase {
       //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
     
     //ahrs.reset();
-  private final SwerveModule m_frontLeft = new SwerveModule(
+  public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,
       true);
-  private final SwerveModule m_frontRight = new SwerveModule(
+  public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
       Constants.DriveTrain.frontRightTurnChannel,
       true);
-  private final SwerveModule m_backLeft = new SwerveModule(
+  public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
       Constants.DriveTrain.backLeftTurnChannel,
       true);
-  private final SwerveModule m_backRight = new SwerveModule(
+  public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel,
       true);
@@ -124,7 +124,8 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
     SmartDashboard.putNumber("TurnP", Constants.DriveTrain.turnControllerKp);
     SmartDashboard.putNumber("TurnI", Constants.DriveTrain.turnControllerKi);
-    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("TurnD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("TurnTarget", 0);
     SmartDashboard.putNumber("FrontLeft Angle", m_frontLeft.Angle());
     SmartDashboard.putNumber("FrontLeft Position", m_frontLeft.Offset());
     SmartDashboard.putNumber("FrontRight Angle", m_frontRight.Angle());

@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -82,6 +83,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
   }
 
   /**

@@ -17,7 +17,7 @@ public final class Constants {
     public static final double maxAngularAcceleration = 2 * Math.PI; // radians per second squared
 
     // PIDs
-    public static final double driveControllerKp = 1;
+    public static final double driveControllerKp = 0.01;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
     public static final double turnControllerKp = 1;
