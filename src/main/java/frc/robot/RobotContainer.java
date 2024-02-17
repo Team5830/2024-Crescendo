@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import frc.robot.Constants.Flyconstants;
 import frc.robot.commands.*;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.DriveTeleop;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final Flywheel m_flywheel = new Flywheel();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -49,6 +52,7 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
+      SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
     configureBindings();
 

@@ -25,7 +25,7 @@ public class Flywheel extends SubsystemBase {
 
     public Flywheel() {
         try {
-            m_motor = new CANSparkMax(Constants.Flywheel.motorChanel, MotorType.kBrushless);
+            m_motor = new CANSparkMax(Constants.Flyconstants.motorChanel, MotorType.kBrushless);
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating flywheel: " + ex.getMessage(), true);
         }
@@ -60,6 +60,6 @@ public class Flywheel extends SubsystemBase {
     }
 
     public boolean readyToShoot() {
-        return (Math.abs(motorSpeed - m_encoder.getVelocity()) < Constants.Flywheel.speedTolerance);
+        return (Math.abs(motorSpeed - m_encoder.getVelocity()) < Constants.Flyconstants.speedTolerance);
     }
 }

@@ -63,7 +63,7 @@ public final class Constants {
     public static final int motorChanel = 21;
   }
 
-  public static final class Flywheel {
+  public static final class Flyconstants {
     public static final int waitforshootersecs = 10;
     public static final double feedmotorspeed = 0.5;
     public static final double shootermotorspeed = 1600;
