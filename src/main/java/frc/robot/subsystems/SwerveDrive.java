@@ -29,26 +29,30 @@ public class SwerveDrive extends SubsystemBase {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+  private final Translation2d m_frontLeftLocation = new Translation2d(0.438, 0.438);
+  private final Translation2d m_frontRightLocation = new Translation2d(0.438, -0.438);
+  private final Translation2d m_backLeftLocation = new Translation2d(-0.438, 0.438);
+  private final Translation2d m_backRightLocation = new Translation2d(-0.438, -0.438);
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
       //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
     
     //ahrs.reset();
   private final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
-      Constants.DriveTrain.frontLeftTurnChannel);
+      Constants.DriveTrain.frontLeftTurnChannel,
+      true);
   private final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
-      Constants.DriveTrain.frontRightTurnChannel);
+      Constants.DriveTrain.frontRightTurnChannel,
+      true);
   private final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
-      Constants.DriveTrain.backLeftTurnChannel);
+      Constants.DriveTrain.backLeftTurnChannel,
+      true);
   private final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
-      Constants.DriveTrain.backRightTurnChannel);
+      Constants.DriveTrain.backRightTurnChannel,
+      true);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -129,6 +133,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("BackLeft Position", m_backLeft.Offset());
     SmartDashboard.putNumber("BackRight Angle", m_backRight.Angle());
     SmartDashboard.putNumber("BackRight Position", m_backRight.Offset());
-    SmartDashboard.putNumber("NAVX Heading", ahrs.getAngle());
+    SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
   }
 }

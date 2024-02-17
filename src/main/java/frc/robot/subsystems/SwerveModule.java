@@ -27,6 +27,7 @@ public class SwerveModule {
   private CANSparkMax m_turningMotor;
   private SparkAbsoluteEncoder m_angleEncoder;
   private RelativeEncoder m_positionEncoder;
+  private boolean invertencoder;
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(
       Constants.DriveTrain.driveControllerKp,
@@ -53,7 +54,8 @@ public class SwerveModule {
    */
   public SwerveModule(
       int driveMotorChannel,
-      int turningMotorChannel) {
+      int turningMotorChannel,
+      boolean invertencoder) {
     try {
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
@@ -64,9 +66,9 @@ public class SwerveModule {
       m_turningMotor.setIdleMode(IdleMode.kBrake);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
-      if (Constants.DriveTrain.backLeftTurnChannel==turningMotorChannel || Constants.DriveTrain.frontLeftDriveChannel == turningMotorChannel){
-        m_angleEncoder.setInverted(true);
-      }
+      //if (Constants.DriveTrain.backLeftTurnChannel==turningMotorChannel || Constants.DriveTrain.frontLeftDriveChannel == turningMotorChannel){
+      //  m_angleEncoder.setInverted(true);
+      //}
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
@@ -85,7 +87,7 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
-        new Rotation2d(m_angleEncoder.getPosition()));
+        new Rotation2d(invertencoder ? -m_angleEncoder.getPosition() : m_angleEncoder.getPosition()));
   }
 
   /**
