@@ -50,7 +50,6 @@ public class SwerveDrive extends SubsystemBase {
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel);
 
-
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
@@ -130,5 +129,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("BackLeft Position", m_backLeft.Offset());
     SmartDashboard.putNumber("BackRight Angle", m_backRight.Angle());
     SmartDashboard.putNumber("BackRight Position", m_backRight.Offset());
+    SmartDashboard.putNumber("NAVX Heading", ahrs.getAngle());
   }
 }

@@ -25,10 +25,10 @@ public final class Constants {
     public static final double turnControllerKd = 0;
 
     // Feedforward gains
-    public static final double driveFeedforwardStatic = 1;
-    public static final double driveFeedforwardVelocity = 3;
-    public static final double turnFeedforwardStatic = 1;
-    public static final double turnFeedforwardVelocity = 0.5;
+    public static final double driveFeedforwardStatic = 0.1;
+    public static final double driveFeedforwardVelocity = 0;
+    public static final double turnFeedforwardStatic = 0;
+    public static final double turnFeedforwardVelocity = 0.0;
 
     // Channels
     public static final int gyroChannel = 0;

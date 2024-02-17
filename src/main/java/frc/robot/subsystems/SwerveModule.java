@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants;
 
@@ -56,16 +57,22 @@ public class SwerveModule {
     try {
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
+
+      m_driveMotor.restoreFactoryDefaults();
+      m_turningMotor.restoreFactoryDefaults();
+      m_driveMotor.setIdleMode(IdleMode.kCoast);
+      m_turningMotor.setIdleMode(IdleMode.kBrake);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
+      if (Constants.DriveTrain.backLeftTurnChannel==turningMotorChannel || Constants.DriveTrain.frontLeftDriveChannel == turningMotorChannel){
+        m_angleEncoder.setInverted(true);
+      }
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
-
-    m_driveMotor.restoreFactoryDefaults();
-    m_turningMotor.restoreFactoryDefaults();
     m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
     m_angleEncoder.setPositionConversionFactor(2*Math.PI);
+
     m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
     
   }
@@ -93,13 +100,28 @@ public class SwerveModule {
   }
 
   public double Angle(){
-    return m_angleEncoder.getPosition();
+    return m_angleEncoder.getPosition()*(180/Math.PI)-180; //(0 to 2PI)*(180/PI)-180
   }
 
   public double Offset(){
     return m_positionEncoder.getPosition();
   }
 
+  public double AngleMotorCurrent(){
+    return m_turningMotor.getOutputCurrent();
+  }
+  
+  public double DriveMotorCurrent(){
+    return m_driveMotor.getOutputCurrent();
+  }
+  
+  public double AngleMotorVoltage(){
+    return m_turningMotor.getBusVoltage();
+  }
+  
+  public double DriveMotorVoltage(){
+    return m_driveMotor.getBusVoltage();
+  }
   /**
    * Sets the desired state for the module.
    *
