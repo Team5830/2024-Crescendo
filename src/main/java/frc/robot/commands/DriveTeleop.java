@@ -22,6 +22,9 @@ public class DriveTeleop extends Command {
    *
    * @param swerveDrive The subsystem used by this command.
    */
+  private double x,y,rot;
+  private boolean fieldrel;
+  private double periodsecs;
   public DriveTeleop(
       SwerveDrive swerveDrive,
       SlewRateLimiter m_xspeedLimiter,
@@ -38,19 +41,20 @@ public class DriveTeleop extends Command {
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var x = -m_xspeedLimiter.calculate(xSpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
+    final double x = -m_xspeedLimiter.calculate(xSpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var y = -m_yspeedLimiter.calculate(ySpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
+    final double y = -m_yspeedLimiter.calculate(ySpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    final var rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
-
+    final double rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
+    fieldrel = fieldRelative;
+    periodsecs =  periodSeconds.getAsDouble();
     m_swerveDrive.drive(x, y, rot, fieldRelative, periodSeconds.getAsDouble());
   }
 
@@ -62,11 +66,13 @@ public class DriveTeleop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_swerveDrive.drive(x, y, rot, fieldrel, periodsecs);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
   }
 
   // Returns true when the command should end.
@@ -74,4 +80,5 @@ public class DriveTeleop extends Command {
   public boolean isFinished() {
     return false;
   }
+  
 }

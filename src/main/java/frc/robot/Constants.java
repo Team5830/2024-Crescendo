@@ -20,7 +20,7 @@ public final class Constants {
     public static final double driveControllerKp = 0.01;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
-    public static final double turnControllerKp = 1;
+    public static final double turnControllerKp = .1;
     public static final double turnControllerKi = 0;
     public static final double turnControllerKd = 0;
 

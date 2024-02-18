@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(Constants.Joystick.port);
+  
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -51,9 +52,12 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
     //Configure the trigger bindings
+    SmartDashboard.putNumber("LeftX", m_controller.getLeftX());
+    SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
+    SmartDashboard.putNumber("RightX", m_controller.getRightX());
     configureBindings();
-
-    m_swerveDrive.setDefaultCommand(new DriveTeleop(
+    SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
+     m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
         m_xspeedLimiter,
         m_yspeedLimiter,
@@ -63,6 +67,7 @@ public class RobotContainer {
         m_controller::getRightX,
         true,
         this.getPeriod));
+        
   }
     
   /**
@@ -83,7 +88,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
+    
   }
 
   /**

@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -27,7 +28,8 @@ public class SwerveModule {
   private CANSparkMax m_turningMotor;
   private SparkAbsoluteEncoder m_angleEncoder;
   private RelativeEncoder m_positionEncoder;
-  private boolean invertencoder;
+  private boolean invertencoder = false;
+  private boolean invertmotor = false;
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(
       Constants.DriveTrain.driveControllerKp,
@@ -51,12 +53,14 @@ public class SwerveModule {
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
-   * and turning encoder.
+   * and turning encoder,
    */
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
-      boolean invertencoder) {
+      boolean invertencoder, 
+      boolean invertmotor, 
+      double zerooffset) {
     try {
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
@@ -65,18 +69,21 @@ public class SwerveModule {
       m_turningMotor.restoreFactoryDefaults();
       m_driveMotor.setIdleMode(IdleMode.kCoast);
       m_turningMotor.setIdleMode(IdleMode.kBrake);
+      m_driveMotor.setInverted(invertmotor);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
-      //if (Constants.DriveTrain.backLeftTurnChannel==turningMotorChannel || Constants.DriveTrain.frontLeftDriveChannel == turningMotorChannel){
-      //  m_angleEncoder.setInverted(true);
-      //}
+      m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
+      m_angleEncoder.setPositionConversionFactor(2*Math.PI);
+      if (invertencoder == true){
+         m_angleEncoder.setInverted(true);
+      }
+      m_angleEncoder.setZeroOffset(zerooffset);
+
+      m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
-    m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
-    m_angleEncoder.setPositionConversionFactor(2*Math.PI);
-
-    m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
+    
     
   }
   
@@ -89,6 +96,16 @@ public class SwerveModule {
 
   }
 
+  public double getPValue(){
+   return m_turningPIDController.getP(); 
+  }
+
+  public double getIValue(){
+   return m_turningPIDController.getI(); 
+  }
+  public double getDValue(){
+   return m_turningPIDController.getD(); 
+  }
   /**
    * Returns the current state of the module.
    *
@@ -112,7 +129,8 @@ public class SwerveModule {
   }
 
   public double Angle(){
-    return m_angleEncoder.getPosition()*(180/Math.PI)-180; //(0 to 2PI)*(180/PI)-180
+    //return m_angleEncoder.getPosition()*(180/Math.PI)-180; //(0 to 2PI)*(180/PI)-180
+    return m_angleEncoder.getPosition();
   }
 
   public double Offset(){
@@ -133,6 +151,10 @@ public class SwerveModule {
   
   public double DriveMotorVoltage(){
     return m_driveMotor.getBusVoltage();
+  }
+
+  public double Goal(){
+    return m_turningPIDController.getGoal().position;
   }
   /**
    * Sets the desired state for the module.
@@ -167,4 +189,5 @@ public class SwerveModule {
     m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_turningMotor.setVoltage(turnOutput + turnFeedforward);
   }
+
 }

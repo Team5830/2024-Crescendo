@@ -28,7 +28,7 @@ import frc.robot.Constants;
 public class SwerveDrive extends SubsystemBase {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-
+  public static double joyleftX, joyrightX, joyleftY;
   private final Translation2d m_frontLeftLocation = new Translation2d(0.438, 0.438);
   private final Translation2d m_frontRightLocation = new Translation2d(0.438, -0.438);
   private final Translation2d m_backLeftLocation = new Translation2d(-0.438, 0.438);
@@ -40,19 +40,19 @@ public class SwerveDrive extends SubsystemBase {
   public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,
-      true);
+      true, true, 1.4769131);
   public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
       Constants.DriveTrain.frontRightTurnChannel,
-      true);
+      false, false, 0);
   public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
       Constants.DriveTrain.backLeftTurnChannel,
-      true);
+      false, false, 0);
   public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel,
-      true);
+      false, false, 0);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -96,6 +96,9 @@ public class SwerveDrive extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+    joyleftX = xSpeed;
+    joyleftY = ySpeed;
+    joyrightX = rot;
   }
 
   /** Updates the field relative position of the robot. */
@@ -122,9 +125,9 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
     SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
     SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
-    SmartDashboard.putNumber("TurnP", Constants.DriveTrain.turnControllerKp);
-    SmartDashboard.putNumber("TurnI", Constants.DriveTrain.turnControllerKi);
-    SmartDashboard.putNumber("TurnD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("TurnP", m_frontLeft.getPValue());
+    SmartDashboard.putNumber("TurnI", m_frontLeft.getIValue());
+    SmartDashboard.putNumber("TurnD", m_frontLeft.getDValue());
     SmartDashboard.putNumber("TurnTarget", 0);
     SmartDashboard.putNumber("FrontLeft Angle", m_frontLeft.Angle());
     SmartDashboard.putNumber("FrontLeft Position", m_frontLeft.Offset());
@@ -135,5 +138,11 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("BackRight Angle", m_backRight.Angle());
     SmartDashboard.putNumber("BackRight Position", m_backRight.Offset());
     SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
+    SmartDashboard.putNumber("Target Angle", m_frontLeft.Goal());
+    SmartDashboard.putNumber("Drive Xspeed", joyleftX);
+    SmartDashboard.putNumber("Drive Yspeed", joyleftY);
+    SmartDashboard.putNumber("Drive Rot", joyrightX);       
   }
 }
