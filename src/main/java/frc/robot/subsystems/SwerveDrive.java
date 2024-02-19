@@ -140,7 +140,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
-    SmartDashboard.putNumber("Target Angle", m_frontLeft.Goal());
     SmartDashboard.putNumber("Drive Xspeed", joyleftX);
     SmartDashboard.putNumber("Drive Yspeed", joyleftY);
     SmartDashboard.putNumber("Drive Rot", joyrightX);       

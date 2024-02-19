@@ -1,7 +1,4 @@
 package frc.robot.commands;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrive;
@@ -21,11 +18,16 @@ public class testTurning extends Command {
         i = SmartDashboard.getNumber("TurnI", DriveTrain.driveControllerKi);
         d = SmartDashboard.getNumber("TurnD", DriveTrain.driveControllerKd);
         target = SmartDashboard.getNumber("TurnTarget", 0);
-        m_swerveDrive.m_frontLeft.updatePIDValues(p,i,d);
-        m_swerveDrive.m_frontRight.updatePIDValues(p,i,d);
-        m_swerveDrive.m_backLeft.updatePIDValues(p,i,d);
-        m_swerveDrive.m_backRight.updatePIDValues(p,i,d);
+        m_swerveDrive.m_frontLeft.updateTurnPIDValues(p,i,d);
+        m_swerveDrive.m_frontRight.updateTurnPIDValues(p,i,d);
+        m_swerveDrive.m_backLeft.updateTurnPIDValues(p,i,d);
+        m_swerveDrive.m_backRight.updateTurnPIDValues(p,i,d);
         m_swerveDrive.m_frontLeft.setTurnTarget(target);
     }
 
+    // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return m_swerveDrive.m_frontLeft.atTarget();
+  }
 }

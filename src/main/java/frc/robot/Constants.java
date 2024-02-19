@@ -13,8 +13,9 @@ package frc.robot;
 public final class Constants {
   public static final class DriveTrain {
     public static final double maxSpeed = 3.0; // 3 meters per second
-    public static final double maxAngularVelocity = Math.PI; // 1/2 rotation per second
-    public static final double maxAngularAcceleration = 2 * Math.PI; // radians per second squared
+    public static final double maxAngularVelocity = 100; // revolutions per second
+    public static final double maxAngularAcceleration = 10; // revolutions per second squared
+    public static final double AngleTolerance = 3;
 
     // PIDs
     public static final double driveControllerKp = 0.01;
