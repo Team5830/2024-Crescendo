@@ -81,7 +81,9 @@ public class SwerveModule {
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
       m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
       m_angleEncoder.setPositionConversionFactor(360);
-      if (invertencoder == true){
+      m_positionEncoder.setVelocityConversionFactor((Math.PI * (12.5 * 2.54 / 100)) / 60);
+      m_angleEncoder.setVelocityConversionFactor(6);
+      if (invertencoder){
          m_angleEncoder.setInverted(true);
       }
       m_angleEncoder.setZeroOffset(zerooffset);
@@ -197,6 +199,8 @@ public class SwerveModule {
     // directions. This results in smoother driving.
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
+    m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+    m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kVelocity);
   }
   public void PIDStop(){
     m_turningMotor.stopMotor();
