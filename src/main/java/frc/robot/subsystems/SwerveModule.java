@@ -78,8 +78,8 @@ public class SwerveModule {
          m_angleEncoder.setInverted(true);
       }
       m_angleEncoder.setZeroOffset(zerooffset);
-
       m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
+      
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }

@@ -6,12 +6,16 @@ package frc.robot;
 
 import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveSub;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 
+import java.io.File;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +32,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(Constants.Joystick.port);
   
-  private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final SwerveDriveSub m_swerveDrive = new SwerveDriveSub(new File(Filesystem.getDeployDirectory(),"swerve"));
+
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -56,18 +61,24 @@ public class RobotContainer {
     SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
     SmartDashboard.putNumber("RightX", m_controller.getRightX());
     configureBindings();
-    SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
-     m_swerveDrive.setDefaultCommand(new DriveTeleop(
-        m_swerveDrive,
-        m_xspeedLimiter,
-        m_yspeedLimiter,
-        m_rotLimiter,
-        m_controller::getLeftX,
-        m_controller::getLeftY,
-        m_controller::getRightX,
-        true,
-        this.getPeriod));
-        
+    
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the desired angle NOT angular rotation
+    Command driveFieldOrientedDirectAngle = m_swerveDrive.driveCommand(
+        () -> MathUtil.applyDeadband(m_controller.getLeftY(), Constants.Joystick.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(m_controller.getLeftX(), Constants.Joystick.LEFT_X_DEADBAND),
+        () -> m_controller.getRightX(),
+        () -> m_controller.getRightY());
+    Command driveFieldOrientedDirectAngleSim = m_swerveDrive.simDriveCommand(
+      () -> MathUtil.applyDeadband(m_controller.getLeftY(), Constants.Joystick.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(m_controller.getLeftX(), Constants.Joystick.LEFT_X_DEADBAND),
+      () -> m_controller.getRawAxis(2));
+
+    m_swerveDrive.setDefaultCommand(
+        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
   }
     
   /**
