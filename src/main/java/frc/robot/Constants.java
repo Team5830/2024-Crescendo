@@ -24,7 +24,7 @@ public final class Constants {
     public static final double driveControllerKd = 0;
     public static final double turnControllerKp = .001;
     public static final double turnControllerKi = 0;
-    public static final double turnControllerKd = 0;
+    public static final double turnControllerKd = 0.0005;
 
     // Feedforward gains
     public static final double driveFeedforwardStatic = 0.01;

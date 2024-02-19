@@ -142,7 +142,7 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
-        new Rotation2d(invertencoder ? -m_angleEncoder.getPosition() : m_angleEncoder.getPosition()));
+        new Rotation2d(m_angleEncoder.getPosition()));
   }
 
   /**
