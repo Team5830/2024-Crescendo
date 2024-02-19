@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.*;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import frc.robot.Constants.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -28,6 +29,7 @@ public class RobotContainer {
   private final XboxController m_controller = new XboxController(Constants.Joystick.port);
   
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final Constants m_turnarget = new Constants();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -57,6 +59,11 @@ public class RobotContainer {
     SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
     SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
     SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
+    SmartDashboard.getNumber("TurnP", Constants.DriveTrain.turnControllerKp);
+    SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
+    SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnarget);
+
     SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
     configureBindings();
     SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));

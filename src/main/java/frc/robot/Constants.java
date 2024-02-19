@@ -16,6 +16,7 @@ public final class Constants {
     public static final double maxAngularVelocity = 100; // revolutions per second
     public static final double maxAngularAcceleration = 10; // revolutions per second squared
     public static final double AngleTolerance = 5;
+    public static final double turnarget = 90;
 
     // PIDs
     public static final double driveControllerKp = 0.002;
