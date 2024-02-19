@@ -15,18 +15,18 @@ public final class Constants {
     public static final double maxSpeed = 3.0; // 3 meters per second
     public static final double maxAngularVelocity = 100; // revolutions per second
     public static final double maxAngularAcceleration = 10; // revolutions per second squared
-    public static final double AngleTolerance = 3;
+    public static final double AngleTolerance = 5;
 
     // PIDs
-    public static final double driveControllerKp = 0.01;
+    public static final double driveControllerKp = 0.002;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
-    public static final double turnControllerKp = .1;
+    public static final double turnControllerKp = .001;
     public static final double turnControllerKi = 0;
     public static final double turnControllerKd = 0;
 
     // Feedforward gains
-    public static final double driveFeedforwardStatic = 0.1;
+    public static final double driveFeedforwardStatic = 0.01;
     public static final double driveFeedforwardVelocity = 0;
     public static final double turnFeedforwardStatic = 0;
     public static final double turnFeedforwardVelocity = 0.0;

@@ -77,7 +77,7 @@ public class SwerveModule {
       m_turningMotor.setIdleMode(IdleMode.kBrake);
       m_driveMotor.setInverted(invertmotor);
       m_positionEncoder = m_driveMotor.getEncoder();
-      m_turningPIDController.setFeedbackDevice(m_positionEncoder);
+      m_drivePIDController.setFeedbackDevice(m_positionEncoder);
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
       m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
       m_angleEncoder.setPositionConversionFactor(360);
@@ -97,6 +97,7 @@ public class SwerveModule {
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
+    m_angleEncoder.getPosition();
   }
   
   public void setTurnTarget(double setpoint){
@@ -196,6 +197,9 @@ public class SwerveModule {
     // directions. This results in smoother driving.
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
+  }
+  public void PIDStop(){
+    m_turningMotor.stopMotor();
   }
 
 }

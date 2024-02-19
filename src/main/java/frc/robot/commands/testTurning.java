@@ -17,7 +17,7 @@ public class testTurning extends Command {
         p = SmartDashboard.getNumber("TurnP", DriveTrain.driveControllerKp);
         i = SmartDashboard.getNumber("TurnI", DriveTrain.driveControllerKi);
         d = SmartDashboard.getNumber("TurnD", DriveTrain.driveControllerKd);
-        target = SmartDashboard.getNumber("TurnTarget", 0);
+        target = SmartDashboard.getNumber("TurnTarget", 90);
         m_swerveDrive.m_frontLeft.updateTurnPIDValues(p,i,d);
         m_swerveDrive.m_frontRight.updateTurnPIDValues(p,i,d);
         m_swerveDrive.m_backLeft.updateTurnPIDValues(p,i,d);
@@ -26,6 +26,10 @@ public class testTurning extends Command {
     }
 
     // Returns true when the command should end.
+    @Override
+  public void end(boolean interrupted) {
+    m_swerveDrive.m_frontLeft.PIDStop();
+  }
   @Override
   public boolean isFinished() {
     return m_swerveDrive.m_frontLeft.atTarget();

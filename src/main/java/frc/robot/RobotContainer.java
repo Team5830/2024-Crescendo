@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.commands.*;
-import frc.robot.commands.DriveTeleop;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 
@@ -55,6 +54,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("LeftX", m_controller.getLeftX());
     SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
     SmartDashboard.putNumber("RightX", m_controller.getRightX());
+    SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
+    SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
+    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
+    SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
     configureBindings();
     SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
      m_swerveDrive.setDefaultCommand(new DriveTeleop(
