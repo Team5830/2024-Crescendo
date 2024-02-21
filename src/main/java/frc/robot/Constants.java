@@ -13,33 +13,36 @@ package frc.robot;
 public final class Constants {
   public static final class DriveTrain {
     public static final double maxSpeed = 3.0; // 3 meters per second
-    public static final double maxAngularVelocity = Math.PI; // 1/2 rotation per second
-    public static final double maxAngularAcceleration = 2 * Math.PI; // radians per second squared
+    public static final double maxAngularVelocity = 100; // revolutions per second
+    public static final double maxAngularAcceleration = 10; // revolutions per second squared
+    public static final double AngleTolerance = 5;
+    public static final double turnarget = 90;
 
     // PIDs
-    public static final double driveControllerKp = 1;
+    public static final double driveControllerKp = 0.002;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
-    public static final double turnControllerKp = 1;
+    public static final double turnControllerKp = .001;
     public static final double turnControllerKi = 0;
-    public static final double turnControllerKd = 0;
+    public static final double turnControllerKd = 0.01;
 
     // Feedforward gains
-    public static final double driveFeedforwardStatic = 1;
-    public static final double driveFeedforwardVelocity = 3;
-    public static final double turnFeedforwardStatic = 1;
-    public static final double turnFeedforwardVelocity = 0.5;
+    public static final double driveFeedforwardStatic = 0.01;
+    public static final double driveFeedforwardVelocity = 0;
+    public static final double turnFeedforwardStatic = 0;
+    public static final double turnFeedforwardVelocity = 0.0;
 
     // Channels
-    public static final int gyroChannel = 0;
     public static final int frontLeftDriveChannel = 1;
     public static final int frontLeftTurnChannel = 2;
-    public static final int frontRightDriveChannel = 3;
-    public static final int frontRightTurnChannel = 4;
-    public static final int backLeftDriveChannel = 5;
-    public static final int backLeftTurnChannel = 6;
-    public static final int backRightDriveChannel = 7;
-    public static final int backRightTurnChannel = 8;
+    public static final int frontRightDriveChannel = 4;
+    public static final int frontRightTurnChannel = 3;
+    public static final int backLeftDriveChannel = 7;
+    public static final int backLeftTurnChannel = 8;
+    public static final int backRightDriveChannel = 5;
+    public static final int backRightTurnChannel = 6;
+    // 
+    public static final boolean invertNavX = true;
   }
 
   public static final class Joystick {

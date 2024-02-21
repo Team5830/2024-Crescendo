@@ -8,6 +8,8 @@ import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+import frc.robot.Constants.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -23,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final Constants m_turnarget = new Constants();
   private final CommandXboxController m_controller = new CommandXboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
@@ -48,10 +52,25 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
+
+    //Configure the trigger bindings
+    SmartDashboard.putNumber("LeftX", m_controller.getLeftX());
+    SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
+    SmartDashboard.putNumber("RightX", m_controller.getRightX());
+    SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
+    SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
+    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
+    SmartDashboard.getNumber("TurnP", Constants.DriveTrain.turnControllerKp);
+    SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
+    SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnarget);
     // Configure the trigger bindings
     configureBindings();
 
-    m_swerveDrive.setDefaultCommand(new DriveTeleop(
+    SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
+    configureBindings();
+    SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
+     m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
         m_xspeedLimiter,
         m_yspeedLimiter,
@@ -59,10 +78,11 @@ public class RobotContainer {
         m_controller::getLeftX,
         m_controller::getLeftY,
         m_controller::getRightX,
-        true,
+        false,
         this.getPeriod));
+        
   }
-
+    
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the {@link Trigger#Trigger(java.util.function.BooleanSupplier)}
@@ -77,6 +97,7 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
+    //Trigger button1 = m_controller.button(6);
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
@@ -86,6 +107,7 @@ public class RobotContainer {
     m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
     m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
     m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
+
   }
 
   /**
