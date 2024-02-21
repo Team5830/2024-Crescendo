@@ -82,7 +82,6 @@ public class SwerveModule {
       m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
       m_angleEncoder.setPositionConversionFactor(360);
       m_positionEncoder.setVelocityConversionFactor((Math.PI * (12.5 * 2.54 / 100)) / 60);
-      m_angleEncoder.setVelocityConversionFactor(6);
       if (invertencoder){
          m_angleEncoder.setInverted(true);
       }
@@ -197,10 +196,10 @@ public class SwerveModule {
     // Scale speed by cosine of angle error. This scales down movement perpendicular
     // to the desired direction of travel that can occur when modules change
     // directions. This results in smoother driving.
-    state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
+    // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kVelocity);
+    m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);
   }
   public void PIDStop(){
     m_turningMotor.stopMotor();

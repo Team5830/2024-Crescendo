@@ -75,7 +75,7 @@ public class RobotContainer {
         m_controller::getLeftX,
         m_controller::getLeftY,
         m_controller::getRightX,
-        true,
+        false,
         this.getPeriod));
         
   }
@@ -94,6 +94,7 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
+    //Trigger button1 = m_controller.button(6);
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.

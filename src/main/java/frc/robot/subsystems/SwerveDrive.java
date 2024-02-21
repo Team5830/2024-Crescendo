@@ -49,11 +49,11 @@ public class SwerveDrive extends SubsystemBase {
   public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
       Constants.DriveTrain.backLeftTurnChannel,
-      false, false, 0);
+      false, false, 120);
   public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel,
-      true, false, 223.9114952);
+      true, false, 130);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -93,13 +93,12 @@ public class SwerveDrive extends SubsystemBase {
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             periodSeconds));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    SmartDashboard.putNumber("frontLeft: drive", swerveModuleStates[0].speedMetersPerSecond);
+     SmartDashboard.putNumber("frontLeft: turn", swerveModuleStates[0].angle.getDegrees());
+   m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
-    joyleftX = xSpeed;
-    joyleftY = ySpeed;
-    joyrightX = rot;
   }
 
   /** Updates the field relative position of the robot. */

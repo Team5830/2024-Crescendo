@@ -10,21 +10,26 @@ import frc.robot.subsystems.SwerveDrive;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class DriveTeleop extends Command {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final SwerveDrive m_swerveDrive;
+    SwerveDrive swerveDrive;
+    SlewRateLimiter m_xspeedLimiter;
+    SlewRateLimiter m_yspeedLimiter;
+    SlewRateLimiter m_rotLimiter;
+    DoubleSupplier xSpeed;
+    DoubleSupplier ySpeed;
+    DoubleSupplier rotSpeed;
+    boolean fieldRelative;
+    DoubleSupplier periodSeconds;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param swerveDrive The subsystem used by this command.
    */
-  private double x,y,rot;
-  private boolean fieldrel;
-  private double periodsecs;
   public DriveTeleop(
       SwerveDrive swerveDrive,
       SlewRateLimiter m_xspeedLimiter,
@@ -35,10 +40,27 @@ public class DriveTeleop extends Command {
       DoubleSupplier rotSpeed,
       boolean fieldRelative,
       DoubleSupplier periodSeconds) {
-    m_swerveDrive = swerveDrive;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);
 
+    this.swerveDrive=swerveDrive;
+    this.m_xspeedLimiter=m_xspeedLimiter;
+    this.m_yspeedLimiter=m_yspeedLimiter;
+    this.xSpeed=xSpeed;
+    this.ySpeed=ySpeed;
+    this.rotSpeed=rotSpeed;
+    this.fieldRelative=fieldRelative;
+    this.periodSeconds=periodSeconds;
+ }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final double x = -m_xspeedLimiter.calculate(xSpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
@@ -53,20 +75,8 @@ public class DriveTeleop extends Command {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final double rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
-    fieldrel = fieldRelative;
-    periodsecs =  periodSeconds.getAsDouble();
-    m_swerveDrive.drive(x, y, rot, fieldRelative, periodSeconds.getAsDouble());
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_swerveDrive.drive(x, y, rot, fieldrel, periodsecs);
+SmartDashboard.putNumber("joystick rot", rotSpeed.getAsDouble());
+    swerveDrive.drive(x, y, rot, fieldRelative, periodSeconds.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
