@@ -5,11 +5,13 @@
 package frc.robot;
 
 import frc.robot.commands.*;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.DriveTeleop;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
@@ -30,6 +32,7 @@ public class RobotContainer {
   private final CommandXboxController m_controller = new CommandXboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
+  private final Flywheel m_flywheel = new Flywheel();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -52,7 +55,7 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
-
+      //SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
     SmartDashboard.putNumber("LeftX", m_controller.getLeftX());
     SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
