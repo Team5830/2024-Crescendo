@@ -11,13 +11,11 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,7 +38,7 @@ public class SwerveDrive extends SubsystemBase {
   public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,
-      true, true, 84.4842196
+      true, true, 85
       );
   public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
@@ -93,8 +91,11 @@ public class SwerveDrive extends SubsystemBase {
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             periodSeconds));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
-    SmartDashboard.putNumber("frontLeft: drive", swerveModuleStates[0].speedMetersPerSecond);
-     SmartDashboard.putNumber("frontLeft: turn", swerveModuleStates[0].angle.getDegrees());
+    SmartDashboard.putNumber("swerve frontLeft: speedMetersPerSecond", swerveModuleStates[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("swerve frontLeft: angle", swerveModuleStates[0].angle.getDegrees());
+    SmartDashboard.putNumber("swerve backRight: speedMetersPerSecond", swerveModuleStates[3].speedMetersPerSecond);
+    SmartDashboard.putNumber("swerve backRight: angle", swerveModuleStates[3].angle.getDegrees());
+
    m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -120,6 +121,14 @@ public class SwerveDrive extends SubsystemBase {
             m_poseEstimator.getEstimatedPosition()),
         Timer.getFPGATimestamp() - 0.3);
   }
+
+  public double getAngle() {
+    return ahrs.getAngle();
+  }
+  public void resetHeading() {
+    ahrs.reset();
+  }
+
   @Override
   public void periodic() {
     //SmartDashboard.putNumber("TurnP", m_frontLeft.getPValue());

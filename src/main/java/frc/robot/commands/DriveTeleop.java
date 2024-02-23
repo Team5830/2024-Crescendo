@@ -46,6 +46,7 @@ public class DriveTeleop extends Command {
     this.swerveDrive=swerveDrive;
     this.m_xspeedLimiter=m_xspeedLimiter;
     this.m_yspeedLimiter=m_yspeedLimiter;
+    this.m_rotLimiter=m_rotLimiter;
     this.xSpeed=xSpeed;
     this.ySpeed=ySpeed;
     this.rotSpeed=rotSpeed;

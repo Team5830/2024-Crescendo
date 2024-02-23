@@ -19,12 +19,12 @@ public final class Constants {
     public static final double turnarget = 90;
 
     // PIDs
-    public static final double driveControllerKp = 0.002;
+    public static final double driveControllerKp = 0.05;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
-    public static final double turnControllerKp = .001;
+    public static final double turnControllerKp = .0004;
     public static final double turnControllerKi = 0;
-    public static final double turnControllerKd = 0.01;
+    public static final double turnControllerKd = 0.0;
 
     // Feedforward gains
     public static final double driveFeedforwardStatic = 0.01;
@@ -111,5 +111,14 @@ public final class Constants {
     public static final class Position4 { // POSITION 4 NAME HERE
       public static final double armAngle = 278.0;
     }
+  }
+
+  public static final class TurnPID {
+    public static final double P = 0.08;
+    public static final double I = 0.0;
+    public static final double D = 0.0;
+    public static final double f = 0.0;
+    public static final double Tolerance = 2.0; // Measured in degrees
+    public static final double TurnRateTolerance = 10; //Degrees per second
   }
 }

@@ -62,9 +62,9 @@ public class SwerveModule {
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
-      boolean invertencoder, 
-      boolean invertmotor, 
-      double zerooffset) {
+      boolean invertEncoder, 
+      boolean invertMotor, 
+      double zeroOffset) {
     try {
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
@@ -75,17 +75,17 @@ public class SwerveModule {
       m_turningMotor.restoreFactoryDefaults();
       m_driveMotor.setIdleMode(IdleMode.kCoast);
       m_turningMotor.setIdleMode(IdleMode.kBrake);
-      m_driveMotor.setInverted(invertmotor);
+      m_driveMotor.setInverted(invertMotor);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
       m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
       m_angleEncoder.setPositionConversionFactor(360);
       m_positionEncoder.setVelocityConversionFactor((Math.PI * (12.5 * 2.54 / 100)) / 60);
-      if (invertencoder){
+      if (invertEncoder){
          m_angleEncoder.setInverted(true);
       }
-      m_angleEncoder.setZeroOffset(zerooffset);
+      m_angleEncoder.setZeroOffset(zeroOffset);
       m_turningPIDController.setFeedbackDevice(m_angleEncoder);
       m_turningPIDController.setPositionPIDWrappingMaxInput(359);
       m_turningPIDController.setPositionPIDWrappingMinInput(0);
@@ -198,11 +198,11 @@ public class SwerveModule {
     // directions. This results in smoother driving.
     // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
-    m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);
+    m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    m_turningPIDController.setReference(desiredState.angle.getDegrees(), ControlType.kPosition);
   }
+
   public void PIDStop(){
     m_turningMotor.stopMotor();
   }
-
 }
