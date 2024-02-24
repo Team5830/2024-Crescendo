@@ -5,17 +5,11 @@
 package frc.robot;
 
 import frc.robot.commands.*;
-<<<<<<< HEAD
-=======
-import frc.robot.commands.Shoot;
-import frc.robot.commands.DriveTeleop;
->>>>>>> origin/Shooter
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
@@ -31,8 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
-  private final Constants m_turnarget = new Constants();
   private final CommandXboxController m_controller = new CommandXboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
