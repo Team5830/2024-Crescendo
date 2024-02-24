@@ -20,39 +20,39 @@ public class Climber extends SubsystemBase {
 
   public Climber() {
     try {
-      m_leftmotor = new CANSparkMax(Constants.Climber.motorChanel, CANSparkMax.MotorType.kBrushless);
+      m_leftmotor = new CANSparkMax(Constants.climber.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_leftmotor.restoreFactoryDefaults();
       m_leftencoder = m_leftmotor.getEncoder();
       m_leftencoder.setPositionConversionFactor(1);
       m_leftencoder.setPosition(0.0);
       m_leftmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_leftmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.Climber.loite);
-      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.Climber.heimit);
+      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.loite);
+      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.heimit);
 
-       m_rightmotor = new CANSparkMax(Constants.Climber.motorChanel, CANSparkMax.MotorType.kBrushless);
+       m_rightmotor = new CANSparkMax(Constants.climber.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_rightmotor.restoreFactoryDefaults();
       m_rightencoder = m_rightmotor.getEncoder();
       m_rightencoder.setPositionConversionFactor(1);
       m_rightencoder.setPosition(0.0);
       m_rightmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_rightmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.Climber.heimit);
-      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.Climber.loite);
+      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.heimit);
+      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.loite);
 
       m_leftpidController = m_leftmotor.getPIDController();
-      m_leftpidController.setP(Constants.Climber.kP);
-      m_leftpidController.setI(Constants.Climber.kI);
-      m_leftpidController.setD(Constants.Climber.kD);
-      m_leftpidController.setFF(Constants.Climber.kFF);
-      m_leftpidController.setOutputRange(Constants.Climber.minOutput, Constants.Climber.maxOutput);
+      m_leftpidController.setP(Constants.climber.kP);
+      m_leftpidController.setI(Constants.climber.kI);
+      m_leftpidController.setD(Constants.climber.kD);
+      m_leftpidController.setFF(Constants.climber.kFF);
+      m_leftpidController.setOutputRange(Constants.climber.minOutput, Constants.climber.maxOutput);
       leftmove(0);
        m_rightpidController = m_rightmotor.getPIDController();
-      m_rightpidController.setP(Constants.Climber.kP);
-      m_rightpidController.setI(Constants.Climber.kI);
-      m_rightpidController.setD(Constants.Climber.kD);
-      m_rightpidController.setFF(Constants.Climber.kFF);
-      m_rightpidController.setOutputRange(Constants.Climber.minOutput, Constants.Climber.maxOutput);
+      m_rightpidController.setP(Constants.climber.kP);
+      m_rightpidController.setI(Constants.climber.kI);
+      m_rightpidController.setD(Constants.climber.kD);
+      m_rightpidController.setFF(Constants.climber.kFF);
+      m_rightpidController.setOutputRange(Constants.climber.minOutput, Constants.climber.maxOutput);
       rightmove(0);
       // m_karmoterPID.setPositionPIDWrappingMaxInput(180);
       // m_karmoterPID.setPositionPIDWrappingMinInput(-180);
@@ -80,7 +80,7 @@ public class Climber extends SubsystemBase {
   public boolean lefatTarget() {
     double curposition = m_leftencoder.getPosition();
     DriverStation.reportWarning(String.format("Position: %f", curposition), false);
-    if (Math.abs(curposition - lefttargecko) <= Constants.Climber.tolerance) {
+    if (Math.abs(curposition - lefttargecko) <= Constants.climber.tolerance) {
       DriverStation.reportWarning("True", false);
       return true;
     } else {
@@ -92,7 +92,7 @@ public class Climber extends SubsystemBase {
   public boolean rightOnTarget() {
     double curposition = m_rightencoder.getPosition();
     DriverStation.reportWarning(String.format("Position: %f", curposition), false);
-    if (Math.abs(curposition - righttargecko) <= Constants.Climber.tolerance) {
+    if (Math.abs(curposition - righttargecko) <= Constants.climber.tolerance) {
       DriverStation.reportWarning("True", false);
       return true;
     } else {
@@ -104,15 +104,15 @@ public class Climber extends SubsystemBase {
 
   public double leftPosition() {
     SmartDashboard.putNumber("Climberzzz", m_leftencoder.getPosition());
-    SmartDashboard.putNumber("AFL", Constants.Climber.heimit);
-    SmartDashboard.putNumber("ALR", Constants.Climber.loite);
+    SmartDashboard.putNumber("AFL", Constants.climber.heimit);
+    SmartDashboard.putNumber("ALR", Constants.climber.loite);
     return m_leftencoder.getPosition();
   }
 
   public double righgtPosition() {
     SmartDashboard.putNumber("Climberzzz", m_rightencoder.getPosition());
-    SmartDashboard.putNumber("AFL", Constants.Climber.heimit);
-    SmartDashboard.putNumber("ALR", Constants.Climber.loite);
+    SmartDashboard.putNumber("AFL", Constants.climber.heimit);
+    SmartDashboard.putNumber("ALR", Constants.climber.loite);
     return m_rightencoder.getPosition();
   }
 
@@ -134,28 +134,28 @@ public class Climber extends SubsystemBase {
   }
 
   public void lencerement() {
-    if (lefttargecko + .5 <= Constants.Climber.heimit) {
+    if (lefttargecko + .5 <= Constants.climber.heimit) {
       lefttargecko = lefttargecko + .5;
       m_leftpidController.setReference(lefttargecko, ControlType.kPosition);
     }
   }
 
   public void rincerement() {
-    if (righttargecko + .5 <= Constants.Climber.heimit) {
+    if (righttargecko + .5 <= Constants.climber.heimit) {
       righttargecko = righttargecko + .5;
       m_rightpidController.setReference(righttargecko, ControlType.kPosition);
     }
   }
 
   public void lecroment() {
-    if (lefttargecko - .5 >= Constants.Climber.loite) {
+    if (lefttargecko - .5 >= Constants.climber.loite) {
       lefttargecko = lefttargecko - .5;
       m_leftpidController.setReference(lefttargecko, ControlType.kPosition);
     }
   }
 
   public void ricroment() {
-    if (righttargecko - .5 >= Constants.Climber.loite) {
+    if (righttargecko - .5 >= Constants.climber.loite) {
       righttargecko = righttargecko - .5;
       m_rightpidController.setReference(righttargecko, ControlType.kPosition);
     }

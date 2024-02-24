@@ -26,8 +26,8 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         try {
-            m_motorbottom = new CANSparkMax(Constants.Intake.motorChanneltop, MotorType.kBrushless);
-             m_motortop = new CANSparkMax(Constants.Intake.motorChannel, MotorType.kBrushless);
+            m_motorbottom = new CANSparkMax(Constants.intake.motorChanneltop, MotorType.kBrushless);
+             m_motortop = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
             notesensor = new DigitalInput(0);
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating intake: " + ex.getMessage(), true);
@@ -51,14 +51,14 @@ public class Intake extends SubsystemBase {
     }
 
     public void startFirstIntake() {
-        m_motortop.set(-Constants.Intake.firstIntakSspeed);
-         m_motorbottom.set(-Constants.Intake.firstIntakSspeed);
+        m_motortop.set(-Constants.intake.firstIntakSspeed);
+         m_motorbottom.set(-Constants.intake.firstIntakSspeed);
         intakeON = true;
     }
 
     public void reverseFirstIntake() {
-        m_motorbottom.set(Constants.Intake.firstIntakSspeed);
-        m_motortop.set(Constants.Intake.firstIntakSspeed);
+        m_motorbottom.set(Constants.intake.firstIntakSspeed);
+        m_motortop.set(Constants.intake.firstIntakSspeed);
         intakeON = true;
         intakeReversed = true;
     }

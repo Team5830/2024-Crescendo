@@ -3,14 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.*;
+import frc.robot.commands.Shoot;
 
 import java.util.function.DoubleSupplier;
 
@@ -55,7 +55,7 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
-      //SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
+      SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
     SmartDashboard.putNumber("LeftX", xroller.getLeftX());
     SmartDashboard.putNumber("LeftY", xroller.getLeftY());
@@ -114,13 +114,16 @@ public class RobotContainer {
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    button1.onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
-    button2.onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
-    button3.onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
-    button4.onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
+    button1.onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
+    button2.onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
+    button3.onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
+    button4.onTrue(new Positioning(m_arm, Constants.arm.Position4.armAngle));
     xroller.povDown().and(button5).whileTrue(new InstantCommand(m_climber::lencerement).repeatedly());
-    xroller.povDown().and(button6).whileTrue(new InstantCommand(m_climber::lencerement));
-    xroller.povDown().and(button4).whileTrue(new InstantCommand(m_climber))
+    xroller.povDown().and(button6).whileTrue(new InstantCommand(m_climber::lecroment).repeatedly());
+    xroller.povDown().and(button4).whileTrue(new InstantCommand(m_climber::rincerement).repeatedly());
+    xroller.povDown().and(button3).whileTrue(new InstantCommand(m_climber::ricroment).repeatedly());
+    xroller.povDown().and(button7).whileTrue(new InstantCommand(m_arm::increment).repeatedly());
+    xroller.povDown().and(button8).whileTrue(new InstantCommand(m_arm::decrement).repeatedly());
     button8.onTrue(new InstantCommand(m_intake::startFirstIntake));
   }
 
