@@ -10,7 +10,6 @@ public class testTurning extends Command {
         m_swerveDrive = swerveDrive;
         addRequirements(m_swerveDrive);
     }
-
     @Override 
     public void initialize(){
         p = SmartDashboard.getNumber("TurnP", DriveTrain.driveControllerKp);

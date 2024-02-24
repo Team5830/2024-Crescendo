@@ -17,22 +17,22 @@ public class Arm extends SubsystemBase {
 
   public Arm() {
     try {
-      m_motor = new CANSparkMax(Constants.Arm.motorChanel, CANSparkMax.MotorType.kBrushless);
+      m_motor = new CANSparkMax(Constants.arm.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_motor.restoreFactoryDefaults();
       m_encoder = m_motor.getEncoder();
       m_encoder.setPositionConversionFactor(1);
       m_encoder.setPosition(0.0);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-      m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.Arm.forwardLimit);
-      m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.Arm.reverseLimit);
+      m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.arm.forwardLimit);
+      m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.arm.reverseLimit);
 
       m_pidController = m_motor.getPIDController();
-      m_pidController.setP(Constants.Arm.kP);
-      m_pidController.setI(Constants.Arm.kI);
-      m_pidController.setD(Constants.Arm.kD);
-      m_pidController.setFF(Constants.Arm.kFF);
-      m_pidController.setOutputRange(Constants.Arm.minOutput, Constants.Arm.maxOutput);
+      m_pidController.setP(Constants.arm.kP);
+      m_pidController.setI(Constants.arm.kI);
+      m_pidController.setD(Constants.arm.kD);
+      m_pidController.setFF(Constants.arm.kFF);
+      m_pidController.setOutputRange(Constants.arm.minOutput, Constants.arm.maxOutput);
       move(0);
       // m_karmoterPID.setPositionPIDWrappingMaxInput(180);
       // m_karmoterPID.setPositionPIDWrappingMinInput(-180);
@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
   public boolean AtTarget() {
     double curposition = m_encoder.getPosition();
     DriverStation.reportWarning(String.format("Position: %f", curposition), false);
-    if (Math.abs(curposition - targecko) <= Constants.Arm.tolerance) {
+    if (Math.abs(curposition - targecko) <= Constants.arm.tolerance) {
       DriverStation.reportWarning("True", false);
       return true;
     } else {
@@ -64,8 +64,8 @@ public class Arm extends SubsystemBase {
 
   public double Position() {
     SmartDashboard.putNumber("Armzzz", m_encoder.getPosition());
-    SmartDashboard.putNumber("AFL", Constants.Arm.forwardLimit);
-    SmartDashboard.putNumber("ALR", Constants.Arm.reverseLimit);
+    SmartDashboard.putNumber("AFL", Constants.arm.forwardLimit);
+    SmartDashboard.putNumber("ALR", Constants.arm.reverseLimit);
     return m_encoder.getPosition();
   }
 
@@ -81,14 +81,14 @@ public class Arm extends SubsystemBase {
   }
 
   public void increment() {
-    if (targecko + .5 <= Constants.Arm.forwardLimit) {
+    if (targecko + .5 <= Constants.arm.forwardLimit) {
       targecko = targecko + .5;
       m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 
   public void decrement() {
-    if (targecko - .5 >= Constants.Arm.reverseLimit) {
+    if (targecko - .5 >= Constants.arm.reverseLimit) {
       targecko = targecko - .5;
       m_pidController.setReference(targecko, ControlType.kPosition);
     }

@@ -53,7 +53,7 @@ public final class Constants {
     public static final double rotRateLimit = 3;
   }
 
-  public static final class Intake {
+  public static final class intake {
     public static final double firstIntakSspeed = 0.4;
     public static final double P = 0.1;
     public static final double I = 0.0;
@@ -66,7 +66,7 @@ public final class Constants {
     public static final int motorChanneltop = 9;
   }
 
-  public static final class Flywheel {
+  public static final class flywheel {
     public static final int waitforshootersecs = 10;
     public static final double feedmotorspeed = 0.5;
     public static final double shootermotorspeed = 1600;
@@ -81,7 +81,7 @@ public final class Constants {
     public static final int motorChanel = 6;
   }
 
-  public static final class Arm {
+  public static final class arm {
     public static final double kP = 0.0012;
     public static final double kI = 0.000000;
     public static final double kD = 0.0;
@@ -121,5 +121,18 @@ public final class Constants {
     public static final double f = 0.0;
     public static final double Tolerance = 2.0; // Measured in degrees
     public static final double TurnRateTolerance = 10; //Degrees per second
+  }
+  public static final class climber{
+    public static final float heimit = 16.00000000000000000000000f;
+    public static final float loite = 0.0000000000000000f;//don't forget the invisible 
+    public static final int motorChanel = 13;
+    public static final double kP = 0.0012;
+    public static final double kI = 0.000000;
+    public static final double kD = 0.0;
+    public static final double kIz = 0;
+    public static final double kFF = 0;
+    public static final double maxOutput = .4;
+    public static final double minOutput = -.4;
+    public static final double tolerance = 5.0;
   }
 }
