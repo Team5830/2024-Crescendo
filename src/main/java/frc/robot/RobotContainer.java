@@ -29,7 +29,7 @@ public class RobotContainer {
   private final Constants m_turnarget = new Constants();
   private final CommandXboxController m_controller = new CommandXboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  // private final Arm m_arm = new Arm();
+  private final Arm m_arm = new Arm();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -69,7 +69,7 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
     configureBindings();
-    SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
+    // SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
      m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
         m_xspeedLimiter,

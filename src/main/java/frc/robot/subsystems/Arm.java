@@ -63,7 +63,6 @@ public class Arm extends SubsystemBase {
   }
 
   public double Position() {
-    SmartDashboard.putNumber("Armzzz", m_encoder.getPosition());
     return m_encoder.getPosition();
   }
 

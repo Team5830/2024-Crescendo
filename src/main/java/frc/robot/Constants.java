@@ -19,12 +19,12 @@ public final class Constants {
     public static final double turnarget = 90;
 
     // PIDs
-    public static final double driveControllerKp = 0.05;
+    public static final double driveControllerKp = 0.03;
     public static final double driveControllerKi = 0;
-    public static final double driveControllerKd = 0;
-    public static final double turnControllerKp = .0004;
+    public static final double driveControllerKd = 0.01;
+    public static final double turnControllerKp = .02;
     public static final double turnControllerKi = 0;
-    public static final double turnControllerKd = 0.0;
+    public static final double turnControllerKd = 0.002;
 
     // Feedforward gains
     public static final double driveFeedforwardStatic = 0.01;
@@ -42,7 +42,7 @@ public final class Constants {
     public static final int backRightDriveChannel = 5;
     public static final int backRightTurnChannel = 6;
     // 
-    public static final boolean invertNavX = true;
+    public static final boolean invertNavX = false;
   }
 
   public static final class Joystick {
@@ -91,10 +91,10 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final double maxOutput = .4;
     public static final double minOutput = -.4;
-    public static final float forwardLimit = 300;
-    public static final float reverseLimit = 0;
+    public static final float forwardLimit = 6;
+    public static final float reverseLimit = -20;
     public static final double tolerance = 5.0;
-    public static final int motorChanel = 60;
+    public static final int motorChanel = 12;
 
     public static final class Position1 { // POSITION 1 NAME HERE
       public static final double armAngle = 0.0;
