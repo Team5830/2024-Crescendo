@@ -62,7 +62,8 @@ public final class Constants {
     public static final double zI = 0;
     public static final double kMaxOutput = 0.4;
     public static final double kMinOutput = 0.1;
-    public static final int motorChanel = 21;
+    public static final int motorChannel = 11;
+    public static final int motorChanneltop = 9;
   }
 
   public static final class Flywheel {
@@ -83,7 +84,7 @@ public final class Constants {
   public static final class Arm {
     public static final double kP = 0.0012;
     public static final double kI = 0.000000;
-    public static final double kD = 0.04;
+    public static final double kD = 0.0;
     public static final double kIz = 0;
     public static final double kFF = 0;
     public static final double kMaxOutput = 0.7;

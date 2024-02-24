@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import frc.robot.subsystems.Intake;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
@@ -14,6 +14,7 @@ import frc.robot.Constants.*;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -29,6 +30,7 @@ public class RobotContainer {
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
   private final Flywheel m_flywheel = new Flywheel();
+  private final Intake m_intake = new Intake();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -102,11 +104,11 @@ public class RobotContainer {
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    // m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
-    // m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
-    // m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
-    // m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
-
+    m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
+    m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
+    m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
+    m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
+    m_controller.button(8).onTrue(new InstantCommand(m_intake::startFirstIntake));
   }
 
   /**

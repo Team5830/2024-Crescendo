@@ -20,7 +20,7 @@ public class Arm extends SubsystemBase {
       m_motor = new CANSparkMax(Constants.Arm.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_motor.restoreFactoryDefaults();
       m_encoder = m_motor.getEncoder();
-      m_encoder.setPositionConversionFactor(8);
+      m_encoder.setPositionConversionFactor(1);
       m_encoder.setPosition(0.0);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
@@ -70,12 +70,9 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean Safe() {
-    if (Position() > 200 || AtTarget()) {
+    //Always stay safe !
       return true;
-    } else {
-      return false;
     }
-  }
 
   public void Stop() {
     // armMotorController.set(0);
@@ -84,15 +81,15 @@ public class Arm extends SubsystemBase {
   }
 
   public void increment() {
-    if (targecko + 3 <= Constants.Arm.forwardLimit) {
-      targecko = targecko + 3;
+    if (targecko + .5 <= Constants.Arm.forwardLimit) {
+      targecko = targecko + .5;
       m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 
   public void decrement() {
-    if (targecko - 3 >= Constants.Arm.reverseLimit) {
-      targecko = targecko - 3;
+    if (targecko - .5 >= Constants.Arm.reverseLimit) {
+      targecko = targecko - .5;
       m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
@@ -100,6 +97,6 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ArmPosition", m_encoder.getPosition());
-    // SmartDashboard.getNumber("karget", karget );
+    // SmartDashboard.getNumber("targecko", targecko );
   }
 }
