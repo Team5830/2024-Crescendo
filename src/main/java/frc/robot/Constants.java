@@ -19,9 +19,9 @@ public final class Constants {
     public static final double turnarget = 90;
 
     // PIDs
-    public static final double driveControllerKp = 0.03;
+    public static final double driveControllerKp = 0.15;
     public static final double driveControllerKi = 0;
-    public static final double driveControllerKd = 0.01;
+    public static final double driveControllerKd = 0.0;
     public static final double turnControllerKp = .02;
     public static final double turnControllerKi = 0;
     public static final double turnControllerKd = 0.002;

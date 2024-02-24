@@ -84,6 +84,6 @@ public class Intake extends SubsystemBase {
         // This method will be called once per scheduler run
         SmartDashboard.putBoolean("FirstIntakeOn", intakeON);
         SmartDashboard.putBoolean("FirstIntakeReversed", intakeReversed);
-        SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
+        // SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
     }
 }
