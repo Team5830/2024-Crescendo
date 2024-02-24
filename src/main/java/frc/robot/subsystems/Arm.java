@@ -13,7 +13,7 @@ public class Arm extends SubsystemBase {
   private CANSparkMax m_motor;
   public RelativeEncoder m_encoder;
   private SparkPIDController m_pidController;
-  private double karget;
+  private double targecko;
 
   public Arm() {
     try {
@@ -45,25 +45,27 @@ public class Arm extends SubsystemBase {
   }
 
   public void move(double degrees) {
-    karget = degrees;
-    m_pidController.setReference(karget, ControlType.kPosition);
+    targecko = degrees;
+    m_pidController.setReference(targecko, ControlType.kPosition);
     DriverStation.reportWarning(String.format("Armm Position %f", m_encoder.getPosition()), false);
   }
 
   public boolean AtTarget() {
     double curposition = m_encoder.getPosition();
     DriverStation.reportWarning(String.format("Position: %f", curposition), false);
-    if (Math.abs(curposition - karget) <= Constants.Arm.tolerance) {
+    if (Math.abs(curposition - targecko) <= Constants.Arm.tolerance) {
       DriverStation.reportWarning("True", false);
       return true;
     } else {
-      DriverStation.reportWarning(String.format("false: %f", Math.abs(curposition - karget)), false);
+      DriverStation.reportWarning(String.format("false: %f", Math.abs(curposition - targecko)), false);
       return false;
     }
   }
 
   public double Position() {
     SmartDashboard.putNumber("Armzzz", m_encoder.getPosition());
+    SmartDashboard.putNumber("AFL", Constants.Arm.forwardLimit);
+    SmartDashboard.putNumber("ALR", Constants.Arm.reverseLimit);
     return m_encoder.getPosition();
   }
 
@@ -82,16 +84,16 @@ public class Arm extends SubsystemBase {
   }
 
   public void increment() {
-    if (karget + 3 <= Constants.Arm.forwardLimit) {
-      karget = karget + 3;
-      m_pidController.setReference(karget, ControlType.kPosition);
+    if (targecko + 3 <= Constants.Arm.forwardLimit) {
+      targecko = targecko + 3;
+      m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 
   public void decrement() {
-    if (karget - 3 >= Constants.Arm.reverseLimit) {
-      karget = karget - 3;
-      m_pidController.setReference(karget, ControlType.kPosition);
+    if (targecko - 3 >= Constants.Arm.reverseLimit) {
+      targecko = targecko - 3;
+      m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 

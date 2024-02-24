@@ -91,8 +91,8 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final double maxOutput = .4;
     public static final double minOutput = -.4;
-    public static final float forwardLimit = 300;
-    public static final float reverseLimit = 0;
+    public static final float forwardLimit = 0;
+    public static final float reverseLimit = 125;
     public static final double tolerance = 5.0;
     public static final int motorChanel = 60;
 
