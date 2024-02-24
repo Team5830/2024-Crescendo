@@ -16,28 +16,36 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Flywheel extends SubsystemBase {
-    CANSparkMax m_motor;
-    SparkPIDController m_motorPID;
-    RelativeEncoder m_encoder;
+    CANSparkMax m_topmoter;
+    CANSparkMax m_bottomoter;
+    SparkPIDController m_topmotorPID;
+    SparkPIDController m_bottomPID;
+    RelativeEncoder m_topencoder;
+    RelativeEncoder m_bottomEncoder;
     public boolean isShooterOn = false;
 
-    public double motorSpeed;
+    public double motorSpeed = 7.0;
 
-    public Flywheel() {
+    public Flywheel(){
         try {
-            m_motor = new CANSparkMax(Constants.Flywheel.motorChanel, MotorType.kBrushless);
+            m_topmoter = new CANSparkMax(Constants.Flywheel.motorChanel, MotorType.kBrushless);
+            m_bottomoter = new CANSparkMax(Constants.Flywheel.motorChanel, MotorType.kBrushless);
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating flywheel: " + ex.getMessage(), true);
         }
 
-        m_motor.restoreFactoryDefaults();
-        m_motorPID = m_motor.getPIDController();
-        m_encoder = m_motor.getEncoder();
+        m_topmoter.restoreFactoryDefaults();
+        m_bottomoter.restoreFactoryDefaults();
+        m_topmotorPID = m_topmoter.getPIDController();
+        m_bottomPID = m_bottomoter.getPIDController();
+        m_topencoder = m_topmoter.getEncoder();
+        m_bottomEncoder = m_bottomoter.getEncoder();
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Flywheel Speed ", m_encoder.getVelocity());
+        SmartDashboard.putNumber("Top Flywheel Speed ", m_topencoder.getVelocity());
+        SmartDashboard.putNumber("Bottom Flywheel Speed ", m_bottomEncoder.getVelocity());
     }
 
     public boolean getShooterState() {
@@ -45,21 +53,24 @@ public class Flywheel extends SubsystemBase {
     }
 
     public void shooterOn() {
-        m_motorPID.setReference(motorSpeed, ControlType.kVelocity);
+        m_topmotorPID.setReference(motorSpeed, ControlType.kVelocity);
+        m_bottomPID.setReference(motorSpeed, ControlType.kVelocity);
         isShooterOn = true;
     }
 
     public void shooterGo() {
-        m_motor.set(0.1);
+        m_topmoter.setVoltage(0.1);
+        m_bottomoter.setVoltage(-0.1);
         isShooterOn = true;
     }
 
     public void shooterOff() {
-        m_motor.set(0);
+        m_topmoter.setVoltage(0);
+        m_bottomoter.setVoltage(0);
         isShooterOn = false;
     }
 
     public boolean readyToShoot() {
-        return (Math.abs(motorSpeed - m_encoder.getVelocity()) < Constants.Flywheel.speedTolerance);
+        return (Math.abs(motorSpeed - m_topencoder.getVelocity()) < Constants.Flywheel.speedTolerance && Math.abs(motorSpeed - m_bottomEncoder.getVelocity()) < Constants.Flywheel.speedTolerance);
     }
 }

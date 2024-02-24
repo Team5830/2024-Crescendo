@@ -3,11 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import frc.robot.subsystems.Intake;
 import frc.robot.commands.*;
 import frc.robot.commands.DriveTeleop;
 import frc.robot.subsystems.SwerveDriveSub;
 import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.*;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -56,10 +59,22 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
+      //SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
     SmartDashboard.putNumber("LeftX", m_controller.getLeftX());
     SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
     SmartDashboard.putNumber("RightX", m_controller.getRightX());
+    SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
+    SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
+    SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
+    SmartDashboard.getNumber("TurnP", Constants.DriveTrain.turnControllerKp);
+    SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
+    SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
+    SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnarget);
+    // Configure the trigger bindings
+    configureBindings();
+
+    SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
     configureBindings();
     
     // Applies deadbands and inverts controls because joysticks
@@ -95,11 +110,17 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
+    //Trigger button1 = m_controller.button(6);
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    
+
+    m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
+    m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
+    m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
+    m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
+    m_controller.button(8).onTrue(new InstantCommand(m_intake::startFirstIntake));
   }
 
   /**

@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -23,9 +24,6 @@ public class DriveTeleop extends Command {
    *
    * @param swerveDrive The subsystem used by this command.
    */
-  private double x,y,rot;
-  private boolean fieldrel;
-  private double periodsecs;
   public DriveTeleop(
       SwerveDriveSub swerveDrive,
       SlewRateLimiter m_xspeedLimiter,
@@ -37,10 +35,28 @@ public class DriveTeleop extends Command {
       DoubleSupplier rotSpeedY,
       boolean fieldRelative,
       DoubleSupplier periodSeconds) {
-    m_swerveDrive = swerveDrive;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);
 
+    this.swerveDrive=swerveDrive;
+    this.m_xspeedLimiter=m_xspeedLimiter;
+    this.m_yspeedLimiter=m_yspeedLimiter;
+    this.m_rotLimiter=m_rotLimiter;
+    this.xSpeed=xSpeed;
+    this.ySpeed=ySpeed;
+    this.rotSpeed=rotSpeed;
+    this.fieldRelative=fieldRelative;
+    this.periodSeconds=periodSeconds;
+ }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var x = -m_xspeedLimiter.calculate(xSpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
