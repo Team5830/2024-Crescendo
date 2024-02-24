@@ -122,7 +122,7 @@ public final class Constants {
     public static final double Tolerance = 2.0; // Measured in degrees
     public static final double TurnRateTolerance = 10; //Degrees per second
   }
-  public static final class Climber{
+  public static final class climber{
     public static final float heimit = 16.00000000000000000000000f;
     public static final float loite = 0.0000000000000000f;//don't forget the invisible 
     public static final int motorChanel = 13;

@@ -4,6 +4,7 @@
 
 package frc.robot;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Climber;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.SwerveDrive;
@@ -26,11 +27,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final CommandXboxController m_controller = new CommandXboxController(Constants.Joystick.port);
+  private final CommandXboxController xroller = new CommandXboxController(Constants.Joystick.port);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
   private final Flywheel m_flywheel = new Flywheel();
   private final Intake m_intake = new Intake();
+  private final Climber m_climber = new Climber();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
@@ -55,9 +57,9 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
       //SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
-    SmartDashboard.putNumber("LeftX", m_controller.getLeftX());
-    SmartDashboard.putNumber("LeftY", m_controller.getLeftY());
-    SmartDashboard.putNumber("RightX", m_controller.getRightX());
+    SmartDashboard.putNumber("LeftX", xroller.getLeftX());
+    SmartDashboard.putNumber("LeftY", xroller.getLeftY());
+    SmartDashboard.putNumber("RightX", xroller.getRightX());
     SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
     SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
     SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
@@ -76,9 +78,9 @@ public class RobotContainer {
         m_xspeedLimiter,
         m_yspeedLimiter,
         m_rotLimiter,
-        m_controller::getLeftX,
-        m_controller::getLeftY,
-        m_controller::getRightX,
+        xroller::getLeftX,
+        xroller::getLeftY,
+        xroller::getRightX,
         false,
         this.getPeriod));
         
@@ -98,17 +100,28 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
-    //Trigger button1 = m_controller.button(6);
+  // Create some buttons
+  Trigger button1 = xroller.button(1);
+  Trigger button2 = xroller.button(2);
+  Trigger button3 = xroller.button(3);
+  Trigger button4 = xroller.button(4);
+  Trigger button5 = xroller.button(5);
+  Trigger button6 = xroller.button(6);
+  Trigger button7 = xroller.button(7);
+  Trigger button8 = xroller.button(8);
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
-    m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
-    m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
-    m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
-    m_controller.button(8).onTrue(new InstantCommand(m_intake::startFirstIntake));
+    button1.onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
+    button2.onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
+    button3.onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
+    button4.onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
+    xroller.povDown().and(button5).whileTrue(new InstantCommand(m_climber::lencerement).repeatedly());
+    xroller.povDown().and(button6).whileTrue(new InstantCommand(m_climber::lencerement));
+    xroller.povDown().and(button4).whileTrue(new InstantCommand(m_climber))
+    button8.onTrue(new InstantCommand(m_intake::startFirstIntake));
   }
 
   /**
