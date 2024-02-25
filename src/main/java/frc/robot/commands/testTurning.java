@@ -15,7 +15,7 @@ public class testTurning extends Command {
         p = SmartDashboard.getNumber("TurnP", DriveTrain.driveControllerKp);
         i = SmartDashboard.getNumber("TurnI", DriveTrain.driveControllerKi);
         d = SmartDashboard.getNumber("TurnD", DriveTrain.driveControllerKd);
-        target = SmartDashboard.getNumber("Turn Target", DriveTrain.turnarget);
+        target = SmartDashboard.getNumber("Turn Target", DriveTrain.turnTarget);
         m_swerveDrive.m_frontLeft.updateTurnPIDValues(p,i,d);
         m_swerveDrive.m_frontRight.updateTurnPIDValues(p,i,d);
         m_swerveDrive.m_backLeft.updateTurnPIDValues(p,i,d);
