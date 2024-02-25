@@ -8,10 +8,10 @@ public class Shoot extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Flywheel m_flywheel;
   private boolean turnedON = false;
-
+  private Intake m_intake;
   public Shoot(Flywheel subsystemFLY,Intake intake) {
     m_flywheel = subsystemFLY;
-    
+    m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_flywheel);
   }
@@ -19,6 +19,7 @@ public class Shoot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_intake.reverseIntake();
     m_flywheel.shooterOn();
   }
 
