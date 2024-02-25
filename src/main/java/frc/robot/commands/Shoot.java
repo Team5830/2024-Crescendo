@@ -1,5 +1,6 @@
 package frc.robot.commands;
 import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -8,7 +9,7 @@ public class Shoot extends Command {
   private final Flywheel m_flywheel;
   private boolean turnedON = false;
 
-  public Shoot(Flywheel subsystemFLY) {
+  public Shoot(Flywheel subsystemFLY,Intake intake) {
     m_flywheel = subsystemFLY;
     
     // Use addRequirements() here to declare subsystem dependencies.

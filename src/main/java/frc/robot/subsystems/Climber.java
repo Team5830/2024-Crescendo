@@ -20,25 +20,25 @@ public class Climber extends SubsystemBase {
 
   public Climber() {
     try {
-      m_leftmotor = new CANSparkMax(Constants.climber.motorChanel, CANSparkMax.MotorType.kBrushless);
+      m_leftmotor = new CANSparkMax(Constants.climber.leftMotorChanel, CANSparkMax.MotorType.kBrushless);
       m_leftmotor.restoreFactoryDefaults();
       m_leftencoder = m_leftmotor.getEncoder();
       m_leftencoder.setPositionConversionFactor(1);
       m_leftencoder.setPosition(0.0);
       m_leftmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_leftmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.loite);
-      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.heimit);
+      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.upLeftHeight);
+      m_leftmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.downLeftHeight-5);
 
-       m_rightmotor = new CANSparkMax(Constants.climber.motorChanel, CANSparkMax.MotorType.kBrushless);
+      m_rightmotor = new CANSparkMax(Constants.climber.rightMotorChanel, CANSparkMax.MotorType.kBrushless);
       m_rightmotor.restoreFactoryDefaults();
       m_rightencoder = m_rightmotor.getEncoder();
       m_rightencoder.setPositionConversionFactor(1);
       m_rightencoder.setPosition(0.0);
       m_rightmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_rightmotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.heimit);
-      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.loite);
+      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.upRightHeight);
+      m_rightmotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.downRightHeight-5);
 
       m_leftpidController = m_leftmotor.getPIDController();
       m_leftpidController.setP(Constants.climber.kP);
@@ -47,7 +47,7 @@ public class Climber extends SubsystemBase {
       m_leftpidController.setFF(Constants.climber.kFF);
       m_leftpidController.setOutputRange(Constants.climber.minOutput, Constants.climber.maxOutput);
       leftmove(0);
-       m_rightpidController = m_rightmotor.getPIDController();
+      m_rightpidController = m_rightmotor.getPIDController();
       m_rightpidController.setP(Constants.climber.kP);
       m_rightpidController.setI(Constants.climber.kI);
       m_rightpidController.setD(Constants.climber.kD);
@@ -104,15 +104,15 @@ public class Climber extends SubsystemBase {
 
   public double leftPosition() {
     SmartDashboard.putNumber("Climberzzz", m_leftencoder.getPosition());
-    SmartDashboard.putNumber("AFL", Constants.climber.heimit);
-    SmartDashboard.putNumber("ALR", Constants.climber.loite);
+    // SmartDashboard.putNumber("AFL", Constants.climber.upHeight);
+    // SmartDashboard.putNumber("ALR", Constants.climber.downHeight);
     return m_leftencoder.getPosition();
   }
 
   public double righgtPosition() {
     SmartDashboard.putNumber("Climberzzz", m_rightencoder.getPosition());
-    SmartDashboard.putNumber("AFL", Constants.climber.heimit);
-    SmartDashboard.putNumber("ALR", Constants.climber.loite);
+    // SmartDashboard.putNumber("AFL", Constants.climber.upHeight);
+    // SmartDashboard.putNumber("ALR", Constants.climber.downHeight);
     return m_rightencoder.getPosition();
   }
 
@@ -134,31 +134,49 @@ public class Climber extends SubsystemBase {
   }
 
   public void lencerement() {
-    if (lefttargecko + .5 <= Constants.climber.heimit) {
+    if (lefttargecko + .5 <= Constants.climber.upLeftHeight) {
       lefttargecko = lefttargecko + .5;
       m_leftpidController.setReference(lefttargecko, ControlType.kPosition);
     }
   }
 
   public void rincerement() {
-    if (righttargecko + .5 <= Constants.climber.heimit) {
+    if (righttargecko + .5 <= Constants.climber.upRightHeight) {
       righttargecko = righttargecko + .5;
       m_rightpidController.setReference(righttargecko, ControlType.kPosition);
     }
   }
 
   public void lecroment() {
-    if (lefttargecko - .5 >= Constants.climber.loite) {
+    if (lefttargecko - .5 >= Constants.climber.downLeftHeight) {
       lefttargecko = lefttargecko - .5;
       m_leftpidController.setReference(lefttargecko, ControlType.kPosition);
     }
   }
 
   public void ricroment() {
-    if (righttargecko - .5 >= Constants.climber.loite) {
+    if (righttargecko - .5 >= Constants.climber.downRightHeight) {
       righttargecko = righttargecko - .5;
       m_rightpidController.setReference(righttargecko, ControlType.kPosition);
     }
+  }
+
+  public  void useUpPosition() {
+    leftmove(Constants.climber.upLeftHeight);
+    rightmove(Constants.climber.upRightHeight);
+  }
+
+
+  public  void useDownPosition() {
+    leftmove(0);
+    rightmove(0);
+  }
+
+    public  void manuallyLowerLeftLimit() {
+    leftmove(Constants.climber.downLeftHeight);
+  }
+      public  void manuallyLowerRightLimit() {
+    rightmove(Constants.climber.downRightHeight);
   }
 
   @Override

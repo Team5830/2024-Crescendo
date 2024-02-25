@@ -19,7 +19,7 @@ public final class Constants {
     public static final double turnarget = 90;
 
     // PIDs
-    public static final double driveControllerKp = 0.15;
+    public static final double driveControllerKp = 0.12;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0.0;
     public static final double turnControllerKp = .02;
@@ -45,8 +45,9 @@ public final class Constants {
     public static final boolean invertNavX = false;
   }
 
-  public static final class Joystick {
-    public static final int port = 0;
+  public static final class controller {
+    public static final int xboxPort = 0;
+    public static final int flyskyPort = 1;
 
     public static final double xRateLimit = 3;
     public static final double yRateLimit = 3;
@@ -54,7 +55,8 @@ public final class Constants {
   }
 
   public static final class intake {
-    public static final double firstIntakSspeed = 0.4;
+    public static final double firstIntakTopSspeed = 0.4;
+    public static final double firstIntakBottomSspeed = 0.15;
     public static final double P = 0.1;
     public static final double I = 0.0;
     public static final double D = 0.0;
@@ -78,13 +80,14 @@ public final class Constants {
     public static final double kMaxOutput = 0.7;
     public static final double kMinOutput = -0.7;
     public static final double speedTolerance = 50.0;
-    public static final int motorChanel = 6;
+    public static final int motorChanelTop = 14;
+    public static final int motorChanelBottom = 17;
   }
 
   public static final class arm {
-    public static final double kP = 0.0012;
+    public static final double kP = 0.1;
     public static final double kI = 0.000000;
-    public static final double kD = 0.0;
+    public static final double kD = 7;
     public static final double kIz = 0;
     public static final double kFF = 0;
     public static final double kMaxOutput = 0.7;
@@ -92,25 +95,22 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final double maxOutput = .4;
     public static final double minOutput = -.4;
-    public static final float forwardLimit = 6;
-    public static final float reverseLimit = -20;
+    public static final float forwardLimit = 2.2f;
+    public static final float reverseLimit = -6.8f;
     public static final double tolerance = 5.0;
     public static final int motorChanel = 12;
+    public static final double incrementValue = .2;
 
-    public static final class Position1 { // POSITION 1 NAME HERE
-      public static final double armAngle = 0.0;
+    public static final class Position1 { // Down Position
+      public static final double armAngle = -6.9;
     }
 
-    public static final class Position2 { // POSITION 2 NAME HERE
-      public static final double armAngle = 49.1;
+    public static final class Position2 { // Middle Position
+      public static final double armAngle = -4;
     }
 
-    public static final class Position3 { // POSITION 3 NAME HERE
-      public static final double armAngle = 236.0;
-    }
-
-    public static final class Position4 { // POSITION 4 NAME HERE
-      public static final double armAngle = 278.0;
+    public static final class Position3 { // Up position
+      public static final double armAngle = 0;
     }
   }
 
@@ -123,10 +123,13 @@ public final class Constants {
     public static final double TurnRateTolerance = 10; //Degrees per second
   }
   public static final class climber{
-    public static final float heimit = 16.00000000000000000000000f;
-    public static final float loite = 0.0000000000000000f;//don't forget the invisible 
-    public static final int motorChanel = 13;
-    public static final double kP = 0.0012;
+    public static final float upLeftHeight = 96.00000000000000000000000f;
+    public static final float downLeftHeight = -5f; 
+       public static final float upRightHeight = 75.00000000000000000000000f;
+    public static final float downRightHeight = -5f; 
+    public static final int leftMotorChanel = 16;
+    public static final int rightMotorChanel = 15;
+    public static final double kP = 0.02;
     public static final double kI = 0.000000;
     public static final double kD = 0.0;
     public static final double kIz = 0;

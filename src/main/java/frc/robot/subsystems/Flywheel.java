@@ -28,24 +28,24 @@ public class Flywheel extends SubsystemBase {
 
     public Flywheel(){
         try {
-            m_topmoter = new CANSparkMax(Constants.flywheel.motorChanel, MotorType.kBrushless);
-            m_bottomoter = new CANSparkMax(Constants.flywheel.motorChanel, MotorType.kBrushless);
+            m_topmoter = new CANSparkMax(Constants.flywheel.motorChanelTop, MotorType.kBrushless);
+            m_bottomoter = new CANSparkMax(Constants.flywheel.motorChanelBottom, MotorType.kBrushless);
+
+            m_topmoter.restoreFactoryDefaults();
+            m_bottomoter.restoreFactoryDefaults();
+            m_topmotorPID = m_topmoter.getPIDController();
+            m_bottomPID = m_bottomoter.getPIDController();
+            m_topencoder = m_topmoter.getEncoder();
+            m_bottomEncoder = m_bottomoter.getEncoder();
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating flywheel: " + ex.getMessage(), true);
         }
-
-        m_topmoter.restoreFactoryDefaults();
-        m_bottomoter.restoreFactoryDefaults();
-        m_topmotorPID = m_topmoter.getPIDController();
-        m_bottomPID = m_bottomoter.getPIDController();
-        m_topencoder = m_topmoter.getEncoder();
-        m_bottomEncoder = m_bottomoter.getEncoder();
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Top Flywheel Speed ", m_topencoder.getVelocity());
-        SmartDashboard.putNumber("Bottom Flywheel Speed ", m_bottomEncoder.getVelocity());
+        // SmartDashboard.putNumber("Top Flywheel Speed ", m_topencoder.getVelocity());
+        // SmartDashboard.putNumber("Bottom Flywheel Speed ", m_bottomEncoder.getVelocity());
     }
 
     public boolean getShooterState() {
@@ -59,8 +59,8 @@ public class Flywheel extends SubsystemBase {
     }
 
     public void shooterGo() {
-        m_topmoter.setVoltage(0.1);
-        m_bottomoter.setVoltage(-0.1);
+        m_topmoter.setVoltage(-9);
+        m_bottomoter.setVoltage(9);
         isShooterOn = true;
     }
 
@@ -68,6 +68,14 @@ public class Flywheel extends SubsystemBase {
         m_topmoter.setVoltage(0);
         m_bottomoter.setVoltage(0);
         isShooterOn = false;
+    }
+
+    public void shooterToggle() {
+        if(isShooterOn){
+            shooterOff();
+        } else {
+            shooterGo();
+        }
     }
 
     public boolean readyToShoot() {

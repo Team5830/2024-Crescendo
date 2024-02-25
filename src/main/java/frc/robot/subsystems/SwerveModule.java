@@ -196,8 +196,8 @@ public class SwerveModule {
     // directions. This results in smoother driving.
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
-    m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);
+    m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    m_turningPIDController.setReference(desiredState.angle.getDegrees(), ControlType.kPosition);
   }
 
   public void PIDStop(){

@@ -26,8 +26,8 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         try {
-            m_motorbottom = new CANSparkMax(Constants.intake.motorChanneltop, MotorType.kBrushless);
-             m_motortop = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
+            m_motorbottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
+             m_motortop = new CANSparkMax(Constants.intake.motorChanneltop, MotorType.kBrushless);
             notesensor = new DigitalInput(0);
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating intake: " + ex.getMessage(), true);
@@ -51,14 +51,14 @@ public class Intake extends SubsystemBase {
     }
 
     public void startFirstIntake() {
-        m_motortop.set(-Constants.intake.firstIntakSspeed);
-         m_motorbottom.set(-Constants.intake.firstIntakSspeed);
+        m_motortop.set(-Constants.intake.firstIntakBottomSspeed);
+        m_motorbottom.set(Constants.intake.firstIntakTopSspeed);
         intakeON = true;
     }
 
     public void reverseFirstIntake() {
-        m_motorbottom.set(Constants.intake.firstIntakSspeed);
-        m_motortop.set(Constants.intake.firstIntakSspeed);
+        m_motorbottom.set(Constants.intake.firstIntakBottomSspeed);
+        m_motortop.set(-Constants.intake.firstIntakTopSspeed);
         intakeON = true;
         intakeReversed = true;
     }
@@ -85,5 +85,12 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("FirstIntakeOn", intakeON);
         SmartDashboard.putBoolean("FirstIntakeReversed", intakeReversed);
         // SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
+    }
+
+    public boolean notesensorIsDetected(){
+       return !notesensor.get();
+    }
+    public boolean notesensorIsNotDetected(){
+       return notesensor.get();
     }
 }

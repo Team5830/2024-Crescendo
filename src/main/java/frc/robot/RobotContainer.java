@@ -5,17 +5,19 @@
 package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.HIDType;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.*;
-import frc.robot.commands.Shoot;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -27,7 +29,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final CommandXboxController xroller = new CommandXboxController(Constants.Joystick.port);
+  private final CommandXboxController xroller = new CommandXboxController(Constants.controller.xboxPort);
+  private final GenericHID flyskyController = new GenericHID(Constants.controller.flyskyPort);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
   private final Flywheel m_flywheel = new Flywheel();
@@ -35,9 +38,9 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.Joystick.yRateLimit);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.Joystick.rotRateLimit);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.controller.xRateLimit);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.controller.yRateLimit);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.controller.rotRateLimit);
 
   private DoubleSupplier getPeriod;
 
@@ -55,7 +58,7 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
-      SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
+      // SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
     SmartDashboard.putNumber("LeftX", xroller.getLeftX());
     SmartDashboard.putNumber("LeftY", xroller.getLeftY());
@@ -72,15 +75,19 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
     configureBindings();
+   
     // SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
      m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
         m_xspeedLimiter,
         m_yspeedLimiter,
         m_rotLimiter,
-        xroller::getLeftX,
-        xroller::getLeftY,
-        xroller::getRightX,
+        ()->flyskyController.getRawAxis(0),
+        ()->-flyskyController.getRawAxis(1),
+        ()->flyskyController.getRawAxis(3)/2,
+        // xroller::getLeftX,
+        // xroller::getLeftY,
+        // xroller::getRightX,
         false,
         this.getPeriod));
         
@@ -100,31 +107,39 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
-  // Create some buttons
-  Trigger button1 = xroller.button(1);
-  Trigger button2 = xroller.button(2);
-  Trigger button3 = xroller.button(3);
-  Trigger button4 = xroller.button(4);
-  Trigger button5 = xroller.button(5);
-  Trigger button6 = xroller.button(6);
-  Trigger button7 = xroller.button(7);
-  Trigger button8 = xroller.button(8);
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    button1.onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
-    button2.onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
-    button3.onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
-    button4.onTrue(new Positioning(m_arm, Constants.arm.Position4.armAngle));
-    xroller.povDown().and(button5).whileTrue(new InstantCommand(m_climber::lencerement).repeatedly());
-    xroller.povDown().and(button6).whileTrue(new InstantCommand(m_climber::lecroment).repeatedly());
-    xroller.povDown().and(button4).whileTrue(new InstantCommand(m_climber::rincerement).repeatedly());
-    xroller.povDown().and(button3).whileTrue(new InstantCommand(m_climber::ricroment).repeatedly());
-    xroller.povDown().and(button7).whileTrue(new InstantCommand(m_arm::increment).repeatedly());
-    xroller.povDown().and(button8).whileTrue(new InstantCommand(m_arm::decrement).repeatedly());
-    button8.onTrue(new InstantCommand(m_intake::startFirstIntake));
+    xroller.a().onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
+    xroller.b().onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
+    xroller.y().onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
+    // xroller.povDown().and(button5).whileTrue(new InstantCommand(m_climber::lencerement).repeatedly());
+    // xroller.povDown().and(button6).whileTrue(new InstantCommand(m_climber::lecroment).repeatedly());
+    // xroller.povDown().and(button4).whileTrue(new InstantCommand(m_climber::rincerement).repeatedly());
+    // xroller.povDown().and(button3).whileTrue(new InstantCommand(m_climber::ricroment).repeatedly());
+    // xroller.povUp().whileTrue(new InstantCommand(m_arm::increment).repeatedly());
+    // xroller.povDown().whileTrue(new InstantCommand(m_arm::decrement).repeatedly());
+    xroller.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
+    xroller.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
+        xroller.povLeft().onTrue(new InstantCommand(m_climber::manuallyLowerLeftLimit));
+    xroller.povRight().onTrue(new InstantCommand(m_climber::manuallyLowerRightLimit));
+    xroller.leftBumper().onTrue(new SequentialCommandGroup(
+      new InstantCommand(m_intake::startFirstIntake),
+      new WaitUntilCommand(m_intake::notesensorIsDetected),
+      new InstantCommand(m_intake::stopFirstIntake)
+    ));
+    // xroller.leftBumper().onFalse(new InstantCommand(m_intake::stopFirstIntake));
+    xroller.rightBumper().onTrue(new SequentialCommandGroup(
+      new InstantCommand(m_flywheel::shooterGo),
+      new WaitCommand(1),
+      new InstantCommand(m_intake::startFirstIntake),
+      new WaitUntilCommand(m_intake::notesensorIsNotDetected),
+      new WaitCommand(0.5),
+      new InstantCommand(m_intake::stopFirstIntake),
+      new InstantCommand(m_flywheel::shooterOff)
+    ));
   }
 
   /**

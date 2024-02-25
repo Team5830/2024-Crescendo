@@ -81,15 +81,15 @@ public class Arm extends SubsystemBase {
   }
 
   public void increment() {
-    if (targecko + .5 <= Constants.arm.forwardLimit) {
-      targecko = targecko + .5;
+    if (targecko + Constants.arm.incrementValue <= Constants.arm.forwardLimit) {
+      targecko = targecko + Constants.arm.incrementValue;
       m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 
   public void decrement() {
-    if (targecko - .5 >= Constants.arm.reverseLimit) {
-      targecko = targecko - .5;
+    if (targecko - Constants.arm.incrementValue >= Constants.arm.reverseLimit) {
+      targecko = targecko - Constants.arm.incrementValue;
       m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
