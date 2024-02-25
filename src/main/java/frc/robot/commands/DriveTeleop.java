@@ -24,6 +24,7 @@ public class DriveTeleop extends Command {
    *
    * @param swerveDrive The subsystem used by this command.
    */
+  
   public DriveTeleop(
       SwerveDriveSub swerveDrive,
       SlewRateLimiter m_xspeedLimiter,
@@ -44,7 +45,8 @@ public class DriveTeleop extends Command {
     this.m_rotLimiter=m_rotLimiter;
     this.xSpeed=xSpeed;
     this.ySpeed=ySpeed;
-    this.rotSpeed=rotSpeed;
+    this.rotSpeedX=rotSpeedX;
+    this.rotSpeedT=rotSpeedY;
     this.fieldRelative=fieldRelative;
     this.periodSeconds=periodSeconds;
  }

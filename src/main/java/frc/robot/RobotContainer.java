@@ -34,22 +34,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(Constants.Joystick.port);
-  
+  private final Intake m_intake = new Intake();
+  private final Arm m_arm = new Arm();
   private final SwerveDriveSub m_swerveDrive = new SwerveDriveSub(new File(Filesystem.getDeployDirectory(),"swerve"));
 
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.Joystick.yRateLimit);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.Joystick.rotRateLimit);
+  //private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.Joystick.xRateLimit);
+  //private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.Joystick.yRateLimit);
+  //private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.Joystick.rotRateLimit);
 
-  private DoubleSupplier getPeriod;
+  //private DoubleSupplier getPeriod;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer(DoubleSupplier getPeriod) {
-    this.getPeriod = getPeriod;
+    //this.getPeriod = getPeriod;
 
     /*SmartDashboard.putData("Position1" new Positioning(m_armangle, Position1.armangle))
       SmartDashboard.putData("Position2" new Positioning(m_armangle, Position2.armangle))
@@ -116,11 +117,12 @@ public class RobotContainer {
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
+    /*m_controller.a().onTrue(new Positioning(m_arm, Constants.Arm.Position1.armAngle));
     m_controller.b().onTrue(new Positioning(m_arm, Constants.Arm.Position2.armAngle));
     m_controller.x().onTrue(new Positioning(m_arm, Constants.Arm.Position3.armAngle));
     m_controller.y().onTrue(new Positioning(m_arm, Constants.Arm.Position4.armAngle));
     m_controller.button(8).onTrue(new InstantCommand(m_intake::startFirstIntake));
+    */
   }
 
   /**
