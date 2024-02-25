@@ -15,26 +15,40 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.math.filter.Debouncer;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 public class Intake extends SubsystemBase {
     public boolean intakeON = false;
     public boolean intakeReversed = false;
     public DigitalInput noteSensor; 
     CANSparkMax m_motorBottom;
      CANSparkMax m_motorTop;
-    //SparkPIDController m_pidController;
+    SparkPIDController m_pidController;
+
     RelativeEncoder m_encoder;
 
     public Intake() {
         try {
             m_motorBottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
-             m_motorTop = new CANSparkMax(Constants.intake.motorChannelTop, MotorType.kBrushless);
+             m_motorTop = new CANSparkMax(Constants.intake.motorChanneltop, MotorType.kBrushless);
             noteSensor = new DigitalInput(0);
-        } catch (RuntimeException ex) {
+           m_motorBottom.restoreFactoryDefaults();
+        m_motorTop.restoreFactoryDefaults();
+        m_motorTop.follow(m_motorbottom, true);    
+
+    m_pidController = m_motorbottom.getPIDController();
+    m_encoder = m_motorbottom.getEncoder();
+    m_encoder.setPositionConversionFactor(3.141592652);
+    m_pidController.setP(Constants.intake.kP);
+    m_pidController.setI(Constants.intake.kI);
+    m_pidController.setD(Constants.intake.kD);
+    m_pidController.setFF(Constants.intake.kFF);
+    m_pidController.setOutputRange(Constants.intake.kMinOutput, Constants.intake.kMaxOutput);}
+    catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating intake: " + ex.getMessage(), true);
+        
         }
 
-        m_motorBottom.restoreFactoryDefaults();
-        m_motorTop.restoreFactoryDefaults();
         //m_pidController = m_motor.getPIDController();
         // set PID coefficients
         /*m_pidController.setP(Constants.Intake.P);
@@ -46,26 +60,26 @@ public class Intake extends SubsystemBase {
     }
 
     public void stopIntake() {
-        m_motorTop.set(0);
+        //m_motorTop.set(0);
         m_motorBottom.set(0);
     }
 
     public void startFirstIntake() {
-        m_motorTop.set(-Constants.intake.firstIntakeBottomSpeed);
+        //m_motorTop.set(-Constants.intake.firstIntakeBottomSpeed);
         m_motorBottom.set(Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
     }
 
     public void reverseFirstIntake() {
         m_motorBottom.set(Constants.intake.firstIntakeBottomSpeed);
-        m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
+        //m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
         intakeReversed = true;
     }
 
     public void stopFirstIntake() {
         m_motorBottom.set(0);
-        m_motorTop.set(0);
+        // m_motorTop.set(0);
         intakeON = false;
         intakeReversed = false;
     }
@@ -93,4 +107,12 @@ public class Intake extends SubsystemBase {
     public boolean noteSensorIsNotDetected(){
        return noteSensor.get();
     }
+public void PIDOFF()
+{
+    m_pidController.setReference(0, ControlType.kDutyCycle);
+}
+
+public void reverseIntake(){
+    m_pidController.setReference(m_encoder.getPosition() -Math.PI, ControlType.kPosition);
+    }   
 }
