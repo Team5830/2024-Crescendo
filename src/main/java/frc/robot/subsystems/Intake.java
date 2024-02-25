@@ -18,23 +18,23 @@ import edu.wpi.first.math.filter.Debouncer;
 public class Intake extends SubsystemBase {
     public boolean intakeON = false;
     public boolean intakeReversed = false;
-    public DigitalInput notesensor; 
-    CANSparkMax m_motorbottom;
-     CANSparkMax m_motortop;
+    public DigitalInput noteSensor; 
+    CANSparkMax m_motorBottom;
+     CANSparkMax m_motorTop;
     //SparkPIDController m_pidController;
     RelativeEncoder m_encoder;
 
     public Intake() {
         try {
-            m_motorbottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
-             m_motortop = new CANSparkMax(Constants.intake.motorChanneltop, MotorType.kBrushless);
-            notesensor = new DigitalInput(0);
+            m_motorBottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
+             m_motorTop = new CANSparkMax(Constants.intake.motorChannelTop, MotorType.kBrushless);
+            noteSensor = new DigitalInput(0);
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating intake: " + ex.getMessage(), true);
         }
 
-        m_motorbottom.restoreFactoryDefaults();
-        m_motortop.restoreFactoryDefaults();
+        m_motorBottom.restoreFactoryDefaults();
+        m_motorTop.restoreFactoryDefaults();
         //m_pidController = m_motor.getPIDController();
         // set PID coefficients
         /*m_pidController.setP(Constants.Intake.P);
@@ -46,26 +46,26 @@ public class Intake extends SubsystemBase {
     }
 
     public void stopIntake() {
-        m_motortop.set(0);
-        m_motorbottom.set(0);
+        m_motorTop.set(0);
+        m_motorBottom.set(0);
     }
 
     public void startFirstIntake() {
-        m_motortop.set(-Constants.intake.firstIntakBottomSspeed);
-        m_motorbottom.set(Constants.intake.firstIntakTopSspeed);
+        m_motorTop.set(-Constants.intake.firstIntakeBottomSpeed);
+        m_motorBottom.set(Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
     }
 
     public void reverseFirstIntake() {
-        m_motorbottom.set(Constants.intake.firstIntakBottomSspeed);
-        m_motortop.set(-Constants.intake.firstIntakTopSspeed);
+        m_motorBottom.set(Constants.intake.firstIntakeBottomSpeed);
+        m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
         intakeReversed = true;
     }
 
     public void stopFirstIntake() {
-        m_motorbottom.set(0);
-        m_motortop.set(0);
+        m_motorBottom.set(0);
+        m_motorTop.set(0);
         intakeON = false;
         intakeReversed = false;
     }
@@ -87,10 +87,10 @@ public class Intake extends SubsystemBase {
         // SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
     }
 
-    public boolean notesensorIsDetected(){
-       return !notesensor.get();
+    public boolean noteSensorIsDetected(){
+       return !noteSensor.get();
     }
-    public boolean notesensorIsNotDetected(){
-       return notesensor.get();
+    public boolean noteSensorIsNotDetected(){
+       return noteSensor.get();
     }
 }

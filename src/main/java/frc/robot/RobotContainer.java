@@ -69,7 +69,7 @@ public class RobotContainer {
     SmartDashboard.getNumber("TurnP", Constants.DriveTrain.turnControllerKp);
     SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
     SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
-    SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnarget);
+    SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnTarget);
     // Configure the trigger bindings
     configureBindings();
 
@@ -123,11 +123,15 @@ public class RobotContainer {
     // xroller.povDown().whileTrue(new InstantCommand(m_arm::decrement).repeatedly());
     xroller.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xroller.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
-        xroller.povLeft().onTrue(new InstantCommand(m_climber::manuallyLowerLeftLimit));
-    xroller.povRight().onTrue(new InstantCommand(m_climber::manuallyLowerRightLimit));
+
+    xroller.axisGreaterThan(1,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(xroller.getRawAxis(1))));
+    xroller.axisLessThan(1,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(xroller.getRawAxis(1))));
+    xroller.axisGreaterThan(3,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(xroller.getRawAxis(3))));
+    xroller.axisLessThan(3,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(xroller.getRawAxis(3))));
+
     xroller.leftBumper().onTrue(new SequentialCommandGroup(
       new InstantCommand(m_intake::startFirstIntake),
-      new WaitUntilCommand(m_intake::notesensorIsDetected),
+      new WaitUntilCommand(m_intake::noteSensorIsDetected),
       new InstantCommand(m_intake::stopFirstIntake)
     ));
     // xroller.leftBumper().onFalse(new InstantCommand(m_intake::stopFirstIntake));
@@ -135,7 +139,7 @@ public class RobotContainer {
       new InstantCommand(m_flywheel::shooterGo),
       new WaitCommand(1),
       new InstantCommand(m_intake::startFirstIntake),
-      new WaitUntilCommand(m_intake::notesensorIsNotDetected),
+      new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
       new WaitCommand(0.5),
       new InstantCommand(m_intake::stopFirstIntake),
       new InstantCommand(m_flywheel::shooterOff)

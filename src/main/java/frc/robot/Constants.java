@@ -16,7 +16,7 @@ public final class Constants {
     public static final double maxAngularVelocity = 100; // revolutions per second
     public static final double maxAngularAcceleration = 10; // revolutions per second squared
     public static final double AngleTolerance = 5;
-    public static final double turnarget = 90;
+    public static final double turnTarget = 90;
 
     // PIDs
     public static final double driveControllerKp = 0.12;
@@ -41,7 +41,7 @@ public final class Constants {
     public static final int backLeftTurnChannel = 8;
     public static final int backRightDriveChannel = 5;
     public static final int backRightTurnChannel = 6;
-    // 
+    //
     public static final boolean invertNavX = false;
   }
 
@@ -52,11 +52,13 @@ public final class Constants {
     public static final double xRateLimit = 3;
     public static final double yRateLimit = 3;
     public static final double rotRateLimit = 3;
+
+    public static final double climberAxesThreshold = 0.4;
   }
 
   public static final class intake {
-    public static final double firstIntakTopSspeed = 0.4;
-    public static final double firstIntakBottomSspeed = 0.15;
+    public static final double firstIntakeTopSpeed = 0.4;
+    public static final double firstIntakeBottomSpeed = 0.15;
     public static final double P = 0.1;
     public static final double I = 0.0;
     public static final double D = 0.0;
@@ -65,13 +67,13 @@ public final class Constants {
     public static final double kMaxOutput = 0.4;
     public static final double kMinOutput = 0.1;
     public static final int motorChannel = 11;
-    public static final int motorChanneltop = 9;
+    public static final int motorChannelTop = 9;
   }
 
   public static final class flywheel {
-    public static final int waitforshootersecs = 10;
-    public static final double feedmotorspeed = 0.5;
-    public static final double shootermotorspeed = 1600;
+    public static final int waitForShooterSecs = 10;
+    public static final double feedMotorSpeed = 0.5;
+    public static final double shooterMotorSpeed = 1600;
     public static final double kP = 0.0012;
     public static final double kI = 0.000000;
     public static final double kD = 0.04;
@@ -120,16 +122,17 @@ public final class Constants {
     public static final double D = 0.0;
     public static final double f = 0.0;
     public static final double Tolerance = 2.0; // Measured in degrees
-    public static final double TurnRateTolerance = 10; //Degrees per second
+    public static final double TurnRateTolerance = 10; // Degrees per second
   }
-  public static final class climber{
+
+  public static final class climber {
     public static final float upLeftHeight = 96.00000000000000000000000f;
-    public static final float downLeftHeight = -5f; 
-       public static final float upRightHeight = 75.00000000000000000000000f;
-    public static final float downRightHeight = -5f; 
+    public static final float downLeftHeight = -5f;
+    public static final float upRightHeight = 75.00000000000000000000000f;
+    public static final float downRightHeight = -5f;
     public static final int leftMotorChanel = 16;
     public static final int rightMotorChanel = 15;
-    public static final double kP = 0.02;
+    public static final double kP = 0.03;
     public static final double kI = 0.000000;
     public static final double kD = 0.0;
     public static final double kIz = 0;
