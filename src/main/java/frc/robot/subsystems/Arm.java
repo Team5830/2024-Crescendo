@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -15,12 +18,14 @@ public class Arm extends SubsystemBase {
   private SparkPIDController m_pidController;
   private double target;
 
+  private final ArmFeedforward m_feedforward = new ArmFeedforward(Constants.arm.feedforwardKs, Constants.arm.feedforwardKv, Constants.arm.feedforwardKg);
+
   public Arm() {
     try {
       m_motor = new CANSparkMax(Constants.arm.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_motor.restoreFactoryDefaults();
       m_encoder = m_motor.getEncoder();
-      m_encoder.setPositionConversionFactor(1);
+      m_encoder.setPositionConversionFactor(12.5);
       m_encoder.setPosition(0.0);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
@@ -31,7 +36,6 @@ public class Arm extends SubsystemBase {
       m_pidController.setP(Constants.arm.kP);
       m_pidController.setI(Constants.arm.kI);
       m_pidController.setD(Constants.arm.kD);
-      m_pidController.setFF(Constants.arm.kFF);
       m_pidController.setOutputRange(Constants.arm.minOutput, Constants.arm.maxOutput);
       move(0);
       // m_karmoterPID.setPositionPIDWrappingMaxInput(180);
@@ -46,11 +50,13 @@ public class Arm extends SubsystemBase {
 
   public void move(double degrees) {
     target = degrees;
+    var feedforward = m_feedforward.calculate(Rotation2d.fromDegrees(90+m_encoder.getPosition()).getRadians(), 0);
+    m_pidController.setFF(feedforward);
     m_pidController.setReference(target, ControlType.kPosition);
     DriverStation.reportWarning(String.format("Armm Position %f", m_encoder.getPosition()), false);
   }
 
-  public boolean AtTarget() {
+  public boolean atTarget() {
     double currentPosition = m_encoder.getPosition();
     DriverStation.reportWarning(String.format("Position: %f", currentPosition), false);
     if (Math.abs(currentPosition - target) <= Constants.arm.tolerance) {
@@ -82,15 +88,13 @@ public class Arm extends SubsystemBase {
 
   public void increment() {
     if (target + Constants.arm.incrementValue <= Constants.arm.forwardLimit) {
-      target = target + Constants.arm.incrementValue;
-      m_pidController.setReference(target, ControlType.kPosition);
+      move(target + Constants.arm.incrementValue);
     }
   }
 
   public void decrement() {
     if (target - Constants.arm.incrementValue >= Constants.arm.reverseLimit) {
-      target = target - Constants.arm.incrementValue;
-      m_pidController.setReference(target, ControlType.kPosition);
+      move(target - Constants.arm.incrementValue);
     }
   }
 

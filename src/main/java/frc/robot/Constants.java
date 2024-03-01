@@ -108,23 +108,19 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final double maxOutput = .4;
     public static final double minOutput = -.4;
-    public static final float forwardLimit = 2.2f;
-    public static final float reverseLimit = -6.8f;
+    public static final float forwardLimit = 27f;
+    public static final float reverseLimit = -85f;
     public static final double tolerance = 5.0;
     public static final int motorChanel = 12;
-    public static final double incrementValue = .2;
+    public static final double incrementValue = 2.5;
 
-    public static final class Position1 { // Down Position
-      public static final double armAngle = -6.9;
-    }
+    public static final double feedforwardKs = .01; // units
+    public static final double feedforwardKv = .01; // units * seconds / radians
+    public static final double feedforwardKg = .01; // units
 
-    public static final class Position2 { // Middle Position
-      public static final double armAngle = -4;
-    }
-
-    public static final class Position3 { // Up position
-      public static final double armAngle = 0;
-    }
+    public static final double positionIntake = -85;
+    public static final double positionShoot = -50;
+    public static final double positionUpright = 0;
   }
 
   public static final class TurnPID {

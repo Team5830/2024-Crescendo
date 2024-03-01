@@ -108,9 +108,9 @@ public class RobotContainer {
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
-    xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
-    xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
+    xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
+    xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
+    xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
     xboxController.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
