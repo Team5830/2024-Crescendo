@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class DriveTeleop extends Command {
     SwerveDrive swerveDrive;
-    SlewRateLimiter m_xspeedLimiter;
-    SlewRateLimiter m_yspeedLimiter;
+    SlewRateLimiter m_xSpeedLimiter;
+    SlewRateLimiter m_ySpeedLimiter;
     SlewRateLimiter m_rotLimiter;
     DoubleSupplier xSpeed;
     DoubleSupplier ySpeed;
@@ -32,8 +32,8 @@ public class DriveTeleop extends Command {
    */
   public DriveTeleop(
       SwerveDrive swerveDrive,
-      SlewRateLimiter m_xspeedLimiter,
-      SlewRateLimiter m_yspeedLimiter,
+      SlewRateLimiter m_xSpeedLimiter,
+      SlewRateLimiter m_ySpeedLimiter,
       SlewRateLimiter m_rotLimiter,
       DoubleSupplier xSpeed,
       DoubleSupplier ySpeed,
@@ -44,8 +44,8 @@ public class DriveTeleop extends Command {
     addRequirements(swerveDrive);
 
     this.swerveDrive=swerveDrive;
-    this.m_xspeedLimiter=m_xspeedLimiter;
-    this.m_yspeedLimiter=m_yspeedLimiter;
+    this.m_xSpeedLimiter=m_xSpeedLimiter;
+    this.m_ySpeedLimiter=m_ySpeedLimiter;
     this.m_rotLimiter=m_rotLimiter;
     this.xSpeed=xSpeed;
     this.ySpeed=ySpeed;
@@ -64,12 +64,12 @@ public class DriveTeleop extends Command {
   public void execute() {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final double x = -m_xspeedLimiter.calculate(xSpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
+    final double x = -m_xSpeedLimiter.calculate(xSpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final double y = -m_yspeedLimiter.calculate(ySpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
+    final double y = -m_ySpeedLimiter.calculate(ySpeed.getAsDouble()) * Constants.DriveTrain.maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in

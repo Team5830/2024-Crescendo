@@ -6,10 +6,7 @@ package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.GenericHID.HIDType;
-import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.*;
 
 import java.util.function.DoubleSupplier;
 
@@ -29,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final CommandXboxController xroller = new CommandXboxController(Constants.controller.xboxPort);
+  private final CommandXboxController xboxController = new CommandXboxController(Constants.controller.xboxPort);
   private final GenericHID flyskyController = new GenericHID(Constants.controller.flyskyPort);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Arm m_arm = new Arm();
@@ -38,8 +35,8 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.controller.xRateLimit);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.controller.yRateLimit);
+  private final SlewRateLimiter m_xSpeedLimiter = new SlewRateLimiter(Constants.controller.xRateLimit);
+  private final SlewRateLimiter m_ySpeedLimiter = new SlewRateLimiter(Constants.controller.yRateLimit);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.controller.rotRateLimit);
 
   private DoubleSupplier getPeriod;
@@ -60,9 +57,9 @@ public class RobotContainer {
       SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
       // SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
-    SmartDashboard.putNumber("LeftX", xroller.getLeftX());
-    SmartDashboard.putNumber("LeftY", xroller.getLeftY());
-    SmartDashboard.putNumber("RightX", xroller.getRightX());
+    SmartDashboard.putNumber("LeftX", xboxController.getLeftX());
+    SmartDashboard.putNumber("LeftY", xboxController.getLeftY());
+    SmartDashboard.putNumber("RightX", xboxController.getRightX());
     SmartDashboard.putNumber("DriveP", Constants.DriveTrain.driveControllerKp);
     SmartDashboard.putNumber("DriveI", Constants.DriveTrain.driveControllerKi);
     SmartDashboard.putNumber("DriveD", Constants.DriveTrain.driveControllerKd);
@@ -79,15 +76,15 @@ public class RobotContainer {
     // SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
      m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
-        m_xspeedLimiter,
-        m_yspeedLimiter,
+        m_xSpeedLimiter,
+        m_ySpeedLimiter,
         m_rotLimiter,
         ()->flyskyController.getRawAxis(0),
         ()->-flyskyController.getRawAxis(1),
         ()->flyskyController.getRawAxis(3)/2,
-        // xroller::getLeftX,
-        // xroller::getLeftY,
-        // xroller::getRightX,
+        // xboxController::getLeftX,
+        // xboxController::getLeftY,
+        // xboxController::getRightX,
         false,
         this.getPeriod));
   }
@@ -111,32 +108,32 @@ public class RobotContainer {
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    xroller.a().onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
-    xroller.b().onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
-    xroller.y().onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
-    xroller.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
-    xroller.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
-    xroller.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
+    xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
+    xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
+    xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
+    xboxController.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
+    xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
+    xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
 
-    xroller.axisGreaterThan(1,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(1))));
-    xroller.axisLessThan(1,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(1))));
-    xroller.axisGreaterThan(5,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(5))));
-    xroller.axisLessThan(5,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(5))));
+    xboxController.axisGreaterThan(1,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(1))));
+    xboxController.axisLessThan(1,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(1))));
+    xboxController.axisGreaterThan(5,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(5))));
+    xboxController.axisLessThan(5,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(5))));
 
-    xroller.leftTrigger().onTrue(new SequentialCommandGroup(
+    xboxController.leftTrigger().onTrue(new SequentialCommandGroup(
       new InstantCommand(m_intake::startFirstIntake),
       new WaitUntilCommand(m_intake::noteSensorIsDetected),
       new InstantCommand(m_intake::reverseFirstIntake),
       new WaitCommand(0.2),
       new InstantCommand(m_intake::stopFirstIntake)
     ));
-    xroller.back().onTrue(new SequentialCommandGroup(
+    xboxController.back().onTrue(new SequentialCommandGroup(
       new InstantCommand(m_intake::reverseFirstIntake),
       new WaitCommand(1),
       new InstantCommand(m_intake::stopFirstIntake)
     ));
-    // xroller.leftBumper().onFalse(new InstantCommand(m_intake::stopFirstIntake));
-    xroller.rightTrigger().onTrue(new SequentialCommandGroup(
+    // xboxController.leftBumper().onFalse(new InstantCommand(m_intake::stopFirstIntake));
+    xboxController.rightTrigger().onTrue(new SequentialCommandGroup(
       new InstantCommand(m_flywheel::shooterGo),
       new WaitCommand(1),
       new InstantCommand(m_intake::startFirstIntake),

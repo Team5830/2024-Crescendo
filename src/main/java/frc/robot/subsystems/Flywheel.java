@@ -11,16 +11,15 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Flywheel extends SubsystemBase {
-    CANSparkMax m_topmoter;
-    CANSparkMax m_bottomoter;
-    SparkPIDController m_topmotorPID;
+    CANSparkMax m_topMotor;
+    CANSparkMax m_bottomMotor;
+    SparkPIDController m_topMotorPID;
     SparkPIDController m_bottomPID;
-    RelativeEncoder m_topencoder;
+    RelativeEncoder m_topEncoder;
     RelativeEncoder m_bottomEncoder;
     public boolean isShooterOn = false;
 
@@ -28,15 +27,15 @@ public class Flywheel extends SubsystemBase {
 
     public Flywheel(){
         try {
-            m_topmoter = new CANSparkMax(Constants.flywheel.motorChanelTop, MotorType.kBrushless);
-            m_bottomoter = new CANSparkMax(Constants.flywheel.motorChanelBottom, MotorType.kBrushless);
+            m_topMotor = new CANSparkMax(Constants.flywheel.motorChanelTop, MotorType.kBrushless);
+            m_bottomMotor = new CANSparkMax(Constants.flywheel.motorChanelBottom, MotorType.kBrushless);
 
-            m_topmoter.restoreFactoryDefaults();
-            m_bottomoter.restoreFactoryDefaults();
-            m_topmotorPID = m_topmoter.getPIDController();
-            m_bottomPID = m_bottomoter.getPIDController();
-            m_topencoder = m_topmoter.getEncoder();
-            m_bottomEncoder = m_bottomoter.getEncoder();
+            m_topMotor.restoreFactoryDefaults();
+            m_bottomMotor.restoreFactoryDefaults();
+            m_topMotorPID = m_topMotor.getPIDController();
+            m_bottomPID = m_bottomMotor.getPIDController();
+            m_topEncoder = m_topMotor.getEncoder();
+            m_bottomEncoder = m_bottomMotor.getEncoder();
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating flywheel: " + ex.getMessage(), true);
         }
@@ -44,7 +43,7 @@ public class Flywheel extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Top Flywheel Speed ", m_topencoder.getVelocity());
+        // SmartDashboard.putNumber("Top Flywheel Speed ", m_topEncoder.getVelocity());
         // SmartDashboard.putNumber("Bottom Flywheel Speed ", m_bottomEncoder.getVelocity());
     }
 
@@ -53,20 +52,20 @@ public class Flywheel extends SubsystemBase {
     }
 
     public void shooterOn() {
-        m_topmotorPID.setReference(motorSpeed, ControlType.kVelocity);
+        m_topMotorPID.setReference(motorSpeed, ControlType.kVelocity);
         m_bottomPID.setReference(motorSpeed, ControlType.kVelocity);
         isShooterOn = true;
     }
 
     public void shooterGo() {
-        m_topmoter.setVoltage(-9);
-        m_bottomoter.setVoltage(9);
+        m_topMotor.setVoltage(-9);
+        m_bottomMotor.setVoltage(9);
         isShooterOn = true;
     }
 
     public void shooterOff() {
-        m_topmoter.setVoltage(0);
-        m_bottomoter.setVoltage(0);
+        m_topMotor.setVoltage(0);
+        m_bottomMotor.setVoltage(0);
         isShooterOn = false;
     }
 
@@ -79,6 +78,6 @@ public class Flywheel extends SubsystemBase {
     }
 
     public boolean readyToShoot() {
-        return (Math.abs(motorSpeed - m_topencoder.getVelocity()) < Constants.flywheel.speedTolerance && Math.abs(motorSpeed - m_bottomEncoder.getVelocity()) < Constants.flywheel.speedTolerance);
+        return (Math.abs(motorSpeed - m_topEncoder.getVelocity()) < Constants.flywheel.speedTolerance && Math.abs(motorSpeed - m_bottomEncoder.getVelocity()) < Constants.flywheel.speedTolerance);
     }
 }

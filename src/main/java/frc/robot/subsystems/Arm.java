@@ -13,7 +13,7 @@ public class Arm extends SubsystemBase {
   private CANSparkMax m_motor;
   public RelativeEncoder m_encoder;
   private SparkPIDController m_pidController;
-  private double targecko;
+  private double target;
 
   public Arm() {
     try {
@@ -45,19 +45,19 @@ public class Arm extends SubsystemBase {
   }
 
   public void move(double degrees) {
-    targecko = degrees;
-    m_pidController.setReference(targecko, ControlType.kPosition);
+    target = degrees;
+    m_pidController.setReference(target, ControlType.kPosition);
     DriverStation.reportWarning(String.format("Armm Position %f", m_encoder.getPosition()), false);
   }
 
   public boolean AtTarget() {
-    double curposition = m_encoder.getPosition();
-    DriverStation.reportWarning(String.format("Position: %f", curposition), false);
-    if (Math.abs(curposition - targecko) <= Constants.arm.tolerance) {
+    double currentPosition = m_encoder.getPosition();
+    DriverStation.reportWarning(String.format("Position: %f", currentPosition), false);
+    if (Math.abs(currentPosition - target) <= Constants.arm.tolerance) {
       DriverStation.reportWarning("True", false);
       return true;
     } else {
-      DriverStation.reportWarning(String.format("false: %f", Math.abs(curposition - targecko)), false);
+      DriverStation.reportWarning(String.format("false: %f", Math.abs(currentPosition - target)), false);
       return false;
     }
   }
@@ -81,22 +81,22 @@ public class Arm extends SubsystemBase {
   }
 
   public void increment() {
-    if (targecko + Constants.arm.incrementValue <= Constants.arm.forwardLimit) {
-      targecko = targecko + Constants.arm.incrementValue;
-      m_pidController.setReference(targecko, ControlType.kPosition);
+    if (target + Constants.arm.incrementValue <= Constants.arm.forwardLimit) {
+      target = target + Constants.arm.incrementValue;
+      m_pidController.setReference(target, ControlType.kPosition);
     }
   }
 
   public void decrement() {
-    if (targecko - Constants.arm.incrementValue >= Constants.arm.reverseLimit) {
-      targecko = targecko - Constants.arm.incrementValue;
-      m_pidController.setReference(targecko, ControlType.kPosition);
+    if (target - Constants.arm.incrementValue >= Constants.arm.reverseLimit) {
+      target = target - Constants.arm.incrementValue;
+      m_pidController.setReference(target, ControlType.kPosition);
     }
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ArmPosition", m_encoder.getPosition());
-    // SmartDashboard.getNumber("targecko", targecko );
+    // SmartDashboard.getNumber("target", target );
   }
 }

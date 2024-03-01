@@ -4,23 +4,16 @@
 
 package frc.robot.subsystems;
 
-import javax.xml.namespace.QName;
-
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants;
@@ -31,8 +24,8 @@ public class SwerveModule {
   public CANSparkMax m_turningMotor;
   private SparkAbsoluteEncoder m_angleEncoder;
   private RelativeEncoder m_positionEncoder;
-  private boolean invertencoder = false;
-  private boolean invertmotor = false;
+  private boolean invertEncoder = false;
+  private boolean invertMotor = false;
   private double target;
   // Gains are for example purposes only - must be determined for your own robot!
   private SparkPIDController m_drivePIDController;
@@ -50,7 +43,7 @@ public class SwerveModule {
       new TrapezoidProfile.Constraints(
           Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
 */
-  
+
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
       Constants.DriveTrain.driveFeedforwardStatic, Constants.DriveTrain.driveFeedforwardVelocity);
@@ -101,9 +94,9 @@ public class SwerveModule {
     m_angleEncoder.getPosition();
   }
   
-  public void setTurnTarget(double setpoint){
-    target = setpoint;
-    m_turningPIDController.setReference(setpoint,ControlType.kPosition);
+  public void setTurnTarget(double setPoint){
+    target = setPoint;
+    m_turningPIDController.setReference(setPoint,ControlType.kPosition);
   }
   
   public void updateTurnPIDValues(double P, double I, double D){
