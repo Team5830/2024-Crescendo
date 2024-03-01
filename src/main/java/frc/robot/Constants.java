@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -12,8 +15,8 @@ package frc.robot;
  */
 public final class Constants {
   public static final class DriveTrain {
-    public static final double maxSpeed = 3.0; // 3 meters per second
-    public static final double maxAngularVelocity = 100; // revolutions per second
+    public static final double maxSpeed = 3.0; // 4 meters per second
+    public static final double maxAngularVelocity = 10; // revolutions per second
     public static final double maxAngularAcceleration = 10; // revolutions per second squared
     public static final double AngleTolerance = 5;
     public static final double turnTarget = 90;
@@ -43,6 +46,7 @@ public final class Constants {
     public static final int backRightTurnChannel = 6;
     //
     public static final boolean invertNavX = false;
+    public static final Pose2d initialOdometry = new Pose2d(5.0, 13.5, new Rotation2d());
   }
 
   public static final class controller {
@@ -54,6 +58,7 @@ public final class Constants {
     public static final double rotRateLimit = 3;
 
     public static final double climberAxesThreshold = 0.4;
+    public static final double climberAxesMultiplier = 10;
   }
 
   public static final class intake {
@@ -69,7 +74,7 @@ public final class Constants {
     public static final int motorChannel = 11;
 
     public static final int motorChannelTop = 9;
-    public static final double kP = 0.1;
+    public static final double kP = 0.5;
     public static final double kI = 0.000000;
     public static final double kD = 0.0000000000000000000000000000000000000000000000000000000000000000000;
     public static final double kIz = 0;
@@ -132,12 +137,12 @@ public final class Constants {
   }
 
   public static final class climber {
-    public static final float upLeftHeight = 96.00000000000000000000000f;
+    public static final float upLeftHeight = 99f;
     public static final float downLeftHeight = -5f;
-    public static final float upRightHeight = 75.00000000000000000000000f;
-    public static final float downRightHeight = -5f;
-    public static final int leftMotorChanel = 16;
-    public static final int rightMotorChanel = 15;
+    public static final float upRightHeight = -81f;
+    public static final float downRightHeight = 5f;
+    public static final int leftMotorChanel = 15;
+    public static final int rightMotorChanel = 16;
     public static final double kP = 0.03;
     public static final double kI = 0.000000;
     public static final double kD = 0.0;
@@ -147,4 +152,30 @@ public final class Constants {
     public static final double minOutput = -.4;
     public static final double tolerance = 5.0;
   }
+  
+  public static final class climberLeveling {
+    public static final double kP = 0.1;
+    public static final double kI = 0.000000;
+    public static final double kD = 0.0;
+    public static final double positionTolerance = 1.0; // Measured in degrees
+    public static final double velocityTolerance = 5; // Degrees per seconds
+    public static final double targetValue = 0;
+  }
+
+  public static final class moveCommand {
+    public static final double lP = 1.0;
+    public static final double lI = 0.0;
+    public static final double lD = 0.0;
+    public static final double lf = 0.0;
+    public static final double lMaxAlignSpeed = 0.5; // Meters per second
+    public static final double lAlignTolerance = 0.1; // Meters
+    public static final double rP = 1.0;
+    public static final double rI = 0.0;
+    public static final double rD = 0.0;
+    public static final double rf = 0.0;
+    public static final double rMaxAlignSpeed = 0.5;
+    public static final double rAlignTolerance = 0.2;
+    public static final double HighSpeed = 0.9;
+    public static final double LowSpeed = 0.3;
+}
 }

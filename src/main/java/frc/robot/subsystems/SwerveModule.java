@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.xml.namespace.QName;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 
@@ -26,7 +28,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 
 public class SwerveModule {
   private CANSparkMax m_driveMotor;
-  private CANSparkMax m_turningMotor;
+  public CANSparkMax m_turningMotor;
   private SparkAbsoluteEncoder m_angleEncoder;
   private RelativeEncoder m_positionEncoder;
   private boolean invertencoder = false;
@@ -186,7 +188,7 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    var encoderRotation = new Rotation2d(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+    var encoderRotation = Rotation2d.fromDegrees(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState state = SwerveModuleState.optimize(desiredState, encoderRotation);
@@ -196,8 +198,8 @@ public class SwerveModule {
     // directions. This results in smoother driving.
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
-    m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningPIDController.setReference(desiredState.angle.getDegrees(), ControlType.kPosition);
+    m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+    m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);
   }
 
   public void PIDStop(){

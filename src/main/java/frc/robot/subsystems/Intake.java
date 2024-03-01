@@ -30,14 +30,14 @@ public class Intake extends SubsystemBase {
     public Intake() {
         try {
             m_motorBottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
-             m_motorTop = new CANSparkMax(Constants.intake.motorChanneltop, MotorType.kBrushless);
+             m_motorTop = new CANSparkMax(Constants.intake.motorChannelTop, MotorType.kBrushless);
             noteSensor = new DigitalInput(0);
            m_motorBottom.restoreFactoryDefaults();
         m_motorTop.restoreFactoryDefaults();
-        m_motorTop.follow(m_motorbottom, true);    
+        m_motorTop.follow(m_motorBottom, true);    
 
-    m_pidController = m_motorbottom.getPIDController();
-    m_encoder = m_motorbottom.getEncoder();
+    m_pidController = m_motorBottom.getPIDController();
+    m_encoder = m_motorBottom.getEncoder();
     m_encoder.setPositionConversionFactor(3.141592652);
     m_pidController.setP(Constants.intake.kP);
     m_pidController.setI(Constants.intake.kI);
@@ -71,7 +71,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void reverseFirstIntake() {
-        m_motorBottom.set(Constants.intake.firstIntakeBottomSpeed);
+        m_motorBottom.set(-Constants.intake.firstIntakeBottomSpeed/2);
         //m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
         intakeReversed = true;
@@ -98,6 +98,7 @@ public class Intake extends SubsystemBase {
         // This method will be called once per scheduler run
         SmartDashboard.putBoolean("FirstIntakeOn", intakeON);
         SmartDashboard.putBoolean("FirstIntakeReversed", intakeReversed);
+        SmartDashboard.putNumber("intake encoder position", m_encoder.getPosition());
         // SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
     }
 
@@ -113,6 +114,8 @@ public void PIDOFF()
 }
 
 public void reverseIntake(){
-    m_pidController.setReference(m_encoder.getPosition() -Math.PI, ControlType.kPosition);
+    System.out.println("reverseIntake");
+    System.out.println(m_encoder.getPosition() -2*Math.PI);
+    m_pidController.setReference(m_encoder.getPosition() -2*Math.PI, ControlType.kPosition);
     }   
 }

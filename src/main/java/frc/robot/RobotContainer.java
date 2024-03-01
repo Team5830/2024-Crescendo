@@ -90,7 +90,6 @@ public class RobotContainer {
         // xroller::getRightX,
         false,
         this.getPeriod));
-        
   }
     
   /**
@@ -115,27 +114,29 @@ public class RobotContainer {
     xroller.a().onTrue(new Positioning(m_arm, Constants.arm.Position1.armAngle));
     xroller.b().onTrue(new Positioning(m_arm, Constants.arm.Position2.armAngle));
     xroller.y().onTrue(new Positioning(m_arm, Constants.arm.Position3.armAngle));
-    // xroller.povDown().and(button5).whileTrue(new InstantCommand(m_climber::lencerement).repeatedly());
-    // xroller.povDown().and(button6).whileTrue(new InstantCommand(m_climber::lecroment).repeatedly());
-    // xroller.povDown().and(button4).whileTrue(new InstantCommand(m_climber::rincerement).repeatedly());
-    // xroller.povDown().and(button3).whileTrue(new InstantCommand(m_climber::ricroment).repeatedly());
-    // xroller.povUp().whileTrue(new InstantCommand(m_arm::increment).repeatedly());
-    // xroller.povDown().whileTrue(new InstantCommand(m_arm::decrement).repeatedly());
+    xroller.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xroller.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xroller.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
 
-    xroller.axisGreaterThan(1,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(xroller.getRawAxis(1))));
-    xroller.axisLessThan(1,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(xroller.getRawAxis(1))));
-    xroller.axisGreaterThan(3,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(xroller.getRawAxis(3))));
-    xroller.axisLessThan(3,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(xroller.getRawAxis(3))));
+    xroller.axisGreaterThan(1,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(1))));
+    xroller.axisLessThan(1,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(1))));
+    xroller.axisGreaterThan(5,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(5))));
+    xroller.axisLessThan(5,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xroller.getRawAxis(5))));
 
-    xroller.leftBumper().onTrue(new SequentialCommandGroup(
+    xroller.leftTrigger().onTrue(new SequentialCommandGroup(
       new InstantCommand(m_intake::startFirstIntake),
       new WaitUntilCommand(m_intake::noteSensorIsDetected),
+      new InstantCommand(m_intake::reverseFirstIntake),
+      new WaitCommand(0.2),
+      new InstantCommand(m_intake::stopFirstIntake)
+    ));
+    xroller.back().onTrue(new SequentialCommandGroup(
+      new InstantCommand(m_intake::reverseFirstIntake),
+      new WaitCommand(1),
       new InstantCommand(m_intake::stopFirstIntake)
     ));
     // xroller.leftBumper().onFalse(new InstantCommand(m_intake::stopFirstIntake));
-    xroller.rightBumper().onTrue(new SequentialCommandGroup(
+    xroller.rightTrigger().onTrue(new SequentialCommandGroup(
       new InstantCommand(m_flywheel::shooterGo),
       new WaitCommand(1),
       new InstantCommand(m_intake::startFirstIntake),

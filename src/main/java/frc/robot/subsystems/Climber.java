@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase {
       m_leftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_leftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
       m_leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.upLeftHeight);
-      m_leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.downLeftHeight - 5);
+      m_leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.downLeftHeight);
 
       m_rightMotor = new CANSparkMax(Constants.climber.rightMotorChanel, CANSparkMax.MotorType.kBrushless);
       m_rightMotor.restoreFactoryDefaults();
@@ -41,8 +41,8 @@ public class Climber extends SubsystemBase {
       m_rightEncoder.setPosition(0.0);
       m_rightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_rightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-      m_rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.upRightHeight);
-      m_rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.downRightHeight - 5);
+      m_rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.downRightHeight);
+      m_rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.upRightHeight);
 
       m_leftPIDController = m_leftMotor.getPIDController();
       m_leftPIDController.setP(Constants.climber.kP);
@@ -137,18 +137,23 @@ public class Climber extends SubsystemBase {
 
   public void leftChange(double value) {
     m_leftPIDController.setReference(Utils.clamp(
-        value,
+        m_leftEncoder.getPosition()+value,
         (double) Constants.climber.downLeftHeight,
         (double) Constants.climber.upLeftHeight),
         ControlType.kPosition);
   }
 
   public void rightChange(double value) {
-    m_leftPIDController.setReference(Utils.clamp(
-        value,
-        (double) Constants.climber.downRightHeight,
-        (double) Constants.climber.upRightHeight),
+    m_rightPIDController.setReference(Utils.clamp(
+        m_rightEncoder.getPosition()-value,
+        (double) Constants.climber.upRightHeight,
+        (double) Constants.climber.downRightHeight),
         ControlType.kPosition);
+  }
+
+  public void changeBoth(double value) {
+    leftChange(value);
+    rightChange(-value);
   }
 
   public void useUpPosition() {
