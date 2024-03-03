@@ -10,6 +10,7 @@ import frc.robot.Constants;
 import frc.robot.Utils;
 
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 public class Climber extends SubsystemBase {
 
@@ -33,6 +34,7 @@ public class Climber extends SubsystemBase {
       m_leftMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
       m_leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.upLeftHeight);
       m_leftMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.downLeftHeight);
+      m_leftMotor.setIdleMode(IdleMode.kBrake);
 
       m_rightMotor = new CANSparkMax(Constants.climber.rightMotorChanel, CANSparkMax.MotorType.kBrushless);
       m_rightMotor.restoreFactoryDefaults();
@@ -43,6 +45,7 @@ public class Climber extends SubsystemBase {
       m_rightMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
       m_rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.climber.downRightHeight);
       m_rightMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.climber.upRightHeight);
+      m_rightMotor.setIdleMode(IdleMode.kBrake);
 
       m_leftPIDController = m_leftMotor.getPIDController();
       m_leftPIDController.setP(Constants.climber.kP);

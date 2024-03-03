@@ -88,6 +88,12 @@ public class SwerveModule {
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
       updateTurnPIDValues(Constants.DriveTrain.turnControllerKp,Constants.DriveTrain.turnControllerKi,Constants.DriveTrain.turnControllerKd);
       updateDrivePIDValues(Constants.DriveTrain.driveControllerKp,Constants.DriveTrain.driveControllerKi,Constants.DriveTrain.driveControllerKd);
+  
+      
+      m_driveMotor.setSmartCurrentLimit(40);
+      m_turningMotor.setSmartCurrentLimit(40);
+      m_driveMotor.burnFlash();
+      m_turningMotor.burnFlash();
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating swerve module: " + ex.getMessage(), true);
     }
@@ -96,7 +102,9 @@ public class SwerveModule {
   
   public void setTurnTarget(double setPoint){
     target = setPoint;
+
     m_turningPIDController.setReference(setPoint,ControlType.kPosition);
+
   }
   
   public void updateTurnPIDValues(double P, double I, double D){

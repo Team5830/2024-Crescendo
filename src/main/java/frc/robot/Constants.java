@@ -16,15 +16,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public final class Constants {
   public static final class DriveTrain {
     public static final double maxSpeed = 3.0; // 4 meters per second
-    public static final double maxAngularVelocity = 10; // revolutions per second
-    public static final double maxAngularAcceleration = 10; // revolutions per second squared
+    public static final double maxAngularVelocity = 40; // revolutions per second
+    public static final double maxAngularAcceleration = 40; // revolutions per second squared
     public static final double AngleTolerance = 5;
     public static final double turnTarget = 90;
+    public static final double lAlignTolerance = 5.0;
+    public static final double lMaxAlignSpeed = 4.0;
 
     // PIDs
     public static final double driveControllerKp = 0.12;
     public static final double driveControllerKi = 0;
-    public static final double driveControllerKd = 0.0;
+    public static final double driveControllerKd = 0;
     public static final double turnControllerKp = .02;
     public static final double turnControllerKi = 0;
     public static final double turnControllerKd = 0.002;
@@ -53,9 +55,9 @@ public final class Constants {
     public static final int xboxPort = 0;
     public static final int flyskyPort = 1;
 
-    public static final double xRateLimit = 3;
-    public static final double yRateLimit = 3;
-    public static final double rotRateLimit = 3;
+    public static final double xRateLimit = 20;
+    public static final double yRateLimit = 20;
+    public static final double rotRateLimit = 7;
 
     public static final double climberAxesThreshold = 0.4;
     public static final double climberAxesMultiplier = 10;
@@ -95,12 +97,13 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final int motorChanelTop = 14;
     public static final int motorChanelBottom = 17;
+    public static final double halfspeed = shooterMotorSpeed/2;
   }
 
   public static final class arm {
-    public static final double kP = 0.1;
+    public static final double kP = 0.06;
     public static final double kI = 0.000000;
-    public static final double kD = 7;
+    public static final double kD = 5;
     public static final double kIz = 0;
     public static final double kFF = 0;
     public static final double kMaxOutput = 0.7;
@@ -108,8 +111,8 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final double maxOutput = .4;
     public static final double minOutput = -.4;
-    public static final float forwardLimit = 27f;
-    public static final float reverseLimit = -85f;
+    public static final float forwardLimit = 10f;
+    public static final float reverseLimit = -88f;
     public static final double tolerance = 5.0;
     public static final int motorChanel = 12;
     public static final double incrementValue = 2.5;
@@ -118,7 +121,7 @@ public final class Constants {
     public static final double feedforwardKv = .01; // units * seconds / radians
     public static final double feedforwardKg = .01; // units
 
-    public static final double positionIntake = -85;
+    public static final double positionIntake = -94;
     public static final double positionShoot = -50;
     public static final double positionUpright = 0;
   }
@@ -129,7 +132,7 @@ public final class Constants {
     public static final double D = 0.0;
     public static final double f = 0.0;
     public static final double Tolerance = 2.0; // Measured in degrees
-    public static final double TurnRateTolerance = 10; // Degrees per second
+    public static final double TurnRateTolerance = 20; // Degrees per second
   }
 
   public static final class climber {

@@ -4,12 +4,12 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class Shoot extends Command {
+public class ShootA extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Flywheel m_flywheel;
   private boolean turnedON = false;
   private Intake m_intake;
-  public Shoot(Flywheel subsystemFLY,Intake intake) {
+  public ShootA(Flywheel subsystemFLY,Intake intake) {
     m_flywheel = subsystemFLY;
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -20,7 +20,7 @@ public class Shoot extends Command {
   @Override
   public void initialize() {
     //m_intake.reverseIntake();
-    m_flywheel.shooterOn();
+    m_flywheel.shooterHalf();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +44,7 @@ public class Shoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (turnedON) {
+    if (m_intake.noteSensorIsNotDetected()) {
       return true;
     } else {
       return false;

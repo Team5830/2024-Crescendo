@@ -6,11 +6,13 @@ package frc.robot;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -39,7 +41,10 @@ public class RobotContainer {
   private final SlewRateLimiter m_ySpeedLimiter = new SlewRateLimiter(Constants.controller.yRateLimit);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.controller.rotRateLimit);
 
-  private DoubleSupplier getPeriod;
+  private final DoubleSupplier getPeriod;
+
+  private SendableChooser<Command> m_chooser = new SendableChooser<>();
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -67,26 +72,29 @@ public class RobotContainer {
     SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
     SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
     SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnTarget);
-    // Configure the trigger bindings
-    configureBindings();
 
-    SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
+    // Configure the trigger and button bindings
     configureBindings();
    
-    // SmartDashboard.putData("TestTurn", new testTurning(m_swerveDrive));
-     m_swerveDrive.setDefaultCommand(new DriveTeleop(
-        m_swerveDrive,
-        m_xSpeedLimiter,
-        m_ySpeedLimiter,
-        m_rotLimiter,
-        ()->flyskyController.getRawAxis(0),
-        ()->-flyskyController.getRawAxis(1),
-        ()->flyskyController.getRawAxis(3)/2,
-        // xboxController::getLeftX,
-        // xboxController::getLeftY,
-        // xboxController::getRightX,
-        false,
-        this.getPeriod));
+    m_swerveDrive.setDefaultCommand(new DriveTeleop(
+      m_swerveDrive,
+      m_xSpeedLimiter,
+      m_ySpeedLimiter,
+      m_rotLimiter,
+      ()->flyskyController.getRawAxis(0),
+      ()->-flyskyController.getRawAxis(1),
+      ()->flyskyController.getRawAxis(3)/2,
+      // xboxController::getLeftX,
+      // xboxController::getLeftY,
+      // xboxController::getRightX,
+      false,
+      this.getPeriod));
+
+    m_chooser.addOption("Auto A", new AutonomousCommandA(m_flywheel, m_swerveDrive, m_intake, m_arm, this.getPeriod));
+    m_chooser.addOption("Auto C", new AutonomousCommandC());
+    m_chooser.addOption("Auto R", new AutonomousCommandL());
+    m_chooser.addOption("Auto L", new AutonomousCommandR());
+    SmartDashboard.putData(m_chooser);
   }
     
   /**
@@ -111,6 +119,7 @@ public class RobotContainer {
     xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
     xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
     xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
+    xboxController.x().onTrue(new ShootA(m_flywheel, m_intake));
     xboxController.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
@@ -124,7 +133,7 @@ public class RobotContainer {
       new InstantCommand(m_intake::startFirstIntake),
       new WaitUntilCommand(m_intake::noteSensorIsDetected),
       new InstantCommand(m_intake::reverseFirstIntake),
-      new WaitCommand(0.2),
+      new WaitCommand(0.12),
       new InstantCommand(m_intake::stopFirstIntake)
     ));
     xboxController.back().onTrue(new SequentialCommandGroup(
@@ -149,7 +158,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  /*public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-  }*/
+ // public Command getAutonomousCommand() {
+
+  //}
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public final class AutonomousCommandR extends SequentialCommandGroup {
   /** Example static factory for an autonomous command. */
 
-  private AutonomousCommandR(/*Flywheel m_flywheel, Drivetrain m_drivetrain, Intake m_intake Arm m_arm */) {
+  public AutonomousCommandR(/*Flywheel m_flywheel, Drivetrain m_drivetrain, Intake m_intake Arm m_arm */) {
     addCommands(
      /*new Shoot(m_flywheel),
      wait(.75),

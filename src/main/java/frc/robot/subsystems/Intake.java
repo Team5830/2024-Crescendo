@@ -20,7 +20,8 @@ import com.revrobotics.CANSparkBase.ControlType;
 public class Intake extends SubsystemBase {
     public boolean intakeON = false;
     public boolean intakeReversed = false;
-    public DigitalInput noteSensor; 
+    public DigitalInput noteSensor;
+    public Debouncer m_debouncer; 
     CANSparkMax m_motorBottom;
      CANSparkMax m_motorTop;
     SparkPIDController m_pidController;
@@ -32,6 +33,7 @@ public class Intake extends SubsystemBase {
             m_motorBottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
              m_motorTop = new CANSparkMax(Constants.intake.motorChannelTop, MotorType.kBrushless);
             noteSensor = new DigitalInput(0);
+            m_debouncer = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
            m_motorBottom.restoreFactoryDefaults();
         m_motorTop.restoreFactoryDefaults();
         m_motorTop.follow(m_motorBottom, true);    
@@ -71,7 +73,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void reverseFirstIntake() {
-        m_motorBottom.set(-Constants.intake.firstIntakeBottomSpeed/2);
+        m_motorBottom.set(-Constants.intake.firstIntakeBottomSpeed*1.5);
         //m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
         intakeReversed = true;
@@ -103,10 +105,10 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean noteSensorIsDetected(){
-       return !noteSensor.get();
+       return m_debouncer.calculate(!noteSensor.get());
     }
     public boolean noteSensorIsNotDetected(){
-       return noteSensor.get();
+       return m_debouncer.calculate(noteSensor.get());
     }
 public void PIDOFF()
 {

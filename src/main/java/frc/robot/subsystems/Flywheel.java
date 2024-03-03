@@ -24,6 +24,7 @@ public class Flywheel extends SubsystemBase {
     public boolean isShooterOn = false;
 
     public double motorSpeed = 7.0;
+    public double halfspeed = Constants.flywheel.halfspeed;
 
     public Flywheel(){
         try {
@@ -54,6 +55,11 @@ public class Flywheel extends SubsystemBase {
     public void shooterOn() {
         m_topMotorPID.setReference(motorSpeed, ControlType.kVelocity);
         m_bottomPID.setReference(motorSpeed, ControlType.kVelocity);
+        isShooterOn = true;
+    }
+    public void shooterHalf(){
+        m_topMotorPID.setReference(halfspeed, ControlType.kVelocity);
+        m_bottomPID.setReference(halfspeed, ControlType.kVelocity);
         isShooterOn = true;
     }
 

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 public class Arm extends SubsystemBase {
   private CANSparkMax m_motor;
@@ -25,12 +26,13 @@ public class Arm extends SubsystemBase {
       m_motor = new CANSparkMax(Constants.arm.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_motor.restoreFactoryDefaults();
       m_encoder = m_motor.getEncoder();
-      m_encoder.setPositionConversionFactor(12.5);
+      m_encoder.setPositionConversionFactor(4.4);
       m_encoder.setPosition(0.0);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
       m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, Constants.arm.forwardLimit);
       m_motor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, Constants.arm.reverseLimit);
+      m_motor.setIdleMode(IdleMode.kBrake);
 
       m_pidController = m_motor.getPIDController();
       m_pidController.setP(Constants.arm.kP);
@@ -50,7 +52,7 @@ public class Arm extends SubsystemBase {
 
   public void move(double degrees) {
     target = degrees;
-    var feedforward = m_feedforward.calculate(Rotation2d.fromDegrees(90+m_encoder.getPosition()).getRadians(), 0);
+    var feedforward = m_feedforward.calculate(Rotation2d.fromDegrees(degrees+90).getRadians(), 0);
     m_pidController.setFF(feedforward);
     m_pidController.setReference(target, ControlType.kPosition);
     DriverStation.reportWarning(String.format("Armm Position %f", m_encoder.getPosition()), false);
@@ -101,6 +103,7 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ArmPosition", m_encoder.getPosition());
+    SmartDashboard.putNumber("Arm voltage", m_motor.getAppliedOutput());
     // SmartDashboard.getNumber("target", target );
   }
 }

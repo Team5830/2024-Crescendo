@@ -4,30 +4,29 @@
 
 package frc.robot.commands;
 
-/*import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import java.util.function.DoubleSupplier;
+
+import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
+
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.Constants;
 import frc.robot.Constants.*;
-import edu.wpi.first.wpilibj2.command.InstantCommand;*/
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public final class AutonomousCommandA extends SequentialCommandGroup {
   /** Example static factory for an autonomous command. */
 
-  private AutonomousCommandA(/*Flywheel m_flywheel, Drivetrain m_drivetrain, Intake m_intake, Arm m_arm */) {
+  public AutonomousCommandA(Flywheel m_flywheel, SwerveDrive m_drivetrain, Intake m_intake, Arm m_arm, DoubleSupplier periodSeconds ) {
     addCommands(
-     /* new Move(-2.5, m_drivtrain),
-     new Turn(45 degrees right, m_drivetrain), 
-     new Move(-3.0, m_drivetrain),
-     new Postioning(m_arm, Position2.armangle),
-     new Shoot(m_flywheel, halfspeed)
-     New Positioning(m_arm, Position1.armangle)
-     new Stop(m_intake, m_flywheel, m_drivetrain)
-     */ 
+    new Move(m_drivetrain, 1),
+    new Shoot(m_flywheel,m_intake),
+    new WaitCommand(0.2),
+    new MoveArm(m_arm, -94) //Move arm for pickup
     );
   }
 }
