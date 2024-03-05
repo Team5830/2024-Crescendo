@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
  */
 public final class Constants {
   public static final class DriveTrain {
-    public static final double maxSpeed = 3.0; // 4 meters per second
+    public static final double maxSpeed = 10.0; // 4 meters per second
     public static final double maxAngularVelocity = 40; // revolutions per second
     public static final double maxAngularAcceleration = 40; // revolutions per second squared
     public static final double AngleTolerance = 5;
@@ -97,7 +97,7 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final int motorChanelTop = 14;
     public static final int motorChanelBottom = 17;
-    public static final double halfspeed = shooterMotorSpeed/2;
+    //public static final double halfspeed = shooterMotorSpeed/2;
   }
 
   public static final class arm {
@@ -156,7 +156,7 @@ public final class Constants {
     public static final double kP = 0.1;
     public static final double kI = 0.000000;
     public static final double kD = 0.0;
-    public static final double positionTolerance = 1.0; // Measured in degrees
+    public static final double positionTolerance = 2.0; // Measured in degrees
     public static final double velocityTolerance = 5; // Degrees per seconds
     public static final double targetValue = 0;
   }

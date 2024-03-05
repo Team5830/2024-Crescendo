@@ -134,6 +134,9 @@ public class SwerveDrive extends SubsystemBase {
   public void resetHeading() {
     ahrs.reset();
   }
+  public double getdriveoffset(){
+    return (m_backLeft.Offset()+m_backRight.Offset()+m_frontLeft.Offset()+m_frontRight.Offset())/4;
+  }
   public double getRoll() {
     return ahrs.getRoll();
   }

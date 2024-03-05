@@ -7,10 +7,10 @@ import frc.robot.subsystems.SwerveDrive;
 import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 
-public class Move extends PIDCommand {
-  public Move(SwerveDrive drive,double targetDistanceMeters) {
+public class Movey extends PIDCommand {
+  public Movey(SwerveDrive drive,double targetDistanceY) {
     super(new PIDController(DriveTrain.driveControllerKp, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd),
-        drive::getDistance, drive.getDistance()+targetDistanceMeters, output -> drive.drive(output, output,0,false,0), drive);
+        drive::getdriveoffset, drive.getdriveoffset()+targetDistanceY, output -> drive.drive(0, output,0,false,0), drive);
 
     getController()
         .setTolerance(DriveTrain.lAlignTolerance, DriveTrain.lMaxAlignSpeed);

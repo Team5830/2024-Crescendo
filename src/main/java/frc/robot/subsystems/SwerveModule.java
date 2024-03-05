@@ -90,8 +90,8 @@ public class SwerveModule {
       updateDrivePIDValues(Constants.DriveTrain.driveControllerKp,Constants.DriveTrain.driveControllerKi,Constants.DriveTrain.driveControllerKd);
   
       
-      m_driveMotor.setSmartCurrentLimit(40);
-      m_turningMotor.setSmartCurrentLimit(40);
+      m_driveMotor.setSmartCurrentLimit(50);
+      m_turningMotor.setSmartCurrentLimit(30);
       m_driveMotor.burnFlash();
       m_turningMotor.burnFlash();
     } catch (RuntimeException ex) {

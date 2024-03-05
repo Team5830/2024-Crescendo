@@ -22,10 +22,12 @@ public final class AutonomousCommandA extends SequentialCommandGroup {
   /** Example static factory for an autonomous command. */
 
   public AutonomousCommandA(Flywheel m_flywheel, SwerveDrive m_drivetrain, Intake m_intake, Arm m_arm, DoubleSupplier periodSeconds ) {
-    addCommands(
-    new Move(m_drivetrain, 1),
+    new SequentialCommandGroup(
+    new Movex(m_drivetrain, 1),
+    new Movey(m_drivetrain, 1),
     new Shoot(m_flywheel,m_intake),
     new WaitCommand(0.2),
+    new Movey(m_drivetrain, -2),
     new MoveArm(m_arm, -94) //Move arm for pickup
     );
   }

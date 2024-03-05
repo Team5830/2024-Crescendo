@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-/*import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -12,22 +12,18 @@ import java.util.function.DoubleSupplier;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
-import edu.wpi.first.wpilibj2.command.InstantCommand;*/
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public final class AutonomousCommandC extends SequentialCommandGroup {
   /** Example static factory for an autonomous command. */
 
-  public AutonomousCommandC(/*Flywheel m_flywheel, Drivetrain m_drivetrain, Intake m_intake, Arm m_arm */) {
-    addCommands(
-     /*new Shoot(m_flywheel),
-      wait(.75),
-      new Move(-3.0, m_drivetrain),
-     new Postioning(m_intake, Position2.intangle, Start.m_intake),
-     new Move(-1),
-     new Positioning(m_intake, Position1.intake)
-     new Stop(m_intake, m_flywheel, m_drivetrain)
-     */ 
+  public AutonomousCommandC(Flywheel m_flywheel, SwerveDrive m_drivetrain, Intake m_intake, Arm m_arm ) {
+    new SequentialCommandGroup(
+     new MoveArm(m_arm, -50).withTimeout(2),
+     new Shoot(m_flywheel, m_intake),
+     new WaitCommand(0.75),
+     new Movex(m_drivetrain, -1)
     );
     
   }

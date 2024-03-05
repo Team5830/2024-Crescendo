@@ -51,16 +51,6 @@ public class RobotContainer {
    */
   public RobotContainer(DoubleSupplier getPeriod) {
     this.getPeriod = getPeriod;
-
-    /*SmartDashboard.putData("Position1" new Positioning(m_armangle, Position1.armangle))
-      SmartDashboard.putData("Position2" new Positioning(m_armangle, Position2.armangle))
-      SmartDashboard.putData("Pickup" new Pickup(m_intake))
-      SmartDashboard.putData("Shoot" new Shoot(m_flywheel))
-      SmartDashboard.putData("AutonomousCommandC" new AutonomousCommandC(m_flywheel, m_drivetrain, m_intake, m_arm))
-      SmartDashboard.putData("AutonomousCommandR" new AutonomousCommandR(m_flywheel, m_drivetrain, m_intake, m_arm))
-      SmartDashboard.putData("AutonomousCommandL" new AutonomousCommandL(m_flywheel, m_drivetrain, m_intake, m_arm))
-      SmartDashboard.putData("AutonomousCommandA" new AutonomousCommandA(m_flywheel, m_drivetrain, m_intake, m_arm)) */
-      // SmartDashboard.putData("Shoot", new Shoot(m_flywheel));
     //Configure the trigger bindings
     SmartDashboard.putNumber("LeftX", xboxController.getLeftX());
     SmartDashboard.putNumber("LeftY", xboxController.getLeftY());
@@ -91,7 +81,7 @@ public class RobotContainer {
       this.getPeriod));
 
     m_chooser.addOption("Auto A", new AutonomousCommandA(m_flywheel, m_swerveDrive, m_intake, m_arm, this.getPeriod));
-    m_chooser.addOption("Auto C", new AutonomousCommandC());
+    m_chooser.addOption("Auto C", new AutonomousCommandC(m_flywheel, m_swerveDrive, m_intake, m_arm));
     m_chooser.addOption("Auto R", new AutonomousCommandL());
     m_chooser.addOption("Auto L", new AutonomousCommandR());
     SmartDashboard.putData(m_chooser);
@@ -111,7 +101,6 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
-
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
@@ -119,7 +108,6 @@ public class RobotContainer {
     xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
     xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
     xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
-    xboxController.x().onTrue(new ShootA(m_flywheel, m_intake));
     xboxController.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
@@ -151,6 +139,15 @@ public class RobotContainer {
       new InstantCommand(m_intake::stopFirstIntake),
       new InstantCommand(m_flywheel::shooterOff)
     ));
+    xboxController.x().onTrue(new SequentialCommandGroup(
+      new InstantCommand(m_flywheel::shooterHalf),
+      new WaitCommand(1),
+      new InstantCommand(m_intake::startFirstIntake),
+      new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+      new WaitCommand(.5),
+      new InstantCommand(m_intake::stopFirstIntake),
+      new InstantCommand(m_flywheel::shooterOff)
+    ));
   }
 
   /**
@@ -158,7 +155,16 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
- // public Command getAutonomousCommand() {
-
-  //}
+  public Command getAutonomousCommand() {
+    return new SequentialCommandGroup(
+    new MoveArm(m_arm, -50).withTimeout(2),
+    new WaitCommand(1),
+    new InstantCommand(m_flywheel::shooterGo),
+    new WaitCommand(1),
+    new InstantCommand(m_intake::startFirstIntake),
+    new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+    new WaitCommand(0.5),
+    new InstantCommand(m_intake::stopFirstIntake),
+    new InstantCommand(m_flywheel::shooterOff));
+  }
 }
