@@ -22,6 +22,11 @@ public final class Constants {
     public static final double turnTarget = 90;
     public static final double lAlignTolerance = 5.0;
     public static final double lMaxAlignSpeed = 4.0;
+    public static final double wheelCircumferenceInches = 12.5;
+    public static final double driveGearRatio = 6.55;
+   
+
+
 
     // PIDs
     public static final double driveControllerKp = 0.12;

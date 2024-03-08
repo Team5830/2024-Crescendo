@@ -75,9 +75,9 @@ public class SwerveModule {
       m_positionEncoder = m_driveMotor.getEncoder();
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
-      m_positionEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
+      m_positionEncoder.setPositionConversionFactor(Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54/ 100);
       m_angleEncoder.setPositionConversionFactor(360);
-      m_positionEncoder.setVelocityConversionFactor((Math.PI * (2 * 2.54 / 100)) / 60 / 10);
+      m_positionEncoder.setVelocityConversionFactor(Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54/ 100 / 60);
       m_angleEncoder.setZeroOffset(zeroOffset);
       m_turningPIDController.setFeedbackDevice(m_angleEncoder);
       m_turningPIDController.setPositionPIDWrappingMaxInput(359);
