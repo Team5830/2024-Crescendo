@@ -7,7 +7,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Utils;
+import frc.robot.utils.Utils;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -140,7 +140,7 @@ public class Climber extends SubsystemBase {
 
   public void leftChange(double value) {
     m_leftPIDController.setReference(Utils.clamp(
-        m_leftEncoder.getPosition()+value,
+        m_leftEncoder.getPosition() + value,
         (double) Constants.climber.downLeftHeight,
         (double) Constants.climber.upLeftHeight),
         ControlType.kPosition);
@@ -148,7 +148,7 @@ public class Climber extends SubsystemBase {
 
   public void rightChange(double value) {
     m_rightPIDController.setReference(Utils.clamp(
-        m_rightEncoder.getPosition()-value,
+        m_rightEncoder.getPosition() - value,
         (double) Constants.climber.upRightHeight,
         (double) Constants.climber.downRightHeight),
         ControlType.kPosition);
