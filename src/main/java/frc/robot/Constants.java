@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -97,7 +98,7 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final int motorChanelTop = 14;
     public static final int motorChanelBottom = 17;
-    //public static final double halfspeed = shooterMotorSpeed/2;
+    // public static final double halfspeed = shooterMotorSpeed/2;
   }
 
   public static final class arm {
@@ -151,7 +152,7 @@ public final class Constants {
     public static final double minOutput = -.4;
     public static final double tolerance = 5.0;
   }
-  
+
   public static final class climberLeveling {
     public static final double kP = 0.1;
     public static final double kI = 0.000000;
@@ -176,5 +177,25 @@ public final class Constants {
     public static final double rAlignTolerance = 0.2;
     public static final double HighSpeed = 0.9;
     public static final double LowSpeed = 0.3;
-}
+  }
+
+  public static final class vision {
+    // Constants such as camera and target height stored. Change per robot and goal!
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+
+    // Angle between horizontal and the camera.
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+
+    // How far from the target we want to be
+    public static final double goalRangeMeters = Units.feetToMeters(3);
+
+    public static final double linearP = 0.1;
+    public static final double linearI = 0.0;
+    public static final double linearD = 0.0;
+
+    public static final double angularP = 0.1;
+    public static final double angularI = 0.0;
+    public static final double angularD = 0.0;
+  }
 }

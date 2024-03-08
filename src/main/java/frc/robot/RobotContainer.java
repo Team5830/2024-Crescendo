@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final CommandXboxController xboxController = new CommandXboxController(Constants.controller.xboxPort);
   private final GenericHID flyskyController = new GenericHID(Constants.controller.flyskyPort);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
+  private final Vision m_vision = new Vision();
   private final Arm m_arm = new Arm();
   private final Flywheel m_flywheel = new Flywheel();
   private final Intake m_intake = new Intake();
@@ -45,13 +47,12 @@ public class RobotContainer {
 
   private SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer(DoubleSupplier getPeriod) {
     this.getPeriod = getPeriod;
-    //Configure the trigger bindings
+    // Configure the trigger bindings
     SmartDashboard.putNumber("LeftX", xboxController.getLeftX());
     SmartDashboard.putNumber("LeftY", xboxController.getLeftY());
     SmartDashboard.putNumber("RightX", xboxController.getRightX());
@@ -65,20 +66,22 @@ public class RobotContainer {
 
     // Configure the trigger and button bindings
     configureBindings();
-   
+
     m_swerveDrive.setDefaultCommand(new DriveTeleop(
-      m_swerveDrive,
-      m_xSpeedLimiter,
-      m_ySpeedLimiter,
-      m_rotLimiter,
-      ()->flyskyController.getRawAxis(0),
-      ()->-flyskyController.getRawAxis(1),
-      ()->flyskyController.getRawAxis(3)/2,
-      // xboxController::getLeftX,
-      // xboxController::getLeftY,
-      // xboxController::getRightX,
-      false,
-      this.getPeriod));
+        m_swerveDrive,
+        m_vision,
+        m_xSpeedLimiter,
+        m_ySpeedLimiter,
+        m_rotLimiter,
+        () -> flyskyController.getRawAxis(0),
+        () -> -flyskyController.getRawAxis(1),
+        () -> flyskyController.getRawAxis(3) / 2,
+        () -> flyskyController.getRawButton(0),
+        // xboxController::getLeftX,
+        // xboxController::getLeftY,
+        // xboxController::getRightX,
+        false,
+        this.getPeriod));
 
     m_chooser.addOption("Auto A", new AutonomousCommandA(m_flywheel, m_swerveDrive, m_intake, m_arm, this.getPeriod));
     m_chooser.addOption("Auto C", new AutonomousCommandC(m_flywheel, m_swerveDrive, m_intake, m_arm));
@@ -86,7 +89,7 @@ public class RobotContainer {
     m_chooser.addOption("Auto L", new AutonomousCommandR());
     SmartDashboard.putData(m_chooser);
   }
-    
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the {@link Trigger#Trigger(java.util.function.BooleanSupplier)}
@@ -108,46 +111,48 @@ public class RobotContainer {
     xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
     xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
     xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
-    xboxController.rightBumper().onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
+    xboxController.rightBumper()
+        .onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
 
-    xboxController.axisGreaterThan(1,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(1))));
-    xboxController.axisLessThan(1,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.leftChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(1))));
-    xboxController.axisGreaterThan(5,Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(5))));
-    xboxController.axisLessThan(5,-Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(()->m_climber.rightChange(-Constants.controller.climberAxesMultiplier*xboxController.getRawAxis(5))));
+    xboxController.axisGreaterThan(1, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
+    xboxController.axisLessThan(1, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
+    xboxController.axisGreaterThan(5, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
+    xboxController.axisLessThan(5, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
 
     xboxController.leftTrigger().onTrue(new SequentialCommandGroup(
-      new InstantCommand(m_intake::startFirstIntake),
-      new WaitUntilCommand(m_intake::noteSensorIsDetected),
-      new InstantCommand(m_intake::reverseFirstIntake),
-      new WaitCommand(0.12),
-      new InstantCommand(m_intake::stopFirstIntake)
-    ));
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsDetected),
+        new InstantCommand(m_intake::reverseFirstIntake),
+        new WaitCommand(0.12),
+        new InstantCommand(m_intake::stopFirstIntake)));
     xboxController.back().onTrue(new SequentialCommandGroup(
-      new InstantCommand(m_intake::reverseFirstIntake),
-      new WaitCommand(1),
-      new InstantCommand(m_intake::stopFirstIntake)
-    ));
-    // xboxController.leftBumper().onFalse(new InstantCommand(m_intake::stopFirstIntake));
+        new InstantCommand(m_intake::reverseFirstIntake),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::stopFirstIntake)));
+    // xboxController.leftBumper().onFalse(new
+    // InstantCommand(m_intake::stopFirstIntake));
     xboxController.rightTrigger().onTrue(new SequentialCommandGroup(
-      new InstantCommand(m_flywheel::shooterGo),
-      new WaitCommand(1),
-      new InstantCommand(m_intake::startFirstIntake),
-      new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-      new WaitCommand(0.5),
-      new InstantCommand(m_intake::stopFirstIntake),
-      new InstantCommand(m_flywheel::shooterOff)
-    ));
+        new InstantCommand(m_flywheel::shooterGo),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+        new WaitCommand(0.5),
+        new InstantCommand(m_intake::stopFirstIntake),
+        new InstantCommand(m_flywheel::shooterOff)));
     xboxController.x().onTrue(new SequentialCommandGroup(
-      new InstantCommand(m_flywheel::shooterHalf),
-      new WaitCommand(1),
-      new InstantCommand(m_intake::startFirstIntake),
-      new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-      new WaitCommand(.5),
-      new InstantCommand(m_intake::stopFirstIntake),
-      new InstantCommand(m_flywheel::shooterOff)
-    ));
+        new InstantCommand(m_flywheel::shooterHalf),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+        new WaitCommand(.5),
+        new InstantCommand(m_intake::stopFirstIntake),
+        new InstantCommand(m_flywheel::shooterOff)));
   }
 
   /**
@@ -157,14 +162,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new SequentialCommandGroup(
-    new MoveArm(m_arm, -50).withTimeout(2),
-    new WaitCommand(1),
-    new InstantCommand(m_flywheel::shooterGo),
-    new WaitCommand(1),
-    new InstantCommand(m_intake::startFirstIntake),
-    new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-    new WaitCommand(0.5),
-    new InstantCommand(m_intake::stopFirstIntake),
-    new InstantCommand(m_flywheel::shooterOff));
+        new MoveArm(m_arm, -50).withTimeout(2),
+        new WaitCommand(1),
+        new InstantCommand(m_flywheel::shooterGo),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+        new WaitCommand(0.5),
+        new InstantCommand(m_intake::stopFirstIntake),
+        new InstantCommand(m_flywheel::shooterOff));
   }
 }
