@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
+import org.ejml.dense.row.decomposition.eig.SwitchingEigenDecomposition_DDRM;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,10 +35,10 @@ public class RobotContainer {
   private final GenericHID flyskyController = new GenericHID(Constants.controller.flyskyPort);
   private final SwerveDrive m_swerveDrive = new SwerveDrive();
   private final Vision m_vision = new Vision();
-  // private final Arm m_arm = new Arm();
-  // private final Flywheel m_flywheel = new Flywheel();
-  // private final Intake m_intake = new Intake();
-  // private final Climber m_climber = new Climber();
+  private final Arm m_arm = new Arm();
+  private final Flywheel m_flywheel = new Flywheel();
+  private final Intake m_intake = new Intake();
+  private final Climber m_climber = new Climber();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xSpeedLimiter = new SlewRateLimiter(Constants.controller.xRateLimit);
@@ -63,7 +65,12 @@ public class RobotContainer {
     SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
     SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
     SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnTarget);
-
+    //Add Screen Buttons
+    SmartDashboard.putData("Intake Position",new Positioning(m_arm, Constants.arm.positionIntake));
+    SmartDashboard.putData("Shoot Position",new Positioning(m_arm, Constants.arm.positionShoot));
+    SmartDashboard.putData("Upright Position",new Positioning(m_arm, Constants.arm.positionUpright));
+    SmartDashboard.putData("Shoot",new Shoot(m_flywheel,m_intake) );
+    //SmartDashboard.putData("Pickup",new Pickup );
     // Configure the trigger and button bindings
     configureBindings();
 
