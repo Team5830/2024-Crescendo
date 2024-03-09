@@ -186,21 +186,21 @@ public final class Constants {
 
   public static final class vision {
     // Constants such as camera and target height stored. Change per robot and goal!
-    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(22);
+    public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(50);
 
     // Angle between horizontal and the camera.
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(5);
 
     // How far from the target we want to be
-    public static final double goalRangeMeters = Units.feetToMeters(3);
+    public static final double goalRangeMeters = Units.feetToMeters(1);
 
-    public static final double linearP = 0.1;
+    public static final double linearP = 2;
     public static final double linearI = 0.0;
-    public static final double linearD = 0.0;
+    public static final double linearD = 0.05;
 
-    public static final double angularP = 0.1;
+    public static final double angularP = 0.2;
     public static final double angularI = 0.0;
-    public static final double angularD = 0.0;
+    public static final double angularD = 0.1;
   }
 }

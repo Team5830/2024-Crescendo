@@ -72,7 +72,6 @@ public class DriveTeleop extends Command {
   @Override
   public void execute() {
     var visionResult = new VisionResult();
-
     if (enableVisionMovement.getAsBoolean()) {
       visionResult = vision.calculateTargetMovement();
     }
@@ -101,7 +100,9 @@ public class DriveTeleop extends Command {
       rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
     }
 
-    SmartDashboard.putNumber("joystick rot", rotSpeed.getAsDouble());
+        SmartDashboard.putNumber("swerve: x", x);
+       SmartDashboard.putNumber("swerve: y", y);
+       SmartDashboard.putNumber("swerve: r", rot);
     swerveDrive.drive(x, y, rot, fieldRelative, periodSeconds.getAsDouble());
   }
 
