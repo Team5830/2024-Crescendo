@@ -73,7 +73,7 @@ public class DriveTeleop extends Command {
   public void execute() {
     var visionResult = new VisionResult();
     if (enableVisionMovement.getAsBoolean()) {
-      visionResult = vision.calculateTargetMovement();
+      //visionResult = vision.calculateTargetMovement();
     }
 
     double x;

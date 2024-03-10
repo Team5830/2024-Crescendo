@@ -124,6 +124,20 @@ public class SwerveDrive extends SubsystemBase {
         Timer.getFPGATimestamp() - 0.3);
   }
 
+  public void resetOdometry(Pose2d pose){
+    m_poseEstimator.resetPosition(Constants.DriveTrain.invertNavX ? ahrs.getRotation2d().unaryMinus() : ahrs.getRotation2d(), 
+      new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+        }, pose);
+  }
+
+  public Pose2d getPose(){
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
   public double getDistance() {
     // This most won't work and needs to be changed
     return Math.sqrt(Math.pow(m_odometry.getPoseMeters().getX(), 2)+Math.pow(m_odometry.getPoseMeters().getY(), 2));
@@ -158,5 +172,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
+    updateOdometry();
   }
 }
