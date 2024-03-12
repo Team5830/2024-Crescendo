@@ -5,57 +5,69 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive extends SubsystemBase {
-  private AHRS ahrs;
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
-
-  private final SwerveModule m_frontLeft = new SwerveModule(
+  private final Translation2d m_frontLeftLocation = new Translation2d(0.438, -0.438);
+  private final Translation2d m_frontRightLocation = new Translation2d(0.438, 0.438);
+  private final Translation2d m_backLeftLocation = new Translation2d(-0.438, -0.438);
+  private final Translation2d m_backRightLocation = new Translation2d(-0.438, 0.438);
+  private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
+    
+    //ahrs.reset();
+  public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
-      Constants.DriveTrain.frontLeftTurnChannel);
-  private final SwerveModule m_frontRight = new SwerveModule(
+      Constants.DriveTrain.frontLeftTurnChannel,
+      false, true, 277);
+  public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
-      Constants.DriveTrain.frontRightTurnChannel);
-  private final SwerveModule m_backLeft = new SwerveModule(
+      Constants.DriveTrain.frontRightTurnChannel,
+      false, true, 326);
+  public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
-      Constants.DriveTrain.backLeftTurnChannel);
-  private final SwerveModule m_backRight = new SwerveModule(
+      Constants.DriveTrain.backLeftTurnChannel,
+      false, true, 229);
+  public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
-      Constants.DriveTrain.backRightTurnChannel);
-
+      Constants.DriveTrain.backRightTurnChannel,
+      false, true, 222);
 
   private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+  private final  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+    m_kinematics, ahrs.getRotation2d(),
+    new SwerveModulePosition[] {
+      m_frontLeft.getPosition(),
+      m_frontRight.getPosition(),
+      m_backLeft.getPosition(),
+      m_backRight.getPosition()
+    }, Constants.DriveTrain.initialOdometry
+  );
 
   /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
   below are robot specific, and should be tuned. */
   private final SwerveDrivePoseEstimator m_poseEstimator =
       new SwerveDrivePoseEstimator(
           m_kinematics,
-          ahrs.getRotation2d(),
+          Constants.DriveTrain.invertNavX ? ahrs.getRotation2d().unaryMinus() : ahrs.getRotation2d(),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -65,17 +77,6 @@ public class SwerveDrive extends SubsystemBase {
           new Pose2d(),
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
-  public SwerveDrive() {
-    try{
-      AHRS ahrs = new AHRS(SerialPort.Port.kUSB1);
-      //odometry = new DifferentialDriveOdometry(ahrs.getRotation2d(), m_frontLeftLocation.);
-    } catch(RuntimeException ex){
-        DriverStation.reportError("Error Configuring Drivetrain" + ex.getMessage(), true);
-    }
-    //ahrs.reset();
-    
-  }
 
   /**
    * Method to drive the robot using joystick info.
@@ -93,9 +94,10 @@ public class SwerveDrive extends SubsystemBase {
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeed, ySpeed, rot, m_poseEstimator.getEstimatedPosition().getRotation())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot),
+                : new ChassisSpeeds(ySpeed, -xSpeed, rot),
             periodSeconds));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
+
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -105,7 +107,7 @@ public class SwerveDrive extends SubsystemBase {
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_poseEstimator.update(
-        ahrs.getRotation2d(),
+        Constants.DriveTrain.invertNavX ? ahrs.getRotation2d().unaryMinus() : ahrs.getRotation2d(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -120,5 +122,41 @@ public class SwerveDrive extends SubsystemBase {
         ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
             m_poseEstimator.getEstimatedPosition()),
         Timer.getFPGATimestamp() - 0.3);
+  }
+
+  public double getDistance() {
+    // This most won't work and needs to be changed
+    return Math.sqrt(Math.pow(m_odometry.getPoseMeters().getX(), 2)+Math.pow(m_odometry.getPoseMeters().getY(), 2));
+  }
+  public double getAngle() {
+    return ahrs.getAngle();
+  }
+  public void resetHeading() {
+    ahrs.reset();
+  }
+  public double getdriveoffset(){
+    return (m_backLeft.Offset()+m_backRight.Offset()+m_frontLeft.Offset()+m_frontRight.Offset())/4;
+  }
+  public double getRoll() {
+    return ahrs.getRoll();
+  }
+
+  @Override
+  public void periodic() {
+    //SmartDashboard.putNumber("TurnP", m_frontLeft.getPValue());
+    //SmartDashboard.putNumber("TurnI", m_frontLeft.getIValue());
+    //SmartDashboard.putNumber("TurnD", m_frontLeft.getDValue());
+    SmartDashboard.putNumber("TurnTarget", 0);
+    SmartDashboard.putNumber("FrontLeft Angle", m_frontLeft.Angle());
+    SmartDashboard.putNumber("FrontLeft Position", m_frontLeft.Offset());
+    SmartDashboard.putNumber("FrontRight Angle", m_frontRight.Angle());
+    SmartDashboard.putNumber("FrontRight Position", m_frontRight.Offset());
+    SmartDashboard.putNumber("BackLeft Angle", m_backLeft.Angle());
+    SmartDashboard.putNumber("BackLeft Position", m_backLeft.Offset());
+    SmartDashboard.putNumber("BackRight Angle", m_backRight.Angle());
+    SmartDashboard.putNumber("BackRight Position", m_backRight.Offset());
+    SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
   }
 }
