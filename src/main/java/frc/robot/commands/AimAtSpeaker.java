@@ -6,9 +6,12 @@ package frc.robot.commands;
 
 import java.util.Optional;
 import java.util.List;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,29 +22,28 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Vision;
 import frc.robot.utils.VisionResult;
 
-public class AimShoot extends Command {
-  /** Creates a new AimShoot. */
+public class AimAtSpeaker extends Command {
   private Flywheel m_flywheel;
   private Intake m_intake;
   private SwerveDrive m_drive;
   private Vision m_vision;
   private int targetTag;
-  private PhotonTrackedTarget m_photonTarget;
-  private List<PhotonTrackedTarget> targetList;
   private boolean finished; 
   private double range,yaw;
   private PIDController forwardController;
   private PIDController turnController;
-  private VisionResult vresult;
-  public AimShoot(Flywheel subsystemFly,Intake subsystemIntake, SwerveDrive subsystemDrive, Vision subsystemVision) {
+  private Translation2d translationToTarget;
+  private Rotation2d rotationToTarget;
+
+  public AimAtSpeaker(Flywheel subsystemFly,Intake subsystemIntake, SwerveDrive subsystemDrive, Vision subsystemVision) {
     m_flywheel = subsystemFly;
     m_intake = subsystemIntake;
-    m_flywheel = subsystemFly;
+    m_drive = subsystemDrive;
     m_intake = subsystemIntake;
     m_vision = subsystemVision;
     finished = false;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_flywheel,m_intake,m_flywheel,m_intake, m_vision);
+    addRequirements(m_flywheel,m_intake,m_drive,m_intake, m_vision);
     
   }
 
@@ -67,41 +69,52 @@ public class AimShoot extends Command {
             Constants.vision.angularD);
   }
 
-  public VisionResult calculateTargetMovement() {
-    targetList = m_vision.getAprilTagVisionResult(targetTag);
-      if (targetList.isEmpty()){
+  public void DriveToTag() {
+    Transform3d tag3dTranslation;
+    double mag;
+    m_vision.getAprilTagVisionResult(targetTag);
+      if (m_vision.matched.isEmpty()){
         DriverStation.reportError("Target: " + targetTag+" not in view", false);
-        return new VisionResult(0,0);
+        //translationToTarget = new Translation2d(0,0);
+        //rotationToTarget = new Rotation2d(0);
+        finished = true;
       }
-      m_photonTarget = targetList.get(0);
-      range = m_vision.getAprilTagRange(targetTag);
-      yaw = m_vision.getAprilTagYaw(targetTag);
-      if (range < 5 && yaw < 10){
-          DriverStation.reportWarning("Range to "+targetTag+" "+range+" meters Angle "+yaw, false);
-          return new VisionResult(forwardController.calculate(range, Constants.vision.goalRangeMeters), -turnController.calculate(yaw, 0));
-      }else{
-        DriverStation.reportWarning("Tag is out of range", null);
-      }
-      return new VisionResult(0,0);
+      if (!finished){
+        range = m_vision.getAprilTagRange();
+        yaw = m_vision.getAprilTagYaw();
+        //tag3dTranslation = m_vision.getAprilTagTransform();
+        //translationToTarget = new Translation2d(tag3dTranslation.getX(),tag3dTranslation.getY()); //Ignore Z translation
+        //Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose() ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the vision measurement
+        if (range < 3 && yaw < 10){ // Only drive if Tag is within 3 meters and yaw is valid
+            DriverStation.reportWarning("Range to "+targetTag+" "+range+" meters Angle "+yaw, false);
+            // Scale X,Y proportionally 
+            mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
+            m_drive.drive(mag*Math.cos(yaw),mag*Math.sin(yaw), -turnController.calculate(yaw*(180.0/Math.PI), 0),false);
+        }else{
+          DriverStation.reportWarning("Tag is out of range", null);
+        }
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    vresult = calculateTargetMovement();
-    m_drive.drive() .vresult.forwardSpeed,vresult.rotationSpeed);
-
+    DriveToTag();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (range < 5 && yaw < )
+  
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // Choose target specs... range, angle that is OK to shoot from
+    if (range < 5 && yaw < 0.5 ){
+      finished = true;
+    }
+    return finished;
   }
 }

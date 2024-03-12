@@ -100,10 +100,10 @@ public class DriveTeleop extends Command {
       rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
     }
 
-        SmartDashboard.putNumber("swerve: x", x);
+       SmartDashboard.putNumber("swerve: x", x);
        SmartDashboard.putNumber("swerve: y", y);
        SmartDashboard.putNumber("swerve: r", rot);
-    swerveDrive.drive(x, y, rot, fieldRelative, periodSeconds.getAsDouble());
+    swerveDrive.drive(x, y, rot, fieldRelative);
   }
 
   // Called once the command ends or is interrupted.
