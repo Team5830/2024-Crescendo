@@ -54,10 +54,12 @@ public class AimAtSpeaker extends Command {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
         if (ally.get() == Alliance.Red) {
-            targetTag = 3;//4
+            targetTag = 4;//3
+            DriverStation.reportWarning("Red Alliance: Speaker "+targetTag,false);
         }
         if (ally.get() == Alliance.Blue) {
-            targetTag = 1;//2
+            targetTag = 4;//1;//2
+            DriverStation.reportWarning("Blue Alliance: Speaker "+targetTag,false);
         }
     }
     else {
@@ -85,13 +87,13 @@ public class AimAtSpeaker extends Command {
         //tag3dTranslation = m_vision.getAprilTagTransform();
         //translationToTarget = new Translation2d(tag3dTranslation.getX(),tag3dTranslation.getY()); //Ignore Z translation
         //Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose() ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the vision measurement
-        if (range < 3 && yaw < 10){ // Only drive if Tag is within 3 meters and yaw is valid
+        if (range < 30 && yaw < 100){ // Only drive if Tag is within 3 meters and yaw is valid
             DriverStation.reportWarning("Range to "+targetTag+" "+range+" meters Angle "+yaw, false);
             // Scale X,Y proportionally 
             mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
             m_drive.drive(mag*Math.cos(yaw),mag*Math.sin(yaw), -turnController.calculate(yaw*(180.0/Math.PI), 0),false);
         }else{
-          DriverStation.reportWarning("Tag is out of range", null);
+          DriverStation.reportWarning("Tag is out of range", false);
         }
     }
   }

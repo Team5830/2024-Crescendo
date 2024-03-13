@@ -41,7 +41,7 @@ public class Vision extends SubsystemBase {
     //Use to update camera results for specified AprilTag, other methods return info from matched result
     public void getAprilTagVisionResult(int tagNumber ) {
         matched.clear();
-        targets.clear();
+        //targets.clear();
         currentTag = -1;
         result = camera.getLatestResult();
         //Get requested Apriltag from field layout
