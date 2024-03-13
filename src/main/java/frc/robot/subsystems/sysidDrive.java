@@ -17,6 +17,7 @@ import edu.wpi.first.units.Voltage;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -94,13 +95,13 @@ public class sysidDrive extends SubsystemBase {
     // Add the second motors on each side of the drivetrain
     m_leftMotor2.follow(m_leftMotor);
     m_rightMotor2.follow(m_rightMotor);
-    m_leftEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
-    m_rightEncoder.setPositionConversionFactor(12.5 * 2.54 / 6.55 / 100);
+    m_leftEncoder.setPositionConversionFactor(Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54/ 100);
+    m_rightEncoder.setPositionConversionFactor(Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54/ 100);
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     m_rightMotor.setInverted(true);
-
+    m_leftMotor.setInverted(false);
     // Sets the distance per pulse for the encoders
     //m_leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
     //m_rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);

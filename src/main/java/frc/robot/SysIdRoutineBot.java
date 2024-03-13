@@ -23,7 +23,7 @@ public class SysIdRoutineBot {
 
   // The driver's controller
   CommandXboxController m_driverController =
-      new CommandXboxController(Constants.Joystick.port);
+      new CommandXboxController(Constants.controller.xboxPort);
 
   /**
    * Use this method to define bindings between conditions and commands. These are useful for
