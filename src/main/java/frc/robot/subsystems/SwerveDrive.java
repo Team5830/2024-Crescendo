@@ -137,6 +137,13 @@ public class SwerveDrive extends SubsystemBase {
         }, pose);
   }
 
+  public void stopModules() {
+    m_frontLeft.PIDStop();;
+    m_frontRight.PIDStop();
+    m_backLeft.PIDStop();
+    m_backRight.PIDStop();
+  }
+
   public Pose2d getPose(){
     return m_poseEstimator.getEstimatedPosition();
   }

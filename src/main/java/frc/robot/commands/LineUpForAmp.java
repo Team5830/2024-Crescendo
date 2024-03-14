@@ -16,7 +16,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Flywheel;
@@ -38,6 +41,7 @@ public class LineUpForAmp extends Command{
     private PIDController turnController;
     private Translation2d translationToTarget;
     private Rotation2d rotationToTarget;
+    private SequentialCommandGroup finalCommand;
   
     public LineUpForAmp(Flywheel subsystemFly,Intake subsystemIntake, SwerveDrive subsystemDrive, Vision subsystemVision) {
         m_flywheel = subsystemFly;
@@ -48,7 +52,6 @@ public class LineUpForAmp extends Command{
         finished = false;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(m_flywheel,m_intake,m_drive,m_intake, m_vision);
-        
       }
 
       // Called when the command is initially scheduled.
@@ -71,44 +74,44 @@ public class LineUpForAmp extends Command{
                     Constants.vision.linearD);
     turnController = new PIDController(Constants.vision.angularP, Constants.vision.angularI,
             Constants.vision.angularD);
-    
-  }
-
-  private void createTrajectory(){
-        //
-        //eg. finalPose = new Pose2d(2, 0, Rotation2d.fromDegrees(180))
-        //eg. intermediate translation 
-        //
-        Pose2d finalPose = new Pose2d(2, 0, Rotation2d.fromDegrees(180));
-        // 1. Create trajectory settings
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-                Constants.DriveTrain.maxSpeed,
-                Constants.DriveTrain.maxAcceleration)
-                        .setKinematics(m_drive.m_kinematics);
-
-        // 2. Generate trajectory
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(
+    FindTag(); //sets translation and rotation to target
+    //Report values for checking
+    SmartDashboard.putNumber("Translation To Target X",translationToTarget.getX());
+    SmartDashboard.putNumber("Translation To Target Y",translationToTarget.getY());
+    SmartDashboard.putNumber("Rotation To Target ", rotationToTarget.getDegrees());
+    //Use translationToTarget and rotationToTarget to create final pose and intermediate points for trajectory
+    Pose2d finalPose = new Pose2d(2, 0, Rotation2d.fromDegrees(180));
+    List <Translation2d> IntermediatePoints = List.of(
                         new Translation2d(0.5, 0),
                         new Translation2d(1, 0),
                         new Translation2d(1.5, 0)
-                        ),
-                finalPose,
-                trajectoryConfig);
+                        );
+      // 1. Create trajectory settings
+      TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+              Constants.DriveTrain.maxSpeed,
+              Constants.DriveTrain.maxAcceleration)
+                      .setKinematics(m_drive.m_kinematics);
 
-        // 3. Define PID controllers for tracking trajectory
-        PIDController xController = new PIDController(Constants.DriveTrain.driveControllerKp,
-            Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
-        PIDController yController = new PIDController(Constants.DriveTrain.driveControllerKp,
-            Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
-        ProfiledPIDController thetaController = new ProfiledPIDController(
-            Constants.TurnPID.P, Constants.TurnPID.I, Constants.TurnPID.D, 
-                new TrapezoidProfile.Constraints(
-                    Constants.DriveTrain.maxAngularVelocity, 
-                    Constants.DriveTrain.maxAngularAcceleration)
-        );
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+      // 2. Generate trajectory
+      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+              new Pose2d(0, 0, new Rotation2d(0)),
+              IntermediatePoints,
+              finalPose,
+              trajectoryConfig);
+
+      // 3. Define PID controllers for tracking trajectory
+      PIDController xController = new PIDController(Constants.DriveTrain.driveControllerKp,
+          Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
+      PIDController yController = new PIDController(Constants.DriveTrain.driveControllerKp,
+          Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
+      ProfiledPIDController thetaController = new ProfiledPIDController(
+          Constants.TurnPID.P, Constants.TurnPID.I, Constants.TurnPID.D, 
+              new TrapezoidProfile.Constraints(
+                  Constants.DriveTrain.maxAngularVelocity, 
+                  Constants.DriveTrain.maxAngularAcceleration)
+      );
+      // Change to degrees?  
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         // 4. Construct command to follow trajectory
         SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
@@ -120,7 +123,14 @@ public class LineUpForAmp extends Command{
                 thetaController,
                 m_drive::setModuleStates,
                 m_drive);
-    }
+
+    finalCommand = new SequentialCommandGroup(
+        new InstantCommand(() -> m_drive.resetOdometry(trajectory.getInitialPose())),
+        swerveControllerCommand,
+        new InstantCommand(() -> m_drive.stopModules()));
+    //Run it
+    finalCommand.schedule();
+  }
 
   public void FindTag() {
     Transform3d tag3dTranslation;
@@ -128,8 +138,6 @@ public class LineUpForAmp extends Command{
     m_vision.getAprilTagVisionResult(targetTag);
       if (m_vision.matched.isEmpty()){
         DriverStation.reportError("Target: " + targetTag+" not in view", false);
-        //translationToTarget = new Translation2d(0,0);
-        //rotationToTarget = new Rotation2d(0);
         finished = true;
       }
       if (!finished){
@@ -139,13 +147,14 @@ public class LineUpForAmp extends Command{
         translationToTarget = new Translation2d(tag3dTranslation.getX(),tag3dTranslation.getY()); //Ignore Z translation
         rotationToTarget = new Rotation2d(yaw);
         //Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose() ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the vision measurement
-        if (range < 3 && yaw < 10){ // Only drive if Tag is within 3 meters and yaw is valid
+        if (range < 3 && yaw < 100){ // Only drive if Tag is within 3 meters and yaw is valid
             DriverStation.reportWarning("Range to "+targetTag+" "+range+" meters Angle "+yaw, false);
             // Scale X,Y proportionally 
             //mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
             //m_drive.drive(mag*Math.cos(yaw),mag*Math.sin(yaw), -turnController.calculate(yaw*(180.0/Math.PI), 0),false);
         }else{
             DriverStation.reportWarning("Tag is out of range", null);
+            finished=true;
         }
     }
   }
@@ -153,8 +162,7 @@ public class LineUpForAmp extends Command{
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    FindTag(); //sets translation and rotation to target
-    createTrajectory(); // should use translation and rotation to move robot
+    
   }
 
   // Called once the command ends or is interrupted.

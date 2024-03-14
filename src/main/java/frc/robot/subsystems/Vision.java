@@ -97,5 +97,8 @@ public class Vision extends SubsystemBase {
     
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Last Tag",currentTag);
+        SmartDashboard.putNumber("Range to Tag",getAprilTagRange());
+        SmartDashboard.putNumber("Yaw to Tag", getAprilTagYaw());
     }
 }
