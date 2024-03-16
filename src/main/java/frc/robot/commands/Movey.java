@@ -10,7 +10,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 public class Movey extends PIDCommand {
   public Movey(SwerveDrive drive,double targetDistanceY) {
     super(new PIDController(DriveTrain.driveControllerKp, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd),
-        drive::getdriveoffset, drive.getdriveoffset()+targetDistanceY, output -> drive.drive(0, output,0,false,0), drive);
+        drive::getDriveOffset, drive.getDriveOffset()+targetDistanceY, output -> drive.drive(0, output,0,false), drive);
 
     getController()
         .setTolerance(DriveTrain.lAlignTolerance, DriveTrain.lMaxAlignSpeed);

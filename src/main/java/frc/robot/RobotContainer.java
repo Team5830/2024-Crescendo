@@ -76,17 +76,12 @@ public class RobotContainer {
 
     m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
-        m_vision,
         m_xSpeedLimiter,
         m_ySpeedLimiter,
         m_rotLimiter,
         () -> flyskyController.getRawAxis(0),
         () -> -flyskyController.getRawAxis(1),
         () -> flyskyController.getRawAxis(3) / 2,
-        () -> flyskyController.getRawButton(2),
-        // xboxController::getLeftX,
-        // xboxController::getLeftY,
-        // xboxController::getRightX,
         false,
         this.getPeriod));
 
@@ -108,6 +103,16 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
+    xboxController.rightTrigger().onTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
+      /*new SequentialCommandGroup(
+         new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision)
+         new InstantCommand(m_flywheel::shooterGo),
+         new WaitCommand(0.5),
+         new InstantCommand(m_intake::startFirstIntake),
+         new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+         new WaitCommand(0.5),
+         new InstantCommand(m_intake::stopFirstIntake),
+         new InstantCommand(m_flywheel::shooterOff))); */
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new DriveTeleop(m_exampleSubsystem));

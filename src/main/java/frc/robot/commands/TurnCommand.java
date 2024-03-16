@@ -15,7 +15,7 @@ public class TurnCommand extends PIDCommand {
    * @param targetAngleDegrees The angle to turn to
    * @param drive The drive subsystem to use
    */
-  public TurnCommand(double targetAngleDegrees, SwerveDrive drive, DoubleSupplier periodSeconds) {
+  public TurnCommand(double targetAngleDegrees, SwerveDrive drive) {
     super(
         new PIDController(Constants.TurnPID.P, Constants.TurnPID.I, Constants.TurnPID.D),
         // Close loop on heading
@@ -23,7 +23,7 @@ public class TurnCommand extends PIDCommand {
         // Set reference to target
         targetAngleDegrees,
         // Pipe output to turn robot
-        output -> drive.drive(0,0,output,false,periodSeconds.getAsDouble()),
+        output -> drive.drive(0,0,output,false),
         // Require the drive
         drive);
     drive.resetHeading();

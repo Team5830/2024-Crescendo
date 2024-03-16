@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 
 
@@ -67,7 +68,7 @@ public class SwerveDrive extends SubsystemBase {
                                  Constants.DriveTrain.rightFeedforwardAcceleration)
     );
 
-  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+  public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
   private final  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
     m_kinematics, ahrs.getRotation2d(),
@@ -105,21 +106,23 @@ public class SwerveDrive extends SubsystemBase {
    *                      field.
    */
   public void drive(
-      double xSpeed, double ySpeed, double rot, boolean fieldRelative, double periodSeconds) {
-    var swerveModuleStates = m_kinematics.toSwerveModuleStates(
-        ChassisSpeeds.discretize(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, rot, m_poseEstimator.getEstimatedPosition().getRotation())
-                : new ChassisSpeeds(ySpeed, -xSpeed, rot),
-            periodSeconds));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
+      double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+      
+        var swerveModuleStates = m_kinematics.toSwerveModuleStates(
+          fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_poseEstimator.getEstimatedPosition().getRotation())
+          : new ChassisSpeeds(ySpeed, -xSpeed, rot));
 
+        setModuleStates(swerveModuleStates);
+  }
+
+
+  public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
-  }
+    }
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
@@ -141,6 +144,27 @@ public class SwerveDrive extends SubsystemBase {
         Timer.getFPGATimestamp() - 0.3);
   }
 
+  public void resetOdometry(Pose2d pose){
+    m_poseEstimator.resetPosition(Constants.DriveTrain.invertNavX ? ahrs.getRotation2d().unaryMinus() : ahrs.getRotation2d(), 
+      new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+        }, pose);
+  }
+
+  public void stopModules() {
+    m_frontLeft.PIDStop();;
+    m_frontRight.PIDStop();
+    m_backLeft.PIDStop();
+    m_backRight.PIDStop();
+  }
+
+  public Pose2d getPose(){
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
   public double getDistance() {
     // This most won't work and needs to be changed
     return Math.sqrt(Math.pow(m_odometry.getPoseMeters().getX(), 2)+Math.pow(m_odometry.getPoseMeters().getY(), 2));
@@ -151,13 +175,13 @@ public class SwerveDrive extends SubsystemBase {
   public void resetHeading() {
     ahrs.reset();
   }
-  public double getdriveoffset(){
+  public double getDriveOffset(){
     return (m_backLeft.Offset()+m_backRight.Offset()+m_frontLeft.Offset()+m_frontRight.Offset())/4;
   }
   public double getRoll() {
     return ahrs.getRoll();
   }
-
+  
   @Override
   public void periodic() {
     //SmartDashboard.putNumber("TurnP", m_frontLeft.getPValue());
@@ -175,5 +199,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
+    updateOdometry();
   }
 }
