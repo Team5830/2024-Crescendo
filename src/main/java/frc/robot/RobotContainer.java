@@ -113,53 +113,53 @@ public class RobotContainer {
     // .onTrue(new DriveTeleop(m_exampleSubsystem));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    // xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
-    // xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
-    // xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
-    // xboxController.rightBumper()
-    //     .onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
-    // xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
-    // xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
+     xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
+     xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
+     xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
+     //xboxController.povDown().onTrue();
+    xboxController.rightBumper()
+        .onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
+    xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
+    xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
 
-    // xboxController.axisGreaterThan(1, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-    //     () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
-    // xboxController.axisLessThan(1, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-    //     () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
-    // xboxController.axisGreaterThan(5, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-    //     () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
-    // xboxController.axisLessThan(5, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-    //     () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
+    xboxController.axisGreaterThan(1, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
+    xboxController.axisLessThan(1, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
+    xboxController.axisGreaterThan(5, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
+    xboxController.axisLessThan(5, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+        () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
 
-    // xboxController.leftTrigger().onTrue(new SequentialCommandGroup(
-    //     new InstantCommand(m_intake::startFirstIntake),
-    //     new WaitUntilCommand(m_intake::noteSensorIsDetected),
-    //     new InstantCommand(m_intake::reverseFirstIntake),
-    //     new WaitCommand(0.12),
-    //     new InstantCommand(m_intake::stopFirstIntake)));
-    // xboxController.back().onTrue(new SequentialCommandGroup(
-    //     new InstantCommand(m_intake::reverseFirstIntake),
-    //     new WaitCommand(1),
-    //     new InstantCommand(m_intake::stopFirstIntake)));
-    // xboxController.leftBumper().onFalse(new
-    // InstantCommand(m_intake::stopFirstIntake));
-    // xboxController.rightTrigger().onTrue(new SequentialCommandGroup(
-    //     new InstantCommand(m_flywheel::shooterGo),
-    //     new WaitCommand(1),
-    //     new InstantCommand(m_intake::startFirstIntake),
-    //     new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-    //     new WaitCommand(0.5),
-    //     new InstantCommand(m_intake::stopFirstIntake),
-    //     new InstantCommand(m_flywheel::shooterOff)));
-    // xboxController.x().onTrue(new SequentialCommandGroup(
-    //     new InstantCommand(m_flywheel::shooterHalf),
-    //     new WaitCommand(1),
-    //     new InstantCommand(m_intake::startFirstIntake),
-    //     new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-    //     new WaitCommand(.5),
-    //     new InstantCommand(m_intake::stopFirstIntake),
-    //     new InstantCommand(m_flywheel::shooterOff)));
+    xboxController.leftTrigger().onTrue(new SequentialCommandGroup(
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsDetected),
+        new InstantCommand(m_intake::reverseFirstIntake),
+        new WaitCommand(0.12),
+        new InstantCommand(m_intake::stopFirstIntake)));
+    xboxController.back().onTrue(new SequentialCommandGroup(
+        new InstantCommand(m_intake::reverseFirstIntake),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::stopFirstIntake)));
+    xboxController.leftBumper().onFalse(new
+    InstantCommand(m_intake::stopFirstIntake));
+    xboxController.rightTrigger().onTrue(new SequentialCommandGroup(
+        new InstantCommand(m_flywheel::shooterGo),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+        new WaitCommand(0.5),
+        new InstantCommand(m_intake::stopFirstIntake),
+        new InstantCommand(m_flywheel::shooterOff)));
+    xboxController.x().onTrue(new SequentialCommandGroup(
+        new InstantCommand(m_flywheel::shooterHalf),
+        new WaitCommand(1),
+        new InstantCommand(m_intake::startFirstIntake),
+        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
+        new WaitCommand(.5),
+        new InstantCommand(m_intake::stopFirstIntake),
+        new InstantCommand(m_flywheel::shooterOff)));
   }
 
   /**
