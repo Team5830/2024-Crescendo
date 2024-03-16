@@ -29,26 +29,26 @@ public class SwerveModule {
   private double target;
   // Gains are for example purposes only - must be determined for your own robot!
   private SparkPIDController m_drivePIDController;
-  /*  = new PIDController(
-      Constants.DriveTrain.driveControllerKp,
-      Constants.DriveTrain.driveControllerKi,
-      Constants.DriveTrain.driveControllerKd); */
-  private SparkPIDController m_turningPIDController; 
+  /*
+   * = new PIDController(
+   * Constants.DriveTrain.driveControllerKp,
+   * Constants.DriveTrain.driveControllerKi,
+   * Constants.DriveTrain.driveControllerKd);
+   */
+  private SparkPIDController m_turningPIDController;
   // Gains are for example purposes only - must be determined for your own robot!
-  /* 
-  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-      Constants.DriveTrain.turnControllerKp,
-      Constants.DriveTrain.turnControllerKi,
-      Constants.DriveTrain.turnControllerKd,
-      new TrapezoidProfile.Constraints(
-          Constants.DriveTrain.maxAngularVelocity, Constants.DriveTrain.maxAngularAcceleration));
-*/
+  /*
+   * private final ProfiledPIDController m_turningPIDController = new
+   * ProfiledPIDController(
+   * Constants.DriveTrain.turnControllerKp,
+   * Constants.DriveTrain.turnControllerKi,
+   * Constants.DriveTrain.turnControllerKd,
+   * new TrapezoidProfile.Constraints(
+   * Constants.DriveTrain.maxAngularVelocity,
+   * Constants.DriveTrain.maxAngularAcceleration));
+   */
 
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
-      Constants.DriveTrain.driveFeedforwardStatic, Constants.DriveTrain.driveFeedforwardVelocity);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(
-      Constants.DriveTrain.turnFeedforwardStatic, Constants.DriveTrain.turnFeedforwardVelocity);
+  private SimpleMotorFeedforward m_driveFeedforward;
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -57,39 +57,45 @@ public class SwerveModule {
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
-      boolean invertEncoder, 
-      boolean invertMotor, 
-      double zeroOffset) {
+      boolean invertEncoder,
+      boolean invertMotor,
+      double zeroOffset,
+      SimpleMotorFeedforward driveFeedforward) {
     try {
+      m_driveFeedforward = driveFeedforward;
+
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_drivePIDController = m_driveMotor.getPIDController();
       m_turningPIDController = m_turningMotor.getPIDController();
-      
+
       m_driveMotor.restoreFactoryDefaults();
       m_turningMotor.restoreFactoryDefaults();
       m_driveMotor.setIdleMode(IdleMode.kCoast);
       m_turningMotor.setIdleMode(IdleMode.kBrake);
-      m_driveMotor.setInverted(invertMotor);  
+      m_driveMotor.setInverted(invertMotor);
       // m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(true);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
-      m_positionEncoder.setPositionConversionFactor(Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54/ 100);
+      m_positionEncoder.setPositionConversionFactor(
+          Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54 / 100);
       m_angleEncoder.setPositionConversionFactor(360);
-      m_positionEncoder.setVelocityConversionFactor(Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54/ 100 / 60);
+      m_positionEncoder.setVelocityConversionFactor(
+          Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54 / 100 / 60);
       m_angleEncoder.setZeroOffset(zeroOffset);
       m_turningPIDController.setFeedbackDevice(m_angleEncoder);
       m_turningPIDController.setPositionPIDWrappingMaxInput(359);
       m_turningPIDController.setPositionPIDWrappingMinInput(0);
       m_turningPIDController.setPositionPIDWrappingEnabled(true);
-      //m_turningPIDController.setSmartMotionMaxVelocity(Constants.DriveTrain.maxAngularVelocity,0);
-      //m_turningPIDController.setSmartMotionAccelStrategy(0);
+      // m_turningPIDController.setSmartMotionMaxVelocity(Constants.DriveTrain.maxAngularVelocity,0);
+      // m_turningPIDController.setSmartMotionAccelStrategy(0);
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
-      updateTurnPIDValues(Constants.DriveTrain.turnControllerKp,Constants.DriveTrain.turnControllerKi,Constants.DriveTrain.turnControllerKd);
-      updateDrivePIDValues(Constants.DriveTrain.driveControllerKp,Constants.DriveTrain.driveControllerKi,Constants.DriveTrain.driveControllerKd);
-  
-      
+      updateTurnPIDValues(Constants.DriveTrain.turnControllerKp, Constants.DriveTrain.turnControllerKi,
+          Constants.DriveTrain.turnControllerKd);
+      updateDrivePIDValues(Constants.DriveTrain.driveControllerKp, Constants.DriveTrain.driveControllerKi,
+          Constants.DriveTrain.driveControllerKd);
+
       m_driveMotor.setSmartCurrentLimit(40);
       m_turningMotor.setSmartCurrentLimit(20);
       m_driveMotor.burnFlash();
@@ -99,43 +105,46 @@ public class SwerveModule {
     }
     m_angleEncoder.getPosition();
   }
-  
-  public void setTurnTarget(double setPoint){
+
+  public void setTurnTarget(double setPoint) {
     target = setPoint;
 
-    m_turningPIDController.setReference(setPoint,ControlType.kPosition);
+    m_turningPIDController.setReference(setPoint, ControlType.kPosition);
 
   }
-  
-  public void updateTurnPIDValues(double P, double I, double D){
-   m_turningPIDController.setP(P);
-   m_turningPIDController.setI(I); 
-   m_turningPIDController.setD(D);
-  }
-  public void updateDrivePIDValues(double P, double I, double D){
-   m_drivePIDController.setP(P);
-   m_drivePIDController.setI(I); 
-   m_drivePIDController.setD(D);
+
+  public void updateTurnPIDValues(double P, double I, double D) {
+    m_turningPIDController.setP(P);
+    m_turningPIDController.setI(I);
+    m_turningPIDController.setD(D);
   }
 
-  public double getPValue(){
-   return m_turningPIDController.getP(); 
+  public void updateDrivePIDValues(double P, double I, double D) {
+    m_drivePIDController.setP(P);
+    m_drivePIDController.setI(I);
+    m_drivePIDController.setD(D);
   }
 
-  public double getIValue(){
-   return m_turningPIDController.getI(); 
+  public double getPValue() {
+    return m_turningPIDController.getP();
   }
 
-  public double getDValue(){
-   return m_turningPIDController.getD(); 
+  public double getIValue() {
+    return m_turningPIDController.getI();
   }
-  public boolean atTarget(){
-    if (Math.abs(m_angleEncoder.getPosition() - target)< Constants.DriveTrain.AngleTolerance){
+
+  public double getDValue() {
+    return m_turningPIDController.getD();
+  }
+
+  public boolean atTarget() {
+    if (Math.abs(m_angleEncoder.getPosition() - target) < Constants.DriveTrain.AngleTolerance) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
+
   /**
    * Returns the current state of the module.
    *
@@ -158,28 +167,29 @@ public class SwerveModule {
         new Rotation2d(m_angleEncoder.getPosition()));
   }
 
-  public double Angle(){
-    //return m_angleEncoder.getPosition()*(180/Math.PI)-180; //(0 to 2PI)*(180/PI)-180
+  public double Angle() {
+    // return m_angleEncoder.getPosition()*(180/Math.PI)-180; //(0 to
+    // 2PI)*(180/PI)-180
     return m_angleEncoder.getPosition();
   }
 
-  public double Offset(){
+  public double Offset() {
     return m_positionEncoder.getPosition();
   }
 
-  public double AngleMotorCurrent(){
+  public double AngleMotorCurrent() {
     return m_turningMotor.getOutputCurrent();
   }
-  
-  public double DriveMotorCurrent(){
+
+  public double DriveMotorCurrent() {
     return m_driveMotor.getOutputCurrent();
   }
-  
-  public double AngleMotorVoltage(){
+
+  public double AngleMotorVoltage() {
     return m_turningMotor.getBusVoltage();
   }
-  
-  public double DriveMotorVoltage(){
+
+  public double DriveMotorVoltage() {
     return m_driveMotor.getBusVoltage();
   }
 
@@ -199,11 +209,14 @@ public class SwerveModule {
     // directions. This results in smoother driving.
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
+    // Calculate feedforward
+    m_drivePIDController.setFF(m_driveFeedforward.calculate(state.speedMetersPerSecond));
+
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);
   }
 
-  public void PIDStop(){
+  public void PIDStop() {
     m_turningMotor.stopMotor();
   }
 }

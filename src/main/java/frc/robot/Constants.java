@@ -25,9 +25,6 @@ public final class Constants {
     public static final double lMaxAlignSpeed = 4.0;
     public static final double wheelCircumferenceInches = 12.5;
     public static final double driveGearRatio = 6.55;
-   
-
-
 
     // PIDs
     public static final double driveControllerKp = 0.12;
@@ -38,10 +35,12 @@ public final class Constants {
     public static final double turnControllerKd = 0.002;
 
     // Feedforward gains
-    public static final double driveFeedforwardStatic = 0.01;
-    public static final double driveFeedforwardVelocity = 0;
-    public static final double turnFeedforwardStatic = 0;
-    public static final double turnFeedforwardVelocity = 0.0;
+    public static final double leftFeedforwardStatic = 0.40179;
+    public static final double leftFeedforwardVelocity = 2.6343;
+    public static final double leftFeedforwardAcceleration = 0.51816;
+    public static final double rightFeedforwardStatic = 0.36268;
+    public static final double rightFeedforwardVelocity = 2.7308;
+    public static final double rightFeedforwardAcceleration = 0.70894;
 
     // Channels
     public static final int frontLeftDriveChannel = 1;
@@ -52,7 +51,8 @@ public final class Constants {
     public static final int backLeftTurnChannel = 8;
     public static final int backRightDriveChannel = 5;
     public static final int backRightTurnChannel = 6;
-    //
+
+    // Odometry
     public static final boolean invertNavX = false;
     public static final Pose2d initialOdometry = new Pose2d(5.0, 13.5, new Rotation2d());
   }
