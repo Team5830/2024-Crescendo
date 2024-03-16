@@ -61,8 +61,10 @@ public class sysidDrive extends SubsystemBase {
           new SysIdRoutine.Mechanism(
               // Tell SysId how to plumb the driving voltage to the motors.
               (Measure<Voltage> volts) -> {
-                m_leftMotor.setVoltage(volts.in(Volts));
-                m_rightMotor.setVoltage(volts.in(Volts));
+                m_leftMotor.set(volts.in(Volts)/12.0);
+                m_rightMotor.set(volts.in(Volts)/12.0);
+                //m_leftMotor.setVoltage(volts.in(Volts));
+                //m_rightMotor.setVoltage(volts.in(Volts));
               },
               // Tell SysId how to record a frame of data for each motor on the mechanism being
               // characterized.
