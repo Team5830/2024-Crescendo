@@ -122,7 +122,7 @@ public class RobotContainer {
      xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
      xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
      xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
-     //xboxController.povDown().onTrue();
+     xboxController.povDown().onTrue(new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
     xboxController.rightBumper()
         .onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
