@@ -4,13 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -25,10 +23,9 @@ import frc.robot.Constants;
 public class Vision extends SubsystemBase {
     private PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
-    private PhotonPipelineResult result;
-    private List<PhotonTrackedTarget> targets;
-    public List<PhotonTrackedTarget> matched = new ArrayList<PhotonTrackedTarget>(1);
+    public Optional<PhotonTrackedTarget> matched;
     private int currentTag;
+
     public Vision() {
         try {
             camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
@@ -38,67 +35,64 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    //Use to update camera results for specified AprilTag, other methods return info from matched result
-    public void getAprilTagVisionResult(int tagNumber ) {
-        matched.clear();
-        //targets.clear();
+    // Use to update camera results for specified AprilTag, other methods return
+    // info from matched result
+    public void getAprilTagVisionResult(int tagNumber) {
         currentTag = -1;
-        result = camera.getLatestResult();
-        //Get requested Apriltag from field layout
-        targets = result.getTargets();
-        for (PhotonTrackedTarget t : targets){
-            if(t.getFiducialId()==tagNumber){
+        var result = camera.getLatestResult();
+        // Get requested Apriltag from field layout
+        var targets = result.getTargets();
+        for (PhotonTrackedTarget t : targets) {
+            if (t.getFiducialId() == tagNumber) {
                 // If requested tag is found put result in matched
-                matched.add(t);
-                currentTag=tagNumber;
-            };
+                matched = Optional.of(t);
+                currentTag = tagNumber;
+                break;
+            }
         }
     }
 
-    public Transform3d getAprilTagTransform(){
-        if (!matched.isEmpty()){
-            return matched.get(0).getBestCameraToTarget();
+    public Transform3d getAprilTagTransform() {
+        if (matched.isPresent()) {
+            return matched.get().getBestCameraToTarget();
         }
         return new Transform3d();
     }
 
-    public Pose3d getAprilTagPose(int targetTag){
-        return(aprilTagFieldLayout.getTagPose(targetTag).get());
+    public Pose3d getAprilTagPose(int targetTag) {
+        return (aprilTagFieldLayout.getTagPose(targetTag).get());
     }
 
     public double getAprilTagRange() {
-        Pose3d tagPose;   
-        try{
-            //Get requested Apriltag from field layout to find height
+        Pose3d tagPose;
+        try {
+            // Get requested Apriltag from field layout to find height
             tagPose = aprilTagFieldLayout.getTagPose(currentTag).get();
         } catch (NoSuchElementException ex) {
             DriverStation.reportError("Error getting Tag Pose: " + ex.getMessage(), true);
-            return 10000.0; // Return huge number?  since out of range
+            return Double.NaN; // Return NaN, since out of range
         }
-        if (!matched.isEmpty()){
-            PhotonTrackedTarget t = matched.get(0);
+        if (matched.isPresent()) {
             return PhotonUtils.calculateDistanceToTargetMeters(
                     Constants.vision.CAMERA_HEIGHT_METERS,
                     tagPose.getZ(),
                     Constants.vision.CAMERA_PITCH_RADIANS,
-                    Units.degreesToRadians(t.getPitch())
-                    );
+                    Units.degreesToRadians(matched.get().getPitch()));
         }
-        return 10000.0; // Return huge number?  since out of range
+        return Double.NaN; // Return NaN, since out of range
     }
 
     public double getAprilTagYaw() {
-        if (!matched.isEmpty()){
-            PhotonTrackedTarget t = matched.get(0);
-            return t.getYaw();
+        if (matched.isPresent()) {
+            return matched.get().getYaw();
         }
-        return 1000;
+        return Double.NaN; // Return NaN, since out of range
     }
-    
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Last Tag",currentTag);
-        SmartDashboard.putNumber("Range to Tag",getAprilTagRange());
+        SmartDashboard.putNumber("Last Tag", currentTag);
+        SmartDashboard.putNumber("Range to Tag", getAprilTagRange());
         SmartDashboard.putNumber("Yaw to Tag", getAprilTagYaw());
     }
 }
