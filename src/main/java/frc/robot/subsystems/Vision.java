@@ -24,7 +24,8 @@ public class Vision extends SubsystemBase {
     private PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
     public Optional<PhotonTrackedTarget> matched;
-    private int currentTag;
+    private int tagLastFound = -1;
+    private int tagToFind = -1; 
 
     public Vision() {
         try {
@@ -35,22 +36,28 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    // Update tag to find 
+    public void getAprilTagVisionResult(int tagNumber) {
+        tagToFind=tagNumber;
+        updateSearchResult();
+    }
+
     // Use to update camera results for specified AprilTag, other methods return
     // info from matched result
-    public void getAprilTagVisionResult(int tagNumber) {
-        currentTag = -1;
+    public void updateSearchResult(){
         var result = camera.getLatestResult();
         // Get requested Apriltag from field layout
         var targets = result.getTargets();
         for (PhotonTrackedTarget t : targets) {
-            if (t.getFiducialId() == tagNumber) {
+            if (t.getFiducialId() == tagToFind) {
                 // If requested tag is found put result in matched
                 matched = Optional.of(t);
-                currentTag = tagNumber;
+                tagLastFound = tagToFind;
                 break;
             }
         }
     }
+
 
     public Transform3d getAprilTagTransform() {
         if (matched.isPresent()) {
@@ -67,7 +74,7 @@ public class Vision extends SubsystemBase {
         Pose3d tagPose;
         try {
             // Get requested Apriltag from field layout to find height
-            tagPose = aprilTagFieldLayout.getTagPose(currentTag).get();
+            tagPose = aprilTagFieldLayout.getTagPose(tagLastFound).get();
         } catch (NoSuchElementException ex) {
             DriverStation.reportError("Error getting Tag Pose: " + ex.getMessage(), true);
             return Double.NaN; // Return NaN, since out of range
@@ -91,7 +98,8 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Last Tag", currentTag);
+        updateSearchResult();
+        SmartDashboard.putNumber("Last Tag", tagLastFound);
         SmartDashboard.putNumber("Range to Tag", getAprilTagRange());
         SmartDashboard.putNumber("Yaw to Tag", getAprilTagYaw());
     }
