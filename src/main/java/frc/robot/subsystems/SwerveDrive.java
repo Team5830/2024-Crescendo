@@ -39,33 +39,25 @@ public class SwerveDrive extends SubsystemBase {
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,
       false, true, 277,
-      new SimpleMotorFeedforward(Constants.DriveTrain.leftFeedforwardStatic,
-                                 Constants.DriveTrain.leftFeedforwardVelocity,
-                                 Constants.DriveTrain.leftFeedforwardAcceleration)
+      Constants.DriveTrain.leftFeedforwardStatic
     );
   public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
       Constants.DriveTrain.frontRightTurnChannel,
       false, true, 326,
-      new SimpleMotorFeedforward(Constants.DriveTrain.leftFeedforwardStatic,
-                                 Constants.DriveTrain.leftFeedforwardVelocity,
-                                 Constants.DriveTrain.leftFeedforwardAcceleration)
+      Constants.DriveTrain.leftFeedforwardStatic
     );
   public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
       Constants.DriveTrain.backLeftTurnChannel,
       false, true, 229,
-      new SimpleMotorFeedforward(Constants.DriveTrain.rightFeedforwardStatic,
-                                 Constants.DriveTrain.rightFeedforwardVelocity,
-                                 Constants.DriveTrain.rightFeedforwardAcceleration)
+      Constants.DriveTrain.rightFeedforwardStatic
     );
   public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel,
       false, true, 222,
-      new SimpleMotorFeedforward(Constants.DriveTrain.rightFeedforwardStatic,
-                                 Constants.DriveTrain.rightFeedforwardVelocity,
-                                 Constants.DriveTrain.rightFeedforwardAcceleration)
+      Constants.DriveTrain.rightFeedforwardStatic
     );
 
   public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(

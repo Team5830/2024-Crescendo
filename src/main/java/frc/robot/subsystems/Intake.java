@@ -50,16 +50,16 @@ public class Intake extends SubsystemBase {
             DriverStation.reportError("Error instantiating intake: " + ex.getMessage(), true);
         
         }
-
-        //m_pidController = m_motor.getPIDController();
-        // set PID coefficients
-        /*m_pidController.setP(Constants.Intake.P);
-        m_pidController.setI(Constants.Intake.I);
-        m_pidController.setD(Constants.Intake.D);
-        m_pidController.setIZone(Constants.Intake.zI);
-        m_pidController.setFF(Constants.Intake.F);
-        m_pidController.setOutputRange(Constants.Intake.kMinOutput, Constants.Intake.kMaxOutput);*/
     }
+    //     m_pidController = m_motor.getPIDController();
+    //      set PID coefficients
+    //     m_pidController.setP(Constants.Intake.P);
+    //     m_pidController.setI(Constants.Intake.I);
+    //     m_pidController.setD(Constants.Intake.D);
+    //     m_pidController.setIZone(Constants.Intake.zI);
+    //     m_pidController.setFF(Constants.Intake.F);
+    //     m_pidController.setOutputRange(Constants.Intake.kMinOutput, Constants.Intake.kMaxOutput);
+    // }
 
     public void stopIntake() {
         //m_motorTop.set(0);
@@ -67,21 +67,21 @@ public class Intake extends SubsystemBase {
     }
 
     public void startFirstIntake() {
-        //m_motorTop.set(-Constants.intake.firstIntakeBottomSpeed);
+        m_motorTop.set(-Constants.intake.firstIntakeBottomSpeed);
         m_motorBottom.set(Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
     }
 
     public void reverseFirstIntake() {
         m_motorBottom.set(-Constants.intake.firstIntakeBottomSpeed*1.5);
-        //m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
+        m_motorTop.set(-Constants.intake.firstIntakeTopSpeed);
         intakeON = true;
         intakeReversed = true;
     }
 
     public void stopFirstIntake() {
         m_motorBottom.set(0);
-        // m_motorTop.set(0);
+         m_motorTop.set(0);
         intakeON = false;
         intakeReversed = false;
     }
@@ -101,7 +101,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("FirstIntakeOn", intakeON);
         SmartDashboard.putBoolean("FirstIntakeReversed", intakeReversed);
         SmartDashboard.putNumber("intake encoder position", m_encoder.getPosition());
-        // SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
+        SmartDashboard.putNumber("Intake Encoder", m_encoder.getPosition());
     }
 
     public boolean noteSensorIsDetected(){

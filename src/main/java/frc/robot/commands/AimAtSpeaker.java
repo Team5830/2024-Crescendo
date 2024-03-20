@@ -8,6 +8,7 @@ import java.util.Optional;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Vision;
+import frc.robot.utils.Utils;
 
 public class AimAtSpeaker extends Command {
   private Flywheel m_flywheel;
@@ -86,11 +88,12 @@ public class AimAtSpeaker extends Command {
       // Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose()
       // ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the
       // vision measurement
-      if (range < 30 && yaw < 100) { // Only drive if Tag is within 3 meters and yaw is valid
+      if (range < 30 && Math.abs(yaw) < 15) { // Only drive if Tag is within 3 meters and yaw is valid
         DriverStation.reportWarning("Range to " + targetTag + " " + range + " meters Angle " + yaw, false);
         // Scale X,Y proportionally
         mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
-        m_drive.drive(mag * Math.cos(yaw), mag * Math.sin(yaw), -turnController.calculate(yaw * (180.0 / Math.PI), 0),
+        mag=0;
+        m_drive.drive(mag * Math.cos(yaw), mag * Math.sin(yaw), turnController.calculate(Units.degreesToRadians(-yaw), 0),
             false);
       } else {
         DriverStation.reportWarning("Tag is out of range", false);
@@ -114,7 +117,7 @@ public class AimAtSpeaker extends Command {
   @Override
   public boolean isFinished() {
     // Choose target specs... range, angle that is OK to shoot from
-    if (range < 5 && yaw < 0.5) {
+    if (range < 5 && Math.abs(yaw) < 0.5) {
       finished = true;
     }
     return finished;

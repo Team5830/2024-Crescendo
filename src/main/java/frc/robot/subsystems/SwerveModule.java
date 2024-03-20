@@ -48,7 +48,7 @@ public class SwerveModule {
    * Constants.DriveTrain.maxAngularAcceleration));
    */
 
-  private SimpleMotorFeedforward m_driveFeedforward;
+  private double m_driveFeedforward;
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -60,7 +60,7 @@ public class SwerveModule {
       boolean invertEncoder,
       boolean invertMotor,
       double zeroOffset,
-      SimpleMotorFeedforward driveFeedforward) {
+      double driveFeedforward) {
     try {
       m_driveFeedforward = driveFeedforward;
 
@@ -117,12 +117,14 @@ public class SwerveModule {
     m_turningPIDController.setP(P);
     m_turningPIDController.setI(I);
     m_turningPIDController.setD(D);
+
   }
 
   public void updateDrivePIDValues(double P, double I, double D) {
     m_drivePIDController.setP(P);
     m_drivePIDController.setI(I);
     m_drivePIDController.setD(D);
+    m_drivePIDController.setFF(m_driveFeedforward);
   }
 
   public double getPValue() {
@@ -210,7 +212,7 @@ public class SwerveModule {
     state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
     // Calculate feedforward
-    m_drivePIDController.setFF(m_driveFeedforward.calculate(state.speedMetersPerSecond));
+    ///m_drivePIDController.setFF(m_driveFeedforward.calculate(state.speedMetersPerSecond));
 
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);

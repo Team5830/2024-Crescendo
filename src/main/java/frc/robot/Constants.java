@@ -70,7 +70,7 @@ public final class Constants {
   }
 
   public static final class intake {
-    public static final double firstIntakeTopSpeed = 0.4;
+    public static final double firstIntakeTopSpeed = 0.32;
     public static final double firstIntakeBottomSpeed = 0.15;
     public static final double P = 0.1;
     public static final double I = 0.0;
@@ -107,7 +107,7 @@ public final class Constants {
   }
 
   public static final class arm {
-    public static final double kP = 0.06;
+    public static final double kP = 0.04;
     public static final double kI = 0.000000;
     public static final double kD = 5;
     public static final double kIz = 0;
@@ -117,8 +117,8 @@ public final class Constants {
     public static final double speedTolerance = 50.0;
     public static final double maxOutput = .4;
     public static final double minOutput = -.4;
-    public static final float forwardLimit = 10f;
-    public static final float reverseLimit = -88f;
+    public static final float forwardLimit = 15f;
+    public static final float reverseLimit = -95f;
     public static final double tolerance = 5.0;
     public static final int motorChanel = 12;
     public static final double incrementValue = 2.5;
@@ -187,20 +187,19 @@ public final class Constants {
   public static final class vision {
     // Constants such as camera and target height stored. Change per robot and goal!
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(22);
-    public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(50);
 
     // Angle between horizontal and the camera.
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(5);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(25);
 
     // How far from the target we want to be
-    public static final double goalRangeMeters = Units.feetToMeters(1);
+    public static final double goalRangeMeters = Units.feetToMeters(10);
 
     public static final double linearP = 2;
     public static final double linearI = 0.0;
     public static final double linearD = 0.05;
 
-    public static final double angularP = 0.2;
+    public static final double angularP = 1.5;
     public static final double angularI = 0.0;
-    public static final double angularD = 0.1;
+    public static final double angularD = 0.5;
   }
 }

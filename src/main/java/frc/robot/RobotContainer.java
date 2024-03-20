@@ -81,7 +81,7 @@ public class RobotContainer {
         m_rotLimiter,
         () -> flyskyController.getRawAxis(0),
         () -> -flyskyController.getRawAxis(1),
-        () -> flyskyController.getRawAxis(3) / 2,
+        () -> -flyskyController.getRawAxis(3) / 2,
         false,
         this.getPeriod));
 
@@ -103,7 +103,7 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
-    xboxController.rightTrigger().onTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
+    xboxController.povRight().onTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
       /*new SequentialCommandGroup(
          new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision)
          new InstantCommand(m_flywheel::shooterGo),
@@ -141,7 +141,7 @@ public class RobotContainer {
         new InstantCommand(m_intake::startFirstIntake),
         new WaitUntilCommand(m_intake::noteSensorIsDetected),
         new InstantCommand(m_intake::reverseFirstIntake),
-        new WaitCommand(0.12),
+        new WaitCommand(0.17),
         new InstantCommand(m_intake::stopFirstIntake)));
     xboxController.back().onTrue(new SequentialCommandGroup(
         new InstantCommand(m_intake::reverseFirstIntake),

@@ -23,12 +23,12 @@ import frc.robot.Constants;
 public class Vision extends SubsystemBase {
     private PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
-    public Optional<PhotonTrackedTarget> matched;
-    private int currentTag;
+    public Optional<PhotonTrackedTarget> matched = Optional.empty();
+    private int currentTag=4;
 
     public Vision() {
         try {
-            camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+            camera = new PhotonCamera("Back");
             aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         } catch (RuntimeException ex) {
             DriverStation.reportError("Error instantiating vision: " + ex.getMessage(), true);
@@ -64,6 +64,11 @@ public class Vision extends SubsystemBase {
     }
 
     public double getAprilTagRange() {
+        // Return NaN if no tag selected
+        if (currentTag==-1) {
+            return Double.NaN;
+        }
+
         Pose3d tagPose;
         try {
             // Get requested Apriltag from field layout to find height
@@ -91,6 +96,7 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        getAprilTagVisionResult(4);
         SmartDashboard.putNumber("Last Tag", currentTag);
         SmartDashboard.putNumber("Range to Tag", getAprilTagRange());
         SmartDashboard.putNumber("Yaw to Tag", getAprilTagYaw());
