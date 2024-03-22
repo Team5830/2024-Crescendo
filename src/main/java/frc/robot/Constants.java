@@ -22,12 +22,12 @@ public final class Constants {
     public static final double maxAngularAcceleration = 40; // revolutions per second squared
     public static final double AngleTolerance = 5;
     public static final double turnTarget = 90;
-    public static final double lAlignTolerance = 5.0;
-    public static final double lMaxAlignSpeed = 4.0;
+    public static final double lAlignTolerance = 0.1;
+    public static final double lMaxAlignSpeed = 1.0;
     public static final double wheelCircumferenceInches = 12.5;
     public static final double driveGearRatio = 6.55;
     // PIDs
-    public static final double driveControllerKp = 0.12;
+    public static final double driveControllerKp = 0.11;
     public static final double driveControllerKi = 0;
     public static final double driveControllerKd = 0;
     public static final double turnControllerKp = .02;
@@ -63,7 +63,7 @@ public final class Constants {
 
     public static final double xRateLimit = 20;
     public static final double yRateLimit = 20;
-    public static final double rotRateLimit = 7;
+    public static final double rotRateLimit = 4;
 
     public static final double climberAxesThreshold = 0.4;
     public static final double climberAxesMultiplier = 10;

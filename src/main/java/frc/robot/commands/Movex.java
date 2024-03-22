@@ -10,7 +10,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 public class Movex extends PIDCommand {
   public Movex(SwerveDrive drive,double targetDistanceX) {
     super(new PIDController(DriveTrain.driveControllerKp, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd),
-        drive::getDriveOffset, drive.getDriveOffset()+targetDistanceX, output -> drive.drive(output, 0,0,false), drive);
+        drive::getDriveOffset, drive.getDriveOffset()+targetDistanceX, output -> drive.drive(-output, 0,0,false), drive);
 
     getController()
         .setTolerance(DriveTrain.lAlignTolerance, DriveTrain.lMaxAlignSpeed);

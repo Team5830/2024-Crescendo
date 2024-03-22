@@ -149,14 +149,7 @@ public class RobotContainer {
         new InstantCommand(m_intake::stopFirstIntake)));
     xboxController.leftBumper().onFalse(new
     InstantCommand(m_intake::stopFirstIntake));
-    xboxController.rightTrigger().onTrue(new SequentialCommandGroup(
-        new InstantCommand(m_flywheel::shooterGo),
-        new WaitCommand(1),
-        new InstantCommand(m_intake::startFirstIntake),
-        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-        new WaitCommand(0.5),
-        new InstantCommand(m_intake::stopFirstIntake),
-        new InstantCommand(m_flywheel::shooterOff)));
+    xboxController.rightTrigger().onTrue(new Shoot(m_flywheel,m_intake));
     xboxController.x().onTrue(new SequentialCommandGroup(
         new InstantCommand(m_flywheel::shooterHalf),
         new WaitCommand(1),
@@ -174,15 +167,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new SequentialCommandGroup(
-        // new MoveArm(m_arm, -50).withTimeout(2),
-        // new WaitCommand(1),
-        // new InstantCommand(m_flywheel::shooterGo),
-        // new WaitCommand(1),
-        // new InstantCommand(m_intake::startFirstIntake),
-        // new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-        // new WaitCommand(0.5),
-        // new InstantCommand(m_intake::stopFirstIntake),
-        // new InstantCommand(m_flywheel::shooterOff)
-        );
+        new MoveArm(m_arm, Constants.arm.positionShoot).withTimeout(2),
+        new WaitCommand(1),
+        new Shoot(m_flywheel, m_intake),
+        new Movey(m_swerveDrive, -1)
+    );
   }
 }

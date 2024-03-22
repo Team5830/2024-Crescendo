@@ -1,53 +1,34 @@
 package frc.robot.commands;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Intake;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.utils.SequentialCommandGroupMod;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-/** An example command that uses an example subsystem. */
-public class Shoot extends Command {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final Flywheel m_flywheel;
-  private boolean turnedON = false;
-  private Intake m_intake;
-  public Shoot(Flywheel subsystemFLY,Intake intake) {
-    m_flywheel = subsystemFLY;
-    m_intake = intake;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_flywheel);
+public final class Shoot extends SequentialCommandGroupMod {
+ Flywheel subsystemFLY;
+ Intake intake;
+
+  public Shoot(Flywheel subsystemFLY, Intake intake) {
+    super(
+      new InstantCommand(subsystemFLY::shooterGo),
+      new WaitCommand(1),
+      new InstantCommand(intake::startFirstIntake),
+      new WaitUntilCommand(intake::noteSensorIsNotDetected),
+      new WaitCommand(0.5)
+      // Run end commands at this point
+    );
+
+    this.subsystemFLY=subsystemFLY;
+    this.intake=intake;
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    //m_intake.reverseIntake();
-    m_flywheel.shooterOn();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-    if (m_flywheel.readyToShoot()) {
-      turnedON = true;
-    }
-    // if (turnedON & m_conveyor.ballsensor2.get()) {
-    // m_conveyor.conveyor2OFF();
-    // }
-  }
-
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_flywheel.shooterOff();
-  }
+    super.end(interrupted);
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    if (turnedON) {
-      return true;
-    } else {
-      return false;
-    }
+    intake.stopFirstIntake();
+    subsystemFLY.shooterOff();
   }
 }
