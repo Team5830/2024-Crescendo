@@ -74,16 +74,17 @@ public class LineUpForAmp extends Command {
         Constants.vision.angularD);
     FindTag(); // sets translation and rotation to target
     // Report values for checking
-    SmartDashboard.putNumber("Translation To Target X", translationToTarget.getX());
-    SmartDashboard.putNumber("Translation To Target Y", translationToTarget.getY());
-    SmartDashboard.putNumber("Rotation To Target ", rotationToTarget.getDegrees());
+    //SmartDashboard.putNumber("Translation To Target X", translationToTarget.getX());
+    //SmartDashboard.putNumber("Translation To Target Y", translationToTarget.getY());
+    //SmartDashboard.putNumber("Rotation To Target ", rotationToTarget.getDegrees());
     // Use translationToTarget and rotationToTarget to create final pose and
     // intermediate points for trajectory
-    Pose2d finalPose = new Pose2d(2, 0, Rotation2d.fromDegrees(180));
+    Pose2d finalPose = new Pose2d( 3,0, Rotation2d.fromDegrees(0));
     List<Translation2d> IntermediatePoints = List.of(
-        new Translation2d(0.5, 0),
-        new Translation2d(1, 0),
-        new Translation2d(1.5, 0));
+        new Translation2d(1.0,0),
+       new Translation2d(2,0)
+       //      new Translation2d(1,0)
+        );
     // 1. Create trajectory settings
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
         Constants.DriveTrain.maxSpeed,
@@ -98,17 +99,17 @@ public class LineUpForAmp extends Command {
         trajectoryConfig);
 
     // 3. Define PID controllers for tracking trajectory
-    PIDController xController = new PIDController(Constants.DriveTrain.driveControllerKp,
+    PIDController xController = new PIDController(Constants.DriveTrain.driveControllerKp*20,
         Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
-    PIDController yController = new PIDController(Constants.DriveTrain.driveControllerKp,
+    PIDController yController = new PIDController(Constants.DriveTrain.driveControllerKp*20,
         Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
     ProfiledPIDController thetaController = new ProfiledPIDController(
-        Constants.TurnPID.P, Constants.TurnPID.I, Constants.TurnPID.D,
+        Constants.TurnPID.P*10, Constants.TurnPID.I, Constants.TurnPID.D,
         new TrapezoidProfile.Constraints(
             Constants.DriveTrain.maxAngularVelocity,
             Constants.DriveTrain.maxAngularAcceleration));
     // Change to degrees?
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.enableContinuousInput(-179, 180);
 
     // 4. Construct command to follow trajectory
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
@@ -134,7 +135,7 @@ public class LineUpForAmp extends Command {
     double mag;
     m_vision.getAprilTagVisionResult(targetTag);
     if (m_vision.matched.isEmpty()) {
-      DriverStation.reportError("Target: " + targetTag + " not in view", false);
+      DriverStation.reportWarning("Target: " + targetTag + " not in view", false);
       finished = true;
     }
     if (!finished) {

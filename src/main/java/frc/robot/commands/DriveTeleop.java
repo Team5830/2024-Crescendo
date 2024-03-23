@@ -84,7 +84,7 @@ public class DriveTeleop extends Command {
     SmartDashboard.putNumber("swerve: x", x);
     SmartDashboard.putNumber("swerve: y", y);
     SmartDashboard.putNumber("swerve: r", rot);
-    swerveDrive.drive(x, y, rot, fieldRelative);
+    swerveDrive.drive(x, y, rot, fieldRelative,false);
   }
 
   // Called once the command ends or is interrupted.

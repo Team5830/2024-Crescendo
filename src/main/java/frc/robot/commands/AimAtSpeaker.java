@@ -94,7 +94,7 @@ public class AimAtSpeaker extends Command {
         mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
         mag=0;
         m_drive.drive(mag * Math.cos(yaw), mag * Math.sin(yaw), turnController.calculate(Units.degreesToRadians(-yaw), 0),
-            false);
+            false,false);
       } else {
         DriverStation.reportWarning("Tag is out of range", false);
       }

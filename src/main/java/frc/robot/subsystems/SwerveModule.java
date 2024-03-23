@@ -168,6 +168,9 @@ public class SwerveModule {
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
         new Rotation2d(m_angleEncoder.getPosition()));
   }
+  public void resetPosition(){
+    m_driveMotor.getEncoder().setPosition(0);
+  }
 
   public double Angle() {
     // return m_angleEncoder.getPosition()*(180/Math.PI)-180; //(0 to
@@ -216,6 +219,11 @@ public class SwerveModule {
 
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(state.angle.getDegrees(), ControlType.kPosition);
+  }
+
+  public void setDesiredStateBasic(SwerveModuleState desiredState) {
+    m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    m_turningPIDController.setReference(desiredState.angle.getDegrees(), ControlType.kPosition);
   }
 
   public void PIDStop() {

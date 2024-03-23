@@ -5,8 +5,8 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -68,7 +68,7 @@ public class SwerveDrive extends SubsystemBase {
       m_frontLeft.getPosition(),
       m_frontRight.getPosition(),
       m_backLeft.getPosition(),
-      m_backRight.getPosition()
+      m_backRight.getPosition(),
     }, Constants.DriveTrain.initialOdometry
   );
 
@@ -88,25 +88,19 @@ public class SwerveDrive extends SubsystemBase {
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
-  /**
-   * Method to drive the robot using joystick info.
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
-   */
   public void drive(
-      double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+      double xSpeed, double ySpeed, double rot, boolean fieldRelative,boolean disableOptimizations) {
       
         var swerveModuleStates = m_kinematics.toSwerveModuleStates(
           fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_poseEstimator.getEstimatedPosition().getRotation())
           : new ChassisSpeeds(ySpeed, -xSpeed, rot));
 
-        setModuleStates(swerveModuleStates);
+    if (disableOptimizations) {
+      setModuleStatesBasic(swerveModuleStates);
+    } else {
+      setModuleStates(swerveModuleStates);
+    }  
   }
-
 
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
@@ -114,7 +108,15 @@ public class SwerveDrive extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
-    }
+  }
+
+  public void setModuleStatesBasic(SwerveModuleState[] swerveModuleStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
+    m_frontLeft.setDesiredStateBasic(swerveModuleStates[0]);
+    m_frontRight.setDesiredStateBasic(swerveModuleStates[1]);
+    m_backLeft.setDesiredStateBasic(swerveModuleStates[2]);
+    m_backRight.setDesiredStateBasic(swerveModuleStates[3]);
+  }
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
@@ -173,7 +175,13 @@ public class SwerveDrive extends SubsystemBase {
   public double getRoll() {
     return ahrs.getRoll();
   }
-  
+  public void resetPosition(){
+    m_backLeft.resetPosition();
+    m_backRight.resetPosition();
+    m_frontLeft.resetPosition();
+    m_frontRight.resetPosition();
+  }
+
   @Override
   public void periodic() {
     //SmartDashboard.putNumber("TurnP", m_frontLeft.getPValue());
@@ -191,6 +199,15 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("NAVX Heading", Constants.DriveTrain.invertNavX ? -ahrs.getAngle() : ahrs.getAngle());
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
+    SmartDashboard.putNumber("swerve drive offset", getDriveOffset());
+    SmartDashboard.putNumber("frontLeftDistance",m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("frontLeftAngle",m_frontLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("frontRightDistance",m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("frontRightAngle",m_frontRight.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("backLeftDistance",m_backLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("backLeftAngle",m_backLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("backRightDistance",m_backRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("backRightAngle",m_backRight.getPosition().angle.getDegrees());
     updateOdometry();
   }
 }

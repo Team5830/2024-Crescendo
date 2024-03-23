@@ -85,10 +85,8 @@ public class RobotContainer {
         false,
         this.getPeriod));
 
-    // m_chooser.addOption("Auto A", new AutonomousCommandA(m_flywheel, m_swerveDrive, m_intake, m_arm, this.getPeriod));
-    // m_chooser.addOption("Auto C", new AutonomousCommandC(m_flywheel, m_swerveDrive, m_intake, m_arm));
-    m_chooser.addOption("Auto R", new AutonomousCommandL());
-    m_chooser.addOption("Auto L", new AutonomousCommandR());
+    m_chooser.addOption("Auto Amp", new AutonomousCommandAmp(m_swerveDrive, m_intake, m_flywheel));
+    m_chooser.addOption("Auto Speaker", new AutonomousCommandSpeaker(m_swerveDrive, m_intake, m_flywheel, m_arm));
     SmartDashboard.putData(m_chooser);
   }
 
@@ -103,7 +101,8 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
-    xboxController.povRight().onTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
+    // xboxController.povLeft().onTrue( new LineUpForAmp(m_flywheel, m_intake, m_swerveDrive, m_vision));
+    // xboxController.povRight().onTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
       /*new SequentialCommandGroup(
          new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision)
          new InstantCommand(m_flywheel::shooterGo),
@@ -141,7 +140,7 @@ public class RobotContainer {
         new InstantCommand(m_intake::startFirstIntake),
         new WaitUntilCommand(m_intake::noteSensorIsDetected),
         new InstantCommand(m_intake::reverseFirstIntake),
-        new WaitCommand(0.17),
+        new WaitCommand(0.12),
         new InstantCommand(m_intake::stopFirstIntake)));
     xboxController.back().onTrue(new SequentialCommandGroup(
         new InstantCommand(m_intake::reverseFirstIntake),
@@ -166,11 +165,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(
-        new MoveArm(m_arm, Constants.arm.positionShoot).withTimeout(2),
-        new WaitCommand(1),
-        new Shoot(m_flywheel, m_intake),
-        new Movey(m_swerveDrive, -1)
-    );
+    return m_chooser.getSelected();
   }
 }

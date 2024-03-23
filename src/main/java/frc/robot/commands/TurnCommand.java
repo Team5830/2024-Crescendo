@@ -23,7 +23,7 @@ public class TurnCommand extends PIDCommand {
         // Set reference to target
         targetAngleDegrees,
         // Pipe output to turn robot
-        output -> drive.drive(0,0,output,false),
+        output -> drive.drive(0,0,output,false,false),
         // Require the drive
         drive);
     drive.resetHeading();

@@ -4,21 +4,36 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.subsystems.SwerveDrive;
-import java.util.function.DoubleSupplier;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 
-public class Movex extends PIDCommand {
-  public Movex(SwerveDrive drive,double targetDistanceX) {
-    super(new PIDController(DriveTrain.driveControllerKp, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd),
-        drive::getDriveOffset, drive.getDriveOffset()+targetDistanceX, output -> drive.drive(-output, 0,0,false), drive);
+public class MoveX extends PIDCommand {
+  private SwerveDrive drive;
+  private double targetDistance;
 
-    getController()
-        .setTolerance(DriveTrain.lAlignTolerance, DriveTrain.lMaxAlignSpeed);
+  public MoveX(SwerveDrive drive,double targetDistanceX) {
+    super(
+      new PIDController(DriveTrain.driveControllerKp*9, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd*3),
+      ()->-drive.getDriveOffset(),
+      0,
+      output -> drive.drive(-output, 0,0,false,true), drive);
+
+    getController().setTolerance(DriveTrain.lAlignTolerance, DriveTrain.lMaxAlignSpeed);
+
+    this.drive=drive;
+    this.targetDistance=targetDistanceX;
+  }
+
+  @Override
+  public void initialize() {
+    super.initialize();
+
+    drive.resetPosition();
+
+    double setpointValue = -drive.getDriveOffset()+targetDistance;
+    m_setpoint = ()->setpointValue;
   }
 
   @Override
   public boolean isFinished() {
-    // End when the controller is at the reference.
     return getController().atSetpoint();
   }
 }
