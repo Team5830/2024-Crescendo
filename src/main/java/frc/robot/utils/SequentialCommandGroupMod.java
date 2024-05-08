@@ -97,7 +97,7 @@ public class SequentialCommandGroupMod extends Command {
   }
 
   @Override
-  public final boolean isFinished() {
+  public boolean isFinished() {
     return m_currentCommandIndex == m_commands.size();
   }
 

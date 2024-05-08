@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
-import org.ejml.dense.row.decomposition.eig.SwitchingEigenDecomposition_DDRM;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -70,6 +68,7 @@ public class RobotContainer {
     SmartDashboard.putData("Shoot Position",new Positioning(m_arm, Constants.arm.positionShoot));
     SmartDashboard.putData("Upright Position",new Positioning(m_arm, Constants.arm.positionUpright));
     SmartDashboard.putData("Shoot",new Shoot(m_flywheel,m_intake) );
+    SmartDashboard.putData("reset gyro",new InstantCommand(m_swerveDrive::resetHeading));
     //SmartDashboard.putData("Pickup",new Pickup );
     // Configure the trigger and button bindings
     configureBindings();
@@ -84,6 +83,7 @@ public class RobotContainer {
         () -> -flyskyController.getRawAxis(3) / 2,
         false,
         this.getPeriod));
+    // m_vision.setDefaultCommand(new InstantCommand(m_vision::periodic));
 
     m_chooser.addOption("Auto Amp", new AutonomousCommandAmp(m_swerveDrive, m_intake, m_flywheel));
     m_chooser.addOption("Auto Speaker", new AutonomousCommandSpeaker(m_swerveDrive, m_intake, m_flywheel, m_arm));
@@ -102,7 +102,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // xboxController.povLeft().onTrue( new LineUpForAmp(m_flywheel, m_intake, m_swerveDrive, m_vision));
-    // xboxController.povRight().onTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
+    // xboxController.povRight().toggleOnTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision,m_arm));
       /*new SequentialCommandGroup(
          new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision)
          new InstantCommand(m_flywheel::shooterGo),
@@ -121,42 +121,25 @@ public class RobotContainer {
      xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
      xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
      xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));
-     xboxController.povDown().onTrue(new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision));
-    xboxController.rightBumper()
-        .onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
+    //  xboxController.povDown().onTrue(new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision,m_arm));
+    // xboxController.rightBumper()
+    //     .onTrue(new ClimberLeveling(m_climber, m_swerveDrive).deadlineWith(new WaitCommand(10)));
     xboxController.povUp().onTrue(new InstantCommand(m_climber::useUpPosition));
     xboxController.povDown().onTrue(new InstantCommand(m_climber::useDownPosition));
 
-    xboxController.axisGreaterThan(1, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-        () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
-    xboxController.axisLessThan(1, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-        () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
-    xboxController.axisGreaterThan(5, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-        () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
-    xboxController.axisLessThan(5, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
-        () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
+    // xboxController.axisGreaterThan(1, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+    //     () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
+    // xboxController.axisLessThan(1, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+    //     () -> m_climber.leftChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(1))));
+    // xboxController.axisGreaterThan(5, Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+    //     () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
+    // xboxController.axisLessThan(5, -Constants.controller.climberAxesThreshold).whileTrue(new InstantCommand(
+    //     () -> m_climber.rightChange(-Constants.controller.climberAxesMultiplier * xboxController.getRawAxis(5))));
 
-    xboxController.leftTrigger().onTrue(new SequentialCommandGroup(
-        new InstantCommand(m_intake::startFirstIntake),
-        new WaitUntilCommand(m_intake::noteSensorIsDetected),
-        new InstantCommand(m_intake::reverseFirstIntake),
-        new WaitCommand(0.12),
-        new InstantCommand(m_intake::stopFirstIntake)));
-    xboxController.back().onTrue(new SequentialCommandGroup(
-        new InstantCommand(m_intake::reverseFirstIntake),
-        new WaitCommand(1),
-        new InstantCommand(m_intake::stopFirstIntake)));
-    xboxController.leftBumper().onFalse(new
-    InstantCommand(m_intake::stopFirstIntake));
-    xboxController.rightTrigger().onTrue(new Shoot(m_flywheel,m_intake));
-    xboxController.x().onTrue(new SequentialCommandGroup(
-        new InstantCommand(m_flywheel::shooterHalf),
-        new WaitCommand(1),
-        new InstantCommand(m_intake::startFirstIntake),
-        new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-        new WaitCommand(.5),
-        new InstantCommand(m_intake::stopFirstIntake),
-        new InstantCommand(m_flywheel::shooterOff)));
+    xboxController.leftTrigger().toggleOnTrue(new IntakeCommand(m_intake));
+    xboxController.back().onTrue(new IntakeEject(m_intake));
+    xboxController.rightTrigger().toggleOnTrue(new Shoot(m_flywheel,m_intake));
+    xboxController.x().toggleOnTrue(new ShootAmp(m_flywheel, m_intake));
   }
 
   /**

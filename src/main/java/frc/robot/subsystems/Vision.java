@@ -99,6 +99,6 @@ public class Vision extends SubsystemBase {
         getAprilTagVisionResult(4);
         SmartDashboard.putNumber("Last Tag", currentTag);
         SmartDashboard.putNumber("Range to Tag", getAprilTagRange());
-        SmartDashboard.putNumber("Yaw to Tag", getAprilTagYaw());
+        SmartDashboard.putNumber("Yaw to Tag", getAprilTagYaw()+5);
     }
 }

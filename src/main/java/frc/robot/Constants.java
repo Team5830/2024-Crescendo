@@ -18,8 +18,8 @@ public final class Constants {
   public static final class DriveTrain {
     public static final double maxSpeed = 3.0; // 4 meters per second
     public static final double maxAcceleration = 3.0;
-    public static final double maxAngularVelocity = 40; // revolutions per second
-    public static final double maxAngularAcceleration = 40; // revolutions per second squared
+    public static final double maxAngularVelocity = 15; // revolutions per second
+    public static final double maxAngularAcceleration = 20; // revolutions per second squared
     public static final double AngleTolerance = 5;
     public static final double turnTarget = 90;
     public static final double lAlignTolerance = 0.1;
@@ -63,28 +63,28 @@ public final class Constants {
 
     public static final double xRateLimit = 20;
     public static final double yRateLimit = 20;
-    public static final double rotRateLimit = 4;
+    public static final double rotRateLimit = 2;
 
     public static final double climberAxesThreshold = 0.4;
     public static final double climberAxesMultiplier = 10;
   }
 
   public static final class intake {
-    public static final double firstIntakeTopSpeed = 0.32;
+    public static final double firstIntakeTopSpeed = 0.3;
     public static final double firstIntakeBottomSpeed = 0.15;
-    public static final double P = 0.1;
+    public static final double P = 1;
     public static final double I = 0.0;
     public static final double D = 0.0;
     public static final double F = 0.0;
     public static final double zI = 0;
-    public static final double kMaxOutput = 0.4;
+    public static final double kMaxOutput = 0.8;
     public static final double kMinOutput = 0.1;
     public static final int motorChannel = 11;
 
     public static final int motorChannelTop = 9;
-    public static final double kP = 0.5;
+    public static final double kP = 1;
     public static final double kI = 0.000000;
-    public static final double kD = 0.0000000000000000000000000000000000000000000000000000000000000000000;
+    public static final double kD = 0.0;
     public static final double kIz = 0;
     public static final double kFF = 0;
   }
@@ -119,7 +119,7 @@ public final class Constants {
     public static final double minOutput = -.4;
     public static final float forwardLimit = 15f;
     public static final float reverseLimit = -95f;
-    public static final double tolerance = 5.0;
+    public static final double tolerance = 2.0;
     public static final int motorChanel = 12;
     public static final double incrementValue = 2.5;
 
@@ -128,7 +128,7 @@ public final class Constants {
     public static final double feedforwardKg = .01; // units
 
     public static final double positionIntake = -94;
-    public static final double positionShoot = -50;
+    public static final double positionShoot = -52;
     public static final double positionUpright = 0;
   }
 
@@ -198,8 +198,13 @@ public final class Constants {
     public static final double linearI = 0.0;
     public static final double linearD = 0.05;
 
-    public static final double angularP = 1.5;
-    public static final double angularI = 0.0;
-    public static final double angularD = 0.5;
+    public static final double angularP = 1.84;
+    public static final double angularI = 0.08;
+    public static final double angularD = 0.1;
+
+    public static final double speakerAimCloseRange = Units.feetToMeters(3.5);
+    public static final double speakerAimCloseAngle = -54;
+    public static final double speakerAimFarRange = Units.feetToMeters(9);
+    public static final double speakerAimFarAngle = -37;
   }
 }

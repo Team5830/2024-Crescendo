@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
@@ -25,6 +26,7 @@ public class AimAtSpeaker extends Command {
   private Intake m_intake;
   private SwerveDrive m_drive;
   private Vision m_vision;
+  private Arm m_arm;
   private int targetTag;
   private boolean finished;
   private double range, yaw;
@@ -34,15 +36,15 @@ public class AimAtSpeaker extends Command {
   private Rotation2d rotationToTarget;
 
   public AimAtSpeaker(Flywheel subsystemFly, Intake subsystemIntake, SwerveDrive subsystemDrive,
-      Vision subsystemVision) {
+      Vision subsystemVision, Arm arm) {
     m_flywheel = subsystemFly;
     m_intake = subsystemIntake;
     m_drive = subsystemDrive;
-    m_intake = subsystemIntake;
     m_vision = subsystemVision;
+    m_arm = arm;
     finished = false;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_flywheel, m_intake, m_drive, m_intake, m_vision);
+    addRequirements(m_flywheel, m_intake, m_drive, m_vision);
   }
 
   // Called when the command is initially scheduled.
@@ -62,6 +64,9 @@ public class AimAtSpeaker extends Command {
     } else {
       targetTag = 0;
     }
+    finished = false;
+    targetTag=2;
+
     forwardController = new PIDController(Constants.vision.linearP, Constants.vision.linearI,
         Constants.vision.linearD);
     turnController = new PIDController(Constants.vision.angularP, Constants.vision.angularI,
@@ -80,7 +85,8 @@ public class AimAtSpeaker extends Command {
     }
     if (!finished) {
       range = m_vision.getAprilTagRange();
-      yaw = m_vision.getAprilTagYaw();
+      yaw = m_vision.getAprilTagYaw()+5;
+      boolean inRange = range < Constants.vision.speakerAimFarRange;
       // tag3dTranslation = m_vision.getAprilTagTransform();
       // translationToTarget = new
       // Translation2d(tag3dTranslation.getX(),tag3dTranslation.getY()); //Ignore Z
@@ -88,13 +94,17 @@ public class AimAtSpeaker extends Command {
       // Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose()
       // ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the
       // vision measurement
-      if (range < 30 && Math.abs(yaw) < 15) { // Only drive if Tag is within 3 meters and yaw is valid
-        DriverStation.reportWarning("Range to " + targetTag + " " + range + " meters Angle " + yaw, false);
+              DriverStation.reportWarning("Range to " + targetTag + " " + range + " meters Angle " + yaw, false);
         // Scale X,Y proportionally
-        mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
-        mag=0;
-        m_drive.drive(mag * Math.cos(yaw), mag * Math.sin(yaw), turnController.calculate(Units.degreesToRadians(-yaw), 0),
+        mag = inRange ? 0 : /*forwardController.calculate(range, Constants.vision.speakerAimFarRange)*/1;
+
+        m_drive.drive(mag * Math.cos(yaw)   *0   , mag /* * Math.sin(yaw)*/, turnController.calculate(Units.degreesToRadians(-yaw), 0),
             false,false);
+
+      if (inRange) {
+        double armAngle = ((range - Constants.vision.speakerAimCloseRange) / (Constants.vision.speakerAimFarRange - Constants.vision.speakerAimCloseRange))
+                        * (Constants.vision.speakerAimFarAngle - Constants.vision.speakerAimCloseAngle) + Constants.vision.speakerAimCloseAngle;
+        m_arm.move(armAngle);
       } else {
         DriverStation.reportWarning("Tag is out of range", false);
       }
@@ -117,9 +127,10 @@ public class AimAtSpeaker extends Command {
   @Override
   public boolean isFinished() {
     // Choose target specs... range, angle that is OK to shoot from
-    if (range < 5 && Math.abs(yaw) < 0.5) {
+    if (m_arm.atTarget() && Math.abs(yaw) < 2) {
       finished = true;
     }
+    finished = false;
     return finished;
   }
 }

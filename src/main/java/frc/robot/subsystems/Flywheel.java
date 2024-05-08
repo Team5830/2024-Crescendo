@@ -64,8 +64,8 @@ public class Flywheel extends SubsystemBase {
     }
 
     public void shooterGo() {
-        m_topMotor.setVoltage(-9);
-        m_bottomMotor.setVoltage(9);
+        m_topMotor.setVoltage(-10);
+        m_bottomMotor.setVoltage(10);
         isShooterOn = true;
     }
 

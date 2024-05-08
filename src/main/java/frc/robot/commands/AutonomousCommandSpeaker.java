@@ -6,16 +6,23 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public final class AutonomousCommandSpeaker extends SequentialCommandGroup {
   public AutonomousCommandSpeaker(SwerveDrive m_swerveDrive, Intake m_intake, Flywheel m_flywheel, Arm m_arm) {
     super(
-        new MoveArm(m_arm, Constants.arm.positionShoot),
+        new InstantCommand(m_swerveDrive::resetPosition),
+        new MoveArm(m_arm, -52),
         new WaitCommand(2),
         new Shoot(m_flywheel, m_intake),
-        new MoveY(m_swerveDrive, -1)
+        new MoveArm(m_arm, -94)
+    
+        // new ParallelCommandGroup(new MoveY(m_swerveDrive, -2), new IntakeCommand(m_intake)),
+        // new MoveArm(m_arm, -52),
+        // new InstantCommand(m_swerveDrive::resetPosition)
     );
   }
 }

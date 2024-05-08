@@ -28,6 +28,8 @@ public class Intake extends SubsystemBase {
 
     RelativeEncoder m_encoder;
 
+    double positionTarget=0;
+
     public Intake() {
         try {
             m_motorBottom = new CANSparkMax(Constants.intake.motorChannel, MotorType.kBrushless);
@@ -36,11 +38,13 @@ public class Intake extends SubsystemBase {
             m_debouncer = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
            m_motorBottom.restoreFactoryDefaults();
         m_motorTop.restoreFactoryDefaults();
-        m_motorTop.follow(m_motorBottom, true);    
+        m_motorTop.follow(m_motorBottom, true);
+       m_motorTop.setSmartCurrentLimit(40);
+       m_motorBottom.setSmartCurrentLimit(40);
 
     m_pidController = m_motorBottom.getPIDController();
     m_encoder = m_motorBottom.getEncoder();
-    m_encoder.setPositionConversionFactor(3.141592652);
+    m_encoder.setPositionConversionFactor(Math.PI);
     m_pidController.setP(Constants.intake.kP);
     m_pidController.setI(Constants.intake.kI);
     m_pidController.setD(Constants.intake.kD);
@@ -115,9 +119,17 @@ public void PIDOFF()
     m_pidController.setReference(0, ControlType.kDutyCycle);
 }
 
-public void reverseIntake(){
-    System.out.println("reverseIntake");
-    System.out.println(m_encoder.getPosition() -2*Math.PI);
-    m_pidController.setReference(m_encoder.getPosition() -2*Math.PI, ControlType.kPosition);
-    }   
+    public void reverseIntake(){
+        positionTarget = m_encoder.getPosition() -2*Math.PI;
+
+        System.out.println("reverseIntake");
+        System.out.println(positionTarget);
+        m_pidController.setReference(positionTarget, ControlType.kPosition);
+    } 
+    
+    public boolean atTarget() {
+        double currentPosition = m_encoder.getPosition();
+
+        return (Math.abs(currentPosition - positionTarget) <= 1);
+    }
 }

@@ -12,7 +12,7 @@ public class MoveY extends PIDCommand {
   public MoveY(SwerveDrive drive,double targetDistanceY) {
     super(
       new PIDController(DriveTrain.driveControllerKp*9, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd*3), 
-      ()->drive.getDriveOffset(),
+      ()->-drive.getDriveOffset(),
       0,
       output -> drive.drive(0, -output,0,false,true), drive);
 
