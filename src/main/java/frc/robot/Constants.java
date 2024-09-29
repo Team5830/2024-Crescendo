@@ -130,6 +130,7 @@ public final class Constants {
     public static final double positionIntake = -94;
     public static final double positionShoot = -52;
     public static final double positionUpright = 0;
+    public static final double positionAmp = 10;
   }
 
   public static final class TurnPID {

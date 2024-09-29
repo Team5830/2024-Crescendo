@@ -13,7 +13,7 @@ public final class IntakeCommand extends SequentialCommandGroupMod {
         new InstantCommand(m_intake::startFirstIntake),
         new WaitUntilCommand(m_intake::noteSensorIsDetected).withTimeout(10),
         new InstantCommand(m_intake::reverseFirstIntake),
-        new WaitCommand(0.1)
+        new WaitCommand(0.06)
       // Run end commands at this point
     );
 

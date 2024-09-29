@@ -18,7 +18,10 @@ public final class AutonomousCommandSpeaker extends SequentialCommandGroup {
         new MoveArm(m_arm, -52),
         new WaitCommand(2),
         new Shoot(m_flywheel, m_intake),
-        new MoveArm(m_arm, -94)
+        new WaitCommand(2),
+        new MoveArm(m_arm, -94),
+        new WaitCommand(.5),
+        new MoveY(m_swerveDrive, -2)
     
         // new ParallelCommandGroup(new MoveY(m_swerveDrive, -2), new IntakeCommand(m_intake)),
         // new MoveArm(m_arm, -52),
