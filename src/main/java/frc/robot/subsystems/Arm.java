@@ -13,14 +13,14 @@ public class Arm extends SubsystemBase {
   private CANSparkMax m_motor;
   public RelativeEncoder m_encoder;
   private SparkPIDController m_pidController;
-  private double karget;
+  private double targecko;
 
   public Arm() {
     try {
       m_motor = new CANSparkMax(Constants.Arm.motorChanel, CANSparkMax.MotorType.kBrushless);
       m_motor.restoreFactoryDefaults();
       m_encoder = m_motor.getEncoder();
-      m_encoder.setPositionConversionFactor(8);
+      m_encoder.setPositionConversionFactor(1);
       m_encoder.setPosition(0.0);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
       m_motor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
@@ -45,35 +45,34 @@ public class Arm extends SubsystemBase {
   }
 
   public void move(double degrees) {
-    karget = degrees;
-    m_pidController.setReference(karget, ControlType.kPosition);
+    targecko = degrees;
+    m_pidController.setReference(targecko, ControlType.kPosition);
     DriverStation.reportWarning(String.format("Armm Position %f", m_encoder.getPosition()), false);
   }
 
   public boolean AtTarget() {
     double curposition = m_encoder.getPosition();
     DriverStation.reportWarning(String.format("Position: %f", curposition), false);
-    if (Math.abs(curposition - karget) <= Constants.Arm.tolerance) {
+    if (Math.abs(curposition - targecko) <= Constants.Arm.tolerance) {
       DriverStation.reportWarning("True", false);
       return true;
     } else {
-      DriverStation.reportWarning(String.format("false: %f", Math.abs(curposition - karget)), false);
+      DriverStation.reportWarning(String.format("false: %f", Math.abs(curposition - targecko)), false);
       return false;
     }
   }
 
   public double Position() {
     SmartDashboard.putNumber("Armzzz", m_encoder.getPosition());
+    SmartDashboard.putNumber("AFL", Constants.Arm.forwardLimit);
+    SmartDashboard.putNumber("ALR", Constants.Arm.reverseLimit);
     return m_encoder.getPosition();
   }
 
   public boolean Safe() {
-    if (Position() > 200 || AtTarget()) {
+    //Always stay safe !
       return true;
-    } else {
-      return false;
     }
-  }
 
   public void Stop() {
     // armMotorController.set(0);
@@ -82,22 +81,22 @@ public class Arm extends SubsystemBase {
   }
 
   public void increment() {
-    if (karget + 3 <= Constants.Arm.forwardLimit) {
-      karget = karget + 3;
-      m_pidController.setReference(karget, ControlType.kPosition);
+    if (targecko + .5 <= Constants.Arm.forwardLimit) {
+      targecko = targecko + .5;
+      m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 
   public void decrement() {
-    if (karget - 3 >= Constants.Arm.reverseLimit) {
-      karget = karget - 3;
-      m_pidController.setReference(karget, ControlType.kPosition);
+    if (targecko - .5 >= Constants.Arm.reverseLimit) {
+      targecko = targecko - .5;
+      m_pidController.setReference(targecko, ControlType.kPosition);
     }
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ArmPosition", m_encoder.getPosition());
-    // SmartDashboard.getNumber("karget", karget );
+    // SmartDashboard.getNumber("targecko", targecko );
   }
 }
