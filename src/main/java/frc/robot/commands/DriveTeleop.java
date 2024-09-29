@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDriveSub;
+import frc.robot.subsystems.Vision;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,6 +20,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class DriveTeleop extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final SwerveDriveSub m_swerveDrive;
+  Vision vision;
+  SlewRateLimiter m_xSpeedLimiter;
+  SlewRateLimiter m_ySpeedLimiter;
+  SlewRateLimiter m_rotLimiter;
+  DoubleSupplier xSpeed;
+  DoubleSupplier ySpeed;
+  DoubleSupplier rotSpeed;
+  BooleanSupplier enableVisionMovement;
+  boolean fieldRelative;
+  DoubleSupplier periodSeconds;
 
   /**
    * Creates a new ExampleCommand.
@@ -72,31 +84,18 @@ public class DriveTeleop extends Command {
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    //final var rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
-    fieldrel = fieldRelative;
-    periodsecs =  periodSeconds.getAsDouble();
-    //m_swerveDrive.driveCommand(() -> x,() ->  y,() -> rot, fieldRelative, periodSeconds.getAsDouble());
-    m_swerveDrive.driveCommand(
-        () -> xSpeed.getAsDouble(),
-        () -> ySpeed.getAsDouble(),
-        () -> rotSpeedX.getAsDouble(),
-        () -> rotSpeedY.getAsDouble());
-  }
+    double rot = -m_rotLimiter.calculate(rotSpeed.getAsDouble()) * Constants.DriveTrain.maxAngularVelocity;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+    SmartDashboard.putNumber("swerve: x", x);
+    SmartDashboard.putNumber("swerve: y", y);
+    SmartDashboard.putNumber("swerve: r", rot);
+    swerveDrive.drive(x, y, rot, fieldRelative,false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
   }
 
   // Returns true when the command should end.
@@ -104,5 +103,5 @@ public class DriveTeleop extends Command {
   public boolean isFinished() {
     return false;
   }
-  
+
 }

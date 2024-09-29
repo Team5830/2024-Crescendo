@@ -10,6 +10,5 @@ public class Positioning extends SequentialCommandGroup {
         this.m_arm = arm;
 
         addCommands(new MoveArm(m_arm, armAngle));
-
     }
 }

@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-public final class Shoot extends SequentialCommandGroupMod {
+public final class ShootAmp extends SequentialCommandGroupMod {
  Flywheel subsystemFLY;
  Intake intake;
 
-  public Shoot(Flywheel subsystemFLY, Intake intake) {
+  public ShootAmp(Flywheel subsystemFLY, Intake intake) {
     super(
-      new InstantCommand(subsystemFLY::shooterGo),
+      new InstantCommand(subsystemFLY::shooterHalf),
       new WaitCommand(1),
       new InstantCommand(intake::startFirstIntake),
       new WaitUntilCommand(intake::noteSensorIsNotDetected),
