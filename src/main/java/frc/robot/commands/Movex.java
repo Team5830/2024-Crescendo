@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.subsystems.SwerveDrive;
 
-public class MoveX extends PIDCommand {
+public class Movex extends PIDCommand {
   private SwerveDrive drive;
   private double targetDistance;
 
-  public MoveX(SwerveDrive drive,double targetDistanceX) {
+  public Movex(SwerveDrive drive,double targetDistanceX) {
     super(
       new PIDController(DriveTrain.driveControllerKp*9, DriveTrain.driveControllerKi, DriveTrain.driveControllerKd*3),
       ()->-drive.getDriveOffset(),

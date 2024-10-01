@@ -21,7 +21,7 @@ public final class AutonomousCommandSpeaker extends SequentialCommandGroup {
         new WaitCommand(2),
         new MoveArm(m_arm, -94),
         new WaitCommand(.5),
-        new MoveY(m_swerveDrive, -2)
+        new Movey(m_swerveDrive, -2)
     
         // new ParallelCommandGroup(new MoveY(m_swerveDrive, -2), new IntakeCommand(m_intake)),
         // new MoveArm(m_arm, -52),

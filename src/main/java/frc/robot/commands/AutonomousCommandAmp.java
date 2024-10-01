@@ -13,8 +13,8 @@ public final class AutonomousCommandAmp extends SequentialCommandGroup {
   public AutonomousCommandAmp(SwerveDrive m_swerveDrive, Intake m_intake, Flywheel m_flywheel) {
     super(
       new InstantCommand(m_swerveDrive::resetPosition),
-      new MoveX(m_swerveDrive, Units.inchesToMeters(4)),
-      new MoveY(m_swerveDrive, Units.inchesToMeters(-17)),
+      new Movex(m_swerveDrive, Units.inchesToMeters(4)),
+      new Movey(m_swerveDrive, Units.inchesToMeters(-17)),
       new ShootAmp(m_flywheel, m_intake)
     );
   }
