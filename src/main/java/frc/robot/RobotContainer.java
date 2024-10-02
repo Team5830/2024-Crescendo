@@ -14,16 +14,10 @@ import java.io.File;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -38,19 +32,13 @@ public class RobotContainer {
   private final CommandXboxController xboxController = new CommandXboxController(Constants.controller.xboxPort);
   private final GenericHID flyskyController = new GenericHID(Constants.controller.flyskyPort);
   //private final SwerveDrive m_swerveDrive = new SwerveDrive();
-  private final Vision m_vision = new Vision();
+  //private final Vision m_vision = new Vision()
   private final Arm m_arm = new Arm();
   private final Flywheel m_flywheel = new Flywheel();
   private final Intake m_intake = new Intake();
-  private final Arm m_arm = new Arm();
   private final SwerveDriveSub m_swerveDrive = new SwerveDriveSub(new File(Filesystem.getDeployDirectory(),"swerve"));
 
   private final Climber m_climber = new Climber();
-
-  // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xSpeedLimiter = new SlewRateLimiter(Constants.controller.xRateLimit);
-  private final SlewRateLimiter m_ySpeedLimiter = new SlewRateLimiter(Constants.controller.yRateLimit);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.controller.rotRateLimit);
 
   private final DoubleSupplier getPeriod;
 
@@ -77,25 +65,13 @@ public class RobotContainer {
     SmartDashboard.putData("Shoot Position",new Positioning(m_arm, Constants.arm.positionShoot));
     SmartDashboard.putData("Upright Position",new Positioning(m_arm, Constants.arm.positionUpright));
     SmartDashboard.putData("Shoot",new Shoot(m_flywheel,m_intake) );
-    SmartDashboard.putData("reset gyro",new InstantCommand(m_swerveDrive::resetHeading));
+    //SmartDashboard.putData("reset gyro",new InstantCommand(m_swerveDrive::resetHeading));
     //SmartDashboard.putData("Pickup",new Pickup );
     // Configure the trigger and button bindings
     configureBindings();
 
-   /*  m_swerveDrive.setDefaultCommand(new DriveTeleop(
-        m_swerveDrive,
-        m_xSpeedLimiter,
-        m_ySpeedLimiter,
-        m_rotLimiter,
-        () -> flyskyController.getRawAxis(0),
-        () -> -flyskyController.getRawAxis(1),
-        () -> -flyskyController.getRawAxis(3) / 2,
-        false,
-        this.getPeriod));
-        */
-    // m_vision.setDefaultCommand(new InstantCommand(m_vision::periodic));
-
-    m_chooser.addOption("Auto Amp", new AutonomousCommandAmp(m_swerveDrive, m_intake, m_flywheel));
+  
+    //m_chooser.addOption("Auto Amp", new AutonomousCommandSpeaker(m_swerveDrive, m_intake, m_flywheel));
     m_chooser.addOption("Auto Speaker", new AutonomousCommandSpeaker(m_swerveDrive, m_intake, m_flywheel, m_arm));
     SmartDashboard.putData(m_chooser);
     SmartDashboard.putNumber("Angle Tolerance", Constants.DriveTrain.AngleTolerance);
@@ -106,15 +82,32 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
+    /* 
     Command driveFieldOrientedDirectAngle = m_swerveDrive.driveCommand(
-        () -> MathUtil.applyDeadband(m_controller.getLeftY(), Constants.Joystick.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(m_controller.getLeftX(), Constants.Joystick.LEFT_X_DEADBAND),
-        () -> m_controller.getRightX(),
-        () -> m_controller.getRightY());
+        () -> MathUtil.applyDeadband(-xboxController.getRawAxis(1), Constants.controller.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-xboxController.getRawAxis(0), Constants.controller.LEFT_X_DEADBAND),
+        () -> -xboxController.getRawAxis(5),
+        () -> -xboxController.getRawAxis(4));
     Command driveFieldOrientedDirectAngleSim = m_swerveDrive.simDriveCommand(
-      () -> MathUtil.applyDeadband(m_controller.getLeftY(), Constants.Joystick.LEFT_Y_DEADBAND),
-      () -> MathUtil.applyDeadband(m_controller.getLeftX(), Constants.Joystick.LEFT_X_DEADBAND),
-      () -> m_controller.getRawAxis(2));
+      () -> MathUtil.applyDeadband(-xboxController.getRawAxis(1), Constants.controller.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(-xboxController.getRawAxis(0), Constants.controller.LEFT_X_DEADBAND),
+      () -> xboxController.getRawAxis(5)
+      );
+
+    m_swerveDrive.setDefaultCommand(
+        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+  }
+  */
+  Command driveFieldOrientedDirectAngle = m_swerveDrive.driveCommand(
+        () -> MathUtil.applyDeadband(flyskyController.getRawAxis(1), Constants.controller.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(-flyskyController.getRawAxis(0), Constants.controller.LEFT_X_DEADBAND),
+        () -> -flyskyController.getRawAxis(5),
+        () -> -flyskyController.getRawAxis(4));
+    Command driveFieldOrientedDirectAngleSim = m_swerveDrive.simDriveCommand(
+      () -> MathUtil.applyDeadband(flyskyController.getRawAxis(1), Constants.controller.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(-flyskyController.getRawAxis(0), Constants.controller.LEFT_X_DEADBAND),
+      () -> flyskyController.getRawAxis(2)
+      );
 
     m_swerveDrive.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
@@ -131,23 +124,7 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
-    // xboxController.povLeft().onTrue( new LineUpForAmp(m_flywheel, m_intake, m_swerveDrive, m_vision));
-    // xboxController.povRight().toggleOnTrue( new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision,m_arm));
-      /*new SequentialCommandGroup(
-         new AimAtSpeaker(m_flywheel, m_intake, m_swerveDrive, m_vision)
-         new InstantCommand(m_flywheel::shooterGo),
-         new WaitCommand(0.5),
-         new InstantCommand(m_intake::startFirstIntake),
-         new WaitUntilCommand(m_intake::noteSensorIsNotDetected),
-         new WaitCommand(0.5),
-         new InstantCommand(m_intake::stopFirstIntake),
-         new InstantCommand(m_flywheel::shooterOff))); */
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    // .onTrue(new DriveTeleop(m_exampleSubsystem));
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed, cancelling on release.
-
+  
      xboxController.a().onTrue(new Positioning(m_arm, Constants.arm.positionIntake));
      xboxController.b().onTrue(new Positioning(m_arm, Constants.arm.positionShoot));
      xboxController.y().onTrue(new Positioning(m_arm, Constants.arm.positionUpright));

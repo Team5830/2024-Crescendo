@@ -4,10 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDriveSub;
 
 public class ClimberLeveling extends PIDCommand {
-  public ClimberLeveling(Climber climber, SwerveDrive swerveDrive) {
+  public ClimberLeveling(Climber climber, SwerveDriveSub swerveDrive) {
     super(
         new PIDController(Constants.TurnPID.P, Constants.TurnPID.I, Constants.TurnPID.D),
         swerveDrive::getRoll,
@@ -20,7 +20,7 @@ public class ClimberLeveling extends PIDCommand {
     getController()
         .setTolerance(Constants.climberLeveling.positionTolerance, Constants.climberLeveling.velocityTolerance);
   }
-
+  
   @Override
   public boolean isFinished() {
     // End when the controller is at the reference.

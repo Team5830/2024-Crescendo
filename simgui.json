@@ -10,7 +10,12 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Intake Position": "Command",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/Shoot": "Command",
+      "/SmartDashboard/Shoot Position": "Command",
       "/SmartDashboard/TestTurn": "Command",
+      "/SmartDashboard/Upright Position": "Command",
       "/SmartDashboard/navX-Sensor[4]": "Gyro"
     },
     "windows": {
@@ -20,11 +25,17 @@
         "left": 150,
         "right": 2961,
         "top": 79,
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
     "transitory": {
       "Shuffleboard": {
         "open": true

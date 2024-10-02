@@ -511,6 +511,12 @@ public class SwerveDriveSub extends SubsystemBase
     return swerveDrive.getPitch();
   }
 
+  public double getRoll()
+  {
+    return swerveDrive.getRoll().getRadians();
+  }
+
+
   /**
    * Add a fake vision reading for testing purposes.
    */

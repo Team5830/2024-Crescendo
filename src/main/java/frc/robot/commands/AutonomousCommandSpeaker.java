@@ -4,28 +4,24 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
 import frc.robot.subsystems.*;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public final class AutonomousCommandSpeaker extends SequentialCommandGroup {
-  public AutonomousCommandSpeaker(SwerveDrive m_swerveDrive, Intake m_intake, Flywheel m_flywheel, Arm m_arm) {
+  public AutonomousCommandSpeaker(SwerveDriveSub m_swerveDrive, Intake m_intake, Flywheel m_flywheel, Arm m_arm) {
     super(
-        new InstantCommand(m_swerveDrive::resetPosition),
-        new MoveArm(m_arm, -52),
-        new WaitCommand(2),
-        new Shoot(m_flywheel, m_intake),
-        new WaitCommand(2),
-        new MoveArm(m_arm, -94),
-        new WaitCommand(.5),
-        new MoveY(m_swerveDrive, -2)
-    
-        // new ParallelCommandGroup(new MoveY(m_swerveDrive, -2), new IntakeCommand(m_intake)),
-        // new MoveArm(m_arm, -52),
-        // new InstantCommand(m_swerveDrive::resetPosition)
-    );
+      new MoveArm(m_arm, -52 ),
+      new WaitCommand(2),
+      new Shoot(m_flywheel, m_intake),
+      new WaitCommand(2),
+      new MoveArm(m_arm, -94),
+      new WaitCommand(0.5)
+      //m_swerveDrive.d
+      //new InstantCommand( m_swerveDrive.drive(new Translation2d(-2,0) ,0.0,false) 
+      );
   }
 }
