@@ -67,8 +67,9 @@ public class SwerveModule {
       m_driveMotor = new CANSparkMax(driveMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_turningMotor = new CANSparkMax(turningMotorChannel, CANSparkMax.MotorType.kBrushless);
       m_drivePIDController = m_driveMotor.getPIDController();
+      
       m_turningPIDController = m_turningMotor.getPIDController();
-
+      m_driveMotor.setOpenLoopRampRate(4);
       m_driveMotor.restoreFactoryDefaults();
       m_turningMotor.restoreFactoryDefaults();
       m_driveMotor.setIdleMode(IdleMode.kCoast);
