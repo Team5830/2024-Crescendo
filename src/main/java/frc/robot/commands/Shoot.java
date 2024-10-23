@@ -15,7 +15,7 @@ public final class Shoot extends SequentialCommandGroupMod {
       new InstantCommand(subsystemFLY::shooterGo),
       new WaitCommand(1),
       new InstantCommand(intake::startFirstIntake),
-      new WaitUntilCommand(intake::noteSensorIsNotDetected),
+      new WaitUntilCommand(intake::noteSensorIsNotDetected).withTimeout(2),
       new WaitCommand(0.5)
       // Run end commands at this point
     );

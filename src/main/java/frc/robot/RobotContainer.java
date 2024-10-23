@@ -80,7 +80,7 @@ public class RobotContainer {
         m_rotLimiter,
         () -> flyskyController.getRawAxis(0),
         () -> -flyskyController.getRawAxis(1),
-        () -> -flyskyController.getRawAxis(3) / 2,
+        () -> -flyskyController.getRawAxis(3) / 3,
         false,
         this.getPeriod));
     // m_vision.setDefaultCommand(new InstantCommand(m_vision::periodic));
