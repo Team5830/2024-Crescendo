@@ -193,7 +193,7 @@ public final class Constants {
     public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(5);
 
     // How far from the target we want to be
-    public static final double goalRangeMeters = Units.feetToMeters(1);
+    public static final double goalRangeMeters = Units.feetToMeters(15);
 
     public static final double linearP = 2;
     public static final double linearI = 0.0;

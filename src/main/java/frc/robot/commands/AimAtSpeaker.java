@@ -86,7 +86,7 @@ public class AimAtSpeaker extends Command {
       // Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose()
       // ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the
       // vision measurement
-      if (range < 30 && yaw < 100) { // Only drive if Tag is within 3 meters and yaw is valid
+      if (range < 30 && ( -100 < yaw && yaw < 100) ) { // Only drive if Tag is within 3 meters and yaw is valid
         DriverStation.reportWarning("Range to " + targetTag + " " + range + " meters Angle " + yaw, false);
         // Scale X,Y proportionally
         mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
