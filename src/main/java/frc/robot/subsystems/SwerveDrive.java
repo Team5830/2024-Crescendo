@@ -38,25 +38,25 @@ public class SwerveDrive extends SubsystemBase {
   public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,
-      false, true, 277,
+      true, true, 277,
       Constants.DriveTrain.leftFeedforwardStatic
     );
   public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
       Constants.DriveTrain.frontRightTurnChannel,
-      false, true, 326,
+      true, true, 326,
       Constants.DriveTrain.leftFeedforwardStatic
     );
   public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
       Constants.DriveTrain.backLeftTurnChannel,
-      false, true, 229,
+      true, true, 229,
       Constants.DriveTrain.rightFeedforwardStatic
     );
   public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel,
-      false, true, 222,
+      true, true, 222,
       Constants.DriveTrain.rightFeedforwardStatic
     );
 

@@ -75,7 +75,8 @@ public class SwerveModule {
       m_driveMotor.setIdleMode(IdleMode.kCoast);
       m_turningMotor.setIdleMode(IdleMode.kBrake);
       m_driveMotor.setInverted(invertMotor);
-      // m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(true);
+      m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(invertEncoder);
+      m_turningMotor.setInverted(invertEncoder);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
