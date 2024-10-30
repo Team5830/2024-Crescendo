@@ -82,10 +82,12 @@ public class SwerveModule {
       m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
       m_positionEncoder.setPositionConversionFactor(
           Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54 / 100);
+          m_positionEncoder.setMeasurementPeriod(10);
+          m_positionEncoder.setAverageDepth(2);
       m_angleEncoder.setPositionConversionFactor(360);
       m_positionEncoder.setVelocityConversionFactor(
           Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54 / 100 / 60);
-      m_angleEncoder.setZeroOffset(zeroOffset);
+    //  m_angleEncoder.setZeroOffset(zeroOffset);
       m_turningPIDController.setFeedbackDevice(m_angleEncoder);
       m_turningPIDController.setPositionPIDWrappingMaxInput(359);
       m_turningPIDController.setPositionPIDWrappingMinInput(0);
@@ -168,7 +170,7 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
-        new Rotation2d(m_angleEncoder.getPosition()));
+       new Rotation2d(m_angleEncoder.getPosition()));
   }
   public void resetPosition(){
     m_driveMotor.getEncoder().setPosition(0);

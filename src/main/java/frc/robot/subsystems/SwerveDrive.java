@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,35 +30,43 @@ import frc.robot.Constants;
 public class SwerveDrive extends SubsystemBase {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.438, -0.438);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.438, 0.438);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.438, -0.438);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.438, 0.438);
+  private final Translation2d m_frontLeftLocation = new Translation2d(0.438, 0.438);
+  private final Translation2d m_frontRightLocation = new Translation2d(0.438, -0.438);
+  private final Translation2d m_backLeftLocation = new Translation2d(-0.438, 0.438);
+  private final Translation2d m_backRightLocation = new Translation2d(-0.438, -0.438);
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
-    
+  private Field2d m_field = new Field2d();
+  
+    public SwerveDrive(){
+      SmartDashboard.putData("Field", m_field);
+      m_backLeft.resetPosition();
+      m_backRight.resetPosition();
+      m_frontLeft.resetPosition();
+      m_frontRight.resetPosition();
+    }
     //ahrs.reset();
   public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,
-      true, true, 277,
+      true, true, 0,
       Constants.DriveTrain.leftFeedforwardStatic
     );
   public final SwerveModule m_frontRight = new SwerveModule(
       Constants.DriveTrain.frontRightDriveChannel,
       Constants.DriveTrain.frontRightTurnChannel,
-      true, true, 326,
+      true, true, 0,
       Constants.DriveTrain.leftFeedforwardStatic
     );
   public final SwerveModule m_backLeft = new SwerveModule(
       Constants.DriveTrain.backLeftDriveChannel,
       Constants.DriveTrain.backLeftTurnChannel,
-      true, true, 229,
+      true, true, 0,
       Constants.DriveTrain.rightFeedforwardStatic
     );
   public final SwerveModule m_backRight = new SwerveModule(
       Constants.DriveTrain.backRightDriveChannel,
       Constants.DriveTrain.backRightTurnChannel,
-      true, true, 222,
+      true, true, 0,
       Constants.DriveTrain.rightFeedforwardStatic
     );
 
@@ -84,7 +94,7 @@ public class SwerveDrive extends SubsystemBase {
             m_backLeft.getPosition(),
             m_backRight.getPosition()
           },
-          new Pose2d(),
+          new Pose2d(1.0,1.0, new Rotation2d(0)),
           VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
           VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
@@ -200,14 +210,15 @@ public class SwerveDrive extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Current Angle", m_frontLeft.Angle());
     SmartDashboard.putNumber("swerve drive offset", getDriveOffset());
-    SmartDashboard.putNumber("frontLeftDistance",m_frontLeft.getPosition().distanceMeters);
+    /*SmartDashboard.putNumber("frontLeftDistance",m_frontLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("frontLeftAngle",m_frontLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("frontRightDistance",m_frontRight.getPosition().distanceMeters);
     SmartDashboard.putNumber("frontRightAngle",m_frontRight.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("backLeftDistance",m_backLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("backLeftAngle",m_backLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("backRightDistance",m_backRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("backRightAngle",m_backRight.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("backRightAngle",m_backRight.getPosition().angle.getDegrees());*/
     updateOdometry();
+     m_field.setRobotPose(getPose());
   }
 }
