@@ -38,13 +38,14 @@ public class SwerveDrive extends SubsystemBase {
   private Field2d m_field = new Field2d();
   
     public SwerveDrive(){
+      resetHeading();
       SmartDashboard.putData("Field", m_field);
       m_backLeft.resetPosition();
       m_backRight.resetPosition();
       m_frontLeft.resetPosition();
       m_frontRight.resetPosition();
     }
-    //ahrs.reset();
+    //ahrs.resetPosition();
   public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
       Constants.DriveTrain.frontLeftTurnChannel,

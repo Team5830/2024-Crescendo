@@ -17,7 +17,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final class DriveTrain {
     public static final double maxSpeed = 3.0; // 4 meters per second
-    public static final double maxAcceleration = 3.0;
+    public static final double maxAcceleration = 1.0;
     public static final double maxAngularVelocity = 15; // revolutions per second
     public static final double maxAngularAcceleration = 20; // revolutions per second squared
     public static final double AngleTolerance = 5;
@@ -27,9 +27,9 @@ public final class Constants {
     public static final double wheelCircumferenceInches = 12.5;
     public static final double driveGearRatio = 6.55;
     // PIDs
-    public static final double driveControllerKp = 0.11;
+    public static final double driveControllerKp = 0.03;
     public static final double driveControllerKi = 0;
-    public static final double driveControllerKd = 0;
+    public static final double driveControllerKd = 0.03;
     public static final double turnControllerKp = .02;
     public static final double turnControllerKi = 0;
     public static final double turnControllerKd = 0.002;

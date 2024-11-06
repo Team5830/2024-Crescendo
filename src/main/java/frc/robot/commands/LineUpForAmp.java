@@ -72,17 +72,17 @@ public class LineUpForAmp extends Command {
         Constants.vision.linearD);
     turnController = new PIDController(Constants.vision.angularP, Constants.vision.angularI,
         Constants.vision.angularD);
-    FindTag(); // sets translation and rotation to target
+    //FindTag(); // sets translation and rotation to target
     // Report values for checking
     //SmartDashboard.putNumber("Translation To Target X", translationToTarget.getX());
     //SmartDashboard.putNumber("Translation To Target Y", translationToTarget.getY());
     //SmartDashboard.putNumber("Rotation To Target ", rotationToTarget.getDegrees());
     // Use translationToTarget and rotationToTarget to create final pose and
     // intermediate points for trajectory
-    Pose2d finalPose = new Pose2d( 3,0, Rotation2d.fromDegrees(0));
+    Pose2d finalPose = new Pose2d( 2,0, Rotation2d.fromDegrees(0));
     List<Translation2d> IntermediatePoints = List.of(
-        new Translation2d(1.0,0),
-       new Translation2d(2,0)
+        new Translation2d(0.5,0),
+       new Translation2d(1.5,0)
        //      new Translation2d(1,0)
         );
     // 1. Create trajectory settings
@@ -99,9 +99,9 @@ public class LineUpForAmp extends Command {
         trajectoryConfig);
 
     // 3. Define PID controllers for tracking trajectory
-    PIDController xController = new PIDController(Constants.DriveTrain.driveControllerKp*20,
+    PIDController xController = new PIDController(Constants.DriveTrain.driveControllerKp,
         Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
-    PIDController yController = new PIDController(Constants.DriveTrain.driveControllerKp*20,
+    PIDController yController = new PIDController(Constants.DriveTrain.driveControllerKp,
         Constants.DriveTrain.driveControllerKi, Constants.DriveTrain.driveControllerKd);
     ProfiledPIDController thetaController = new ProfiledPIDController(
         Constants.TurnPID.P*10, Constants.TurnPID.I, Constants.TurnPID.D,

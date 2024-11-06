@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,8 +16,10 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants;
+import java.util.function.Supplier;
 import com.revrobotics.CANSparkBase.ControlType;
 
 public class SwerveModule {
@@ -75,15 +78,16 @@ public class SwerveModule {
       m_driveMotor.setIdleMode(IdleMode.kCoast);
       m_turningMotor.setIdleMode(IdleMode.kBrake);
       m_driveMotor.setInverted(invertMotor);
-      m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(invertEncoder);
+      m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
+      m_angleEncoder.setInverted(invertEncoder);
       m_turningMotor.setInverted(invertEncoder);
       m_positionEncoder = m_driveMotor.getEncoder();
       m_drivePIDController.setFeedbackDevice(m_positionEncoder);
-      m_angleEncoder = m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle);
+      
       m_positionEncoder.setPositionConversionFactor(
           Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54 / 100);
-          m_positionEncoder.setMeasurementPeriod(10);
-          m_positionEncoder.setAverageDepth(2);
+          m_positionEncoder.setMeasurementPeriod(20);
+          m_positionEncoder.setAverageDepth(8);
       m_angleEncoder.setPositionConversionFactor(360);
       m_positionEncoder.setVelocityConversionFactor(
           Constants.DriveTrain.wheelCircumferenceInches / Constants.DriveTrain.driveGearRatio * 2.54 / 100 / 60);
@@ -99,7 +103,8 @@ public class SwerveModule {
           Constants.DriveTrain.turnControllerKd);
       updateDrivePIDValues(Constants.DriveTrain.driveControllerKp, Constants.DriveTrain.driveControllerKi,
           Constants.DriveTrain.driveControllerKd);
-
+        configureCANStatusFrames(m_turningMotor, 100, 20, 20, 200, 20, 8, 50);
+        configureCANStatusFrames(m_driveMotor, 10, 20, 20, 500, 500, 200, 200);
       m_driveMotor.setSmartCurrentLimit(40);
       m_turningMotor.setSmartCurrentLimit(20);
       m_driveMotor.burnFlash();
@@ -134,7 +139,23 @@ public class SwerveModule {
   public double getPValue() {
     return m_turningPIDController.getP();
   }
-
+  public void configureCANStatusFrames(CANSparkMax motor, int CANStatus0, int CANStatus1, int CANStatus2, int CANStatus3, int CANStatus4, int CANStatus5, int CANStatus6){
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, CANStatus0));
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, CANStatus1));
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, CANStatus2));
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, CANStatus3));
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, CANStatus4));
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, CANStatus5));
+    configureSparkMax(()->motor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, CANStatus6));
+  }
+  public void configureSparkMax(Supplier<REVLibError> config){
+    for (int i=0; i<5; i++){
+      if (config.get()==REVLibError.kOk){
+        return;
+      }
+    }
+    DriverStation.reportWarning("Failure configuring motor",true);
+  }
   public double getIValue() {
     return m_turningPIDController.getI();
   }
@@ -158,7 +179,7 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-        m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getVelocity(),
+        m_positionEncoder.getVelocity(),
         new Rotation2d(m_angleEncoder.getPosition()));
   }
 
@@ -169,7 +190,7 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        m_driveMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition(),
+        m_positionEncoder.getPosition(),
        new Rotation2d(m_angleEncoder.getPosition()));
   }
   public void resetPosition(){
@@ -208,7 +229,7 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    var encoderRotation = Rotation2d.fromDegrees(m_turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+    var encoderRotation = Rotation2d.fromDegrees(m_angleEncoder.getPosition());
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState state = SwerveModuleState.optimize(desiredState, encoderRotation);

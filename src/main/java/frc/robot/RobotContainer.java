@@ -63,6 +63,7 @@ public class RobotContainer {
     SmartDashboard.getNumber("TurnI", Constants.DriveTrain.turnControllerKi);
     SmartDashboard.getNumber("TurnD", Constants.DriveTrain.turnControllerKd);
     SmartDashboard.putNumber("Turn Target", Constants.DriveTrain.turnTarget);
+    SmartDashboard.putData("Lineup for Amp", new LineUpForAmp(m_flywheel, m_intake, m_swerveDrive, m_vision));
     //Add Screen Buttons
     SmartDashboard.putData("Intake Position",new Positioning(m_arm, Constants.arm.positionIntake));
     SmartDashboard.putData("Shoot Position",new Positioning(m_arm, Constants.arm.positionShoot));
