@@ -35,10 +35,10 @@ public final class Constants {
     public static final double turnControllerKd = 0.002;
 
     // Feedforward gains
-    public static final double leftFeedforwardStatic = 0.40179;
+    public static final double leftFeedforwardStatic = 0.40179;//.40179
     public static final double leftFeedforwardVelocity = 2.6343;
     public static final double leftFeedforwardAcceleration = 0.51816;
-    public static final double rightFeedforwardStatic = 0.36268;
+    public static final double rightFeedforwardStatic = 0.40179;//.36268
     public static final double rightFeedforwardVelocity = 2.7308;
     public static final double rightFeedforwardAcceleration = 0.70894;
 

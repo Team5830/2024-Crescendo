@@ -143,10 +143,10 @@ public class SwerveDrive extends SubsystemBase {
     // Also apply vision measurements. We use 0.3 seconds in the past as an example
     // -- on a real robot, this must be calculated based either on latency or
     // timestamps.
-    m_poseEstimator.addVisionMeasurement(
+    /*m_poseEstimator.addVisionMeasurement(
         ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
             m_poseEstimator.getEstimatedPosition()),
-        Timer.getFPGATimestamp() - 0.3);
+        Timer.getFPGATimestamp() - 0.3);*/
   }
 
   public void resetOdometry(Pose2d pose){

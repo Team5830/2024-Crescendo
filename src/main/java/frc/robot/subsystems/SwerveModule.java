@@ -180,7 +180,7 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         m_positionEncoder.getVelocity(),
-        new Rotation2d(m_angleEncoder.getPosition()));
+        Rotation2d.fromDegrees(m_angleEncoder.getPosition()));
   }
 
   /**
@@ -191,7 +191,7 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         m_positionEncoder.getPosition(),
-       new Rotation2d(m_angleEncoder.getPosition()));
+        Rotation2d.fromDegrees(m_angleEncoder.getPosition()));
   }
   public void resetPosition(){
     m_driveMotor.getEncoder().setPosition(0);

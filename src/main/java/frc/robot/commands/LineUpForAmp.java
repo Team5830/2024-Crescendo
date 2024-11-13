@@ -79,7 +79,7 @@ public class LineUpForAmp extends Command {
     //SmartDashboard.putNumber("Rotation To Target ", rotationToTarget.getDegrees());
     // Use translationToTarget and rotationToTarget to create final pose and
     // intermediate points for trajectory
-    Pose2d finalPose = new Pose2d( 2,0, Rotation2d.fromDegrees(0));
+    Pose2d finalPose = new Pose2d( 2,0, Rotation2d.fromDegrees(180));
     List<Translation2d> IntermediatePoints = List.of(
         new Translation2d(0.5,0),
        new Translation2d(1.5,0)
@@ -93,7 +93,7 @@ public class LineUpForAmp extends Command {
 
     // 2. Generate trajectory
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
+        new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
         IntermediatePoints,
         finalPose,
         trajectoryConfig);
@@ -130,7 +130,7 @@ public class LineUpForAmp extends Command {
     finalCommand.schedule();
   }
 
-  public void FindTag() {
+ /*  public void FindTag() {
     Transform3d tag3dTranslation;
     double mag;
     m_vision.getAprilTagVisionResult(targetTag);
@@ -138,7 +138,7 @@ public class LineUpForAmp extends Command {
       DriverStation.reportWarning("Target: " + targetTag + " not in view", false);
       finished = true;
     }
-    if (!finished) {
+     if (!finished) {
       range = m_vision.getAprilTagRange();
       yaw = m_vision.getAprilTagYaw();
       tag3dTranslation = m_vision.getAprilTagTransform();
@@ -147,7 +147,7 @@ public class LineUpForAmp extends Command {
       // Rotation2d targetYaw = PhotonUtils.getYawToPose( m_drive.getPose()
       // ,m_vision.getAprilTagPose(targetTag).toPose2d()); // This doesn't use the
       // vision measurement
-      if (range < 3 && yaw < 100) { // Only drive if Tag is within 3 meters and yaw is valid
+       if (range < 3 && yaw < 100) { // Only drive if Tag is within 3 meters and yaw is valid
         DriverStation.reportWarning("Range to " + targetTag + " " + range + " meters Angle " + yaw, false);
         // Scale X,Y proportionally
         // mag = forwardController.calculate(range, Constants.vision.goalRangeMeters);
@@ -158,7 +158,7 @@ public class LineUpForAmp extends Command {
         finished = true;
       }
     }
-  }
+  }*/
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -176,9 +176,6 @@ public class LineUpForAmp extends Command {
   @Override
   public boolean isFinished() {
     // Choose target specs... range, angle that is OK to shoot from
-    if (range < 5 && yaw < 0.5) {
-      finished = true;
-    }
-    return finished;
+    return finalCommand.isFinished();
   }
 }
