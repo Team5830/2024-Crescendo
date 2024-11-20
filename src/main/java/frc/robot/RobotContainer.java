@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -46,7 +48,7 @@ public class RobotContainer {
   private final DoubleSupplier getPeriod;
 
   private SendableChooser<Command> m_chooser = new SendableChooser<>();
-
+  //Named Commands
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -73,6 +75,9 @@ public class RobotContainer {
     //SmartDashboard.putData("Pickup",new Pickup );
     // Configure the trigger and button bindings
     configureBindings();
+    //Named Commands
+    NamedCommands.registerCommand("Lower Arm", new Positioning(m_arm, Constants.arm.positionShoot));
+    NamedCommands.registerCommand("Shoot", new Shoot(m_flywheel, m_intake));
 
     m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
