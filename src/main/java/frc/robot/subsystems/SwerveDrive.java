@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.VecBuilder;
@@ -16,9 +17,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.*;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -36,6 +43,8 @@ public class SwerveDrive extends SubsystemBase {
   private final Translation2d m_backRightLocation = new Translation2d(-0.438, -0.438);
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
   private Field2d m_field = new Field2d();
+  RobotConfig config;
+  
   
     public SwerveDrive(){
       resetHeading();
@@ -44,7 +53,40 @@ public class SwerveDrive extends SubsystemBase {
       m_backRight.resetPosition();
       m_frontLeft.resetPosition();
       m_frontRight.resetPosition();
+    try{
+      
+      config = RobotConfig.fromGUISettings();//RobotConfig(80.0, 6.8, new ModuleConfig(0.8,2.0,0.9, new DCMotor.getNEO(1), 20), 0.9 )
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
     }
+
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
+  }
+    
     //ahrs.resetPosition();
   public final SwerveModule m_frontLeft = new SwerveModule(
       Constants.DriveTrain.frontLeftDriveChannel,
@@ -120,7 +162,14 @@ public class SwerveDrive extends SubsystemBase {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
   }
-
+public SwerveModuleState[] getModuleStates() {
+  return new SwerveModuleState[]{
+    m_frontLeft.getState(),
+    m_frontRight.getState(),
+    m_backLeft.getState(),
+    m_backRight.getState()
+  };
+  }
   public void setModuleStatesBasic(SwerveModuleState[] swerveModuleStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.DriveTrain.maxSpeed);
     m_frontLeft.setDesiredStateBasic(swerveModuleStates[0]);
@@ -177,6 +226,9 @@ public class SwerveDrive extends SubsystemBase {
   public double getAngle() {
     return ahrs.getAngle();
   }
+  public ChassisSpeeds getRobotRelativeSpeeds(){
+    return m_kinematics.toChassisSpeeds(getModuleStates());
+  }
   public void resetHeading() {
     ahrs.reset();
   }
@@ -191,6 +243,14 @@ public class SwerveDrive extends SubsystemBase {
     m_backRight.resetPosition();
     m_frontLeft.resetPosition();
     m_frontRight.resetPosition();
+  }
+  public void resetPose(Pose2d pose){
+    m_odometry.resetPosition(ahrs.getRotation2d(), new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+        }, pose);
   }
 
   @Override

@@ -6,16 +6,20 @@ package frc.robot;
 
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -78,6 +82,7 @@ public class RobotContainer {
     //Named Commands
     NamedCommands.registerCommand("Lower Arm", new Positioning(m_arm, Constants.arm.positionShoot));
     NamedCommands.registerCommand("Shoot", new Shoot(m_flywheel, m_intake));
+    NamedCommands.registerCommand("Run Intake", new IntakeCommand(m_intake));
 
     m_swerveDrive.setDefaultCommand(new DriveTeleop(
         m_swerveDrive,
@@ -155,6 +160,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_chooser.getSelected();
+    try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
   }
 }
+
+
